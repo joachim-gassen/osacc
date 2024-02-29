@@ -1,0 +1,35 @@
+{% extends "global/Page.html" %}
+{% load staticfiles otree %}
+
+{% block title %}
+    What is the reasoning behind your decision?
+{% endblock %}
+
+{% block content %}
+    <style>
+    .otree-timer {
+        display: none;
+    }
+    </style>
+    <div class="card card-body bg-light instructions" style="text-align:center">
+        {% if journal_treatment == 0 %}
+            On the previous page, you indicated that there would be a {{share}}% chance that you would comply with the researcher's request.
+        {% elif journal_treatment == 1 %}
+            On the previous page, you indicated that there would be a {{share}}% chance that you would submit to the journal with the data policy.
+        {% endif %}
+        Please briefly explain the reasoning behind your decision.
+    </div>
+     <table class="table">
+    {% for field in form %}
+        <tr>
+            <td align="right">
+                {{ field }}
+            </td>
+        </tr>
+    {% endfor %}
+    </table>
+    <button class="otree-btn-next btn btn-outline-primary">Next</button>
+
+{% endblock %}
+{% block scripts %}
+{% endblock %}

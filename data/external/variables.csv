@@ -1,0 +1,108 @@
+otree_var,var,question_nr,text,sub_item,resp_no,resp_label
+participant.id_in_session,id,NA,NA,NA,NA,NA
+participant.time_started_utc,otree_started_utc,NA,NA,NA,NA,NA
+participant._current_page_name,otree_last_page_name,NA,NA,NA,NA,NA
+participant.control_treatment,exp_tment_control,NA,NA,NA,NA,NA
+participant.private_treatment,exp_tment_private,NA,NA,NA,NA,NA
+participant.share,exp_pct_share,1,NA,NA,NA,NA
+epq.1.player.reflect,exp_reflect,2,"On the previous page, you indicated that there would be a [pct]% chance that you would comply with the researcher's request. Please briefly explain he reasoning behind your decision.",NA,NA,NA
+epq.1.player.continent,demog_region,3,On which continent do you live?,NA,0,Asia (including the Middle East)
+epq.1.player.continent,demog_region,3,On which continent do you live?,NA,1,Australia and Oceania
+epq.1.player.continent,demog_region,3,On which continent do you live?,NA,2,Africa
+epq.1.player.continent,demog_region,3,On which continent do you live?,NA,3,Central and South America (including the Caribbean)
+epq.1.player.continent,demog_region,3,On which continent do you live?,NA,4,Europe
+epq.1.player.continent,demog_region,3,On which continent do you live?,NA,5,North America
+epq.1.player.gender,demog_gender,4,Please select your gender.,NA,1,Male
+epq.1.player.gender,demog_gender,4,Please select your gender.,NA,2,Female
+epq.1.player.gender,demog_gender,4,Please select your gender.,NA,3,Other
+epq.1.player.age,demog_age,5,What is your age?,NA,1,Under 25 years
+epq.1.player.age,demog_age,5,What is your age?,NA,2,25 to 35 years
+epq.1.player.age,demog_age,5,What is your age?,NA,3,35 to 45 years
+epq.1.player.age,demog_age,5,What is your age?,NA,4,45 to 55 years
+epq.1.player.age,demog_age,5,What is your age?,NA,5,55 to 65 years
+epq.1.player.age,demog_age,5,What is your age?,NA,6,65 years or over
+epq.1.player.accounting_research,demog_active_res,6,"In your current role, do you carry out academic accounting research?",NA,0,No
+epq.1.player.accounting_research,demog_active_res,6,"In your current role, do you carry out academic accounting research?",NA,1,Yes
+epq.1.player.job_title,demog_job_cat,7,Which of the following job categories best apply to you?,NA,1,PhD student
+epq.1.player.job_title,demog_job_cat,7,Which of the following job categories best apply to you?,NA,2,Untenured faculty
+epq.1.player.job_title,demog_job_cat,7,Which of the following job categories best apply to you?,NA,3,Tenured faculty
+epq.1.player.job_title,demog_job_cat,7,Which of the following job categories best apply to you?,NA,4,"Other (e.g., practitioner)"
+epq.1.player.research_area,demog_field,8,Which of the following best describes your main subfield within accounting?,NA,1,Auditing
+epq.1.player.research_area,demog_field,8,Which of the following best describes your main subfield within accounting?,NA,2,Financial accounting and reporting
+epq.1.player.research_area,demog_field,8,Which of the following best describes your main subfield within accounting?,NA,3,Managerial accounting
+epq.1.player.research_area,demog_field,8,Which of the following best describes your main subfield within accounting?,NA,4,Taxation
+epq.1.player.research_area,demog_field,8,Which of the following best describes your main subfield within accounting?,NA,5,Accounting information systems
+epq.1.player.research_area,demog_field,8,Which of the following best describes your main subfield within accounting?,NA,6,Other
+epq.1.player.research_method,demog_method,9,Which of the following best describes your main methodological area?,NA,1,Analytical
+epq.1.player.research_method,demog_method,9,Which of the following best describes your main methodological area?,NA,2,Archival/Field
+epq.1.player.research_method,demog_method,9,Which of the following best describes your main methodological area?,NA,3,Experimental
+epq.1.player.research_method,demog_method,9,Which of the following best describes your main methodological area?,NA,4,Qualitative
+epq.1.player.research_method,demog_method,9,Which of the following best describes your main methodological area?,NA,5,Survey
+epq.1.player.research_method,demog_method,9,Which of the following best describes your main methodological area?,NA,6,Other
+epq.1.player.trusting,demog_trusting,10,"Generally speaking, would you say that you can't be too careful in dealing with people or that most people can be trusted? Please rate this on a  scale from 1 (you can't be too careful in dealing with people) to 10 (most people can be trusted).",NA,NA,NA
+epq.1.player.trustworthy,demog_trustworthy,11,"If someone does me a favor, I am ready to return it. Please rate how strongly this applies to you on a scale from 1 (does not apply to me at all) to 10 (applies to me completely).",NA,NA,NA
+epq.1.player.risk,demog_risk,12,Please rate your willingness to take risks in general on a scale from 1 (not at all willing) to 10 (very willing).,NA,NA,NA
+epq.1.player.heard_materials,sharing_familiar,13,"How familiar are you with the practice of publicly sharing research materials (i.e., data, code, and research procedures) for a completed study?",NA,1,Not at all familiar
+epq.1.player.heard_materials,sharing_familiar,13,"How familiar are you with the practice of publicly sharing research materials (i.e., data, code, and research procedures) for a completed study?",NA,2,Slightly familiar
+epq.1.player.heard_materials,sharing_familiar,13,"How familiar are you with the practice of publicly sharing research materials (i.e., data, code, and research procedures) for a completed study?",NA,3,Somewhat familiar
+epq.1.player.heard_materials,sharing_familiar,13,"How familiar are you with the practice of publicly sharing research materials (i.e., data, code, and research procedures) for a completed study?",NA,4,Moderately familiar
+epq.1.player.heard_materials,sharing_familiar,13,"How familiar are you with the practice of publicly sharing research materials (i.e., data, code, and research procedures) for a completed study?",NA,5,Extremely familiar
+epq.1.player.progress,sharing_important,14,"To what extent do you believe that publicly sharing research materials (i.e., data, code, and research procedures) is important for the advancement of accounting research?",NA,1,Not at all important
+epq.1.player.progress,sharing_important,14,"To what extent do you believe that publicly sharing research materials (i.e., data, code, and research procedures) is important for the advancement of accounting research?",NA,2,Moderately not important
+epq.1.player.progress,sharing_important,14,"To what extent do you believe that publicly sharing research materials (i.e., data, code, and research procedures) is important for the advancement of accounting research?",NA,3,Neither unimportant nor important
+epq.1.player.progress,sharing_important,14,"To what extent do you believe that publicly sharing research materials (i.e., data, code, and research procedures) is important for the advancement of accounting research?",NA,4,Moderately important
+epq.1.player.progress,sharing_important,14,"To what extent do you believe that publicly sharing research materials (i.e., data, code, and research procedures) is important for the advancement of accounting research?",NA,5,Very important
+epq.1.player.est_other_post_online,sharing_perc_other_share,15,"In your estimation, what percentage of accounting researchers publicly share research materials (i.e., data, code, and research procedures) (0-100%)?",NA,NA,NA
+epq.1.player.est_you_post_online,sharing_use,16,"How often do you publicly share research materials (i.e., data, code, and research procedures)?",NA,1,Never
+epq.1.player.est_you_post_online,sharing_use,16,"How often do you publicly share research materials (i.e., data, code, and research procedures)?",NA,2,Rarely
+epq.1.player.est_you_post_online,sharing_use,16,"How often do you publicly share research materials (i.e., data, code, and research procedures)?",NA,3,Sometimes
+epq.1.player.est_you_post_online,sharing_use,16,"How often do you publicly share research materials (i.e., data, code, and research procedures)?",NA,4,Often
+epq.1.player.est_you_post_online,sharing_use,16,"How often do you publicly share research materials (i.e., data, code, and research procedures)?",NA,5,Always
+epq.1.player.reason_one,sharing_reason_proprietary,17,"What are reasons that kept you from publicly sharing research materials (i.e., data, code, and research procedures)? (multiple answers possible)",The data were proprietary or access was restricted,NA,NA
+epq.1.player.reason_two,sharing_reason_time,17,"What are reasons that kept you from publicly sharing research materials (i.e., data, code, and research procedures)? (multiple answers possible)",It was too time consuming,NA,NA
+epq.1.player.reason_three,sharing_reason_scooping,17,"What are reasons that kept you from publicly sharing research materials (i.e., data, code, and research procedures)? (multiple answers possible)",I didn't want to be scooped,NA,NA
+epq.1.player.reason_four,sharing_reason_deidentify,17,"What are reasons that kept you from publicly sharing research materials (i.e., data, code, and research procedures)? (multiple answers possible)",The data were too difficult to de-identify,NA,NA
+epq.1.player.reason_five,sharing_reason_field_not_in_favor,17,"What are reasons that kept you from publicly sharing research materials (i.e., data, code, and research procedures)? (multiple answers possible)",I didn't perceive my field to be in favor of this,NA,NA
+epq.1.player.reason_six,sharing_reason_data_public,17,"What are reasons that kept you from publicly sharing research materials (i.e., data, code, and research procedures)? (multiple answers possible)",The data were already publicly available,NA,NA
+epq.1.player.reason_seven,sharing_reason_afraid_mistake,17,"What are reasons that kept you from publicly sharing research materials (i.e., data, code, and research procedures)? (multiple answers possible)",I was nervous that someone would discover a mistake,NA,NA
+epq.1.player.reason_eight,sharing_reason_unfamiliar,17,"What are reasons that kept you from publicly sharing research materials (i.e., data, code, and research procedures)? (multiple answers possible)",I was unfamiliar with the practice,NA,NA
+epq.1.player.reason_nine,sharing_reason_not_yet,17,"What are reasons that kept you from publicly sharing research materials (i.e., data, code, and research procedures)? (multiple answers possible)",I am planning to but haven't done it yet,NA,NA
+epq.1.player.reason_eleven,sharing_reason_afraid_quality,17,"What are reasons that kept you from publicly sharing research materials (i.e., data, code, and research procedures)? (multiple answers possible)",I was concerned about the overall quality of my materials,NA,NA
+epq.1.player.reason_twelve,sharing_reason_complicated,17,"What are reasons that kept you from publicly sharing research materials (i.e., data, code, and research procedures)? (multiple answers possible)",It seemed too complicated,NA,NA
+epq.1.player.reason_ten,sharing_reason_other,17,"What are reasons that kept you from publicly sharing research materials (i.e., data, code, and research procedures)? (multiple answers possible)",Other,NA,NA
+epq.1.player.reason_ten_text,sharing_reason_other_text,17,"What are reasons that kept you from publicly sharing research materials (i.e., data, code, and research procedures)? (multiple answers possible)",Other,NA,NA
+epq.1.player.likelihood_future_post,sharing_plan_to,18,"Do you plan to publicly share research materials (i.e., data, code, and research procedures) in the future?",NA,1,No
+epq.1.player.likelihood_future_post,sharing_plan_to,18,"Do you plan to publicly share research materials (i.e., data, code, and research procedures) in the future?",NA,2,Yes
+epq.1.player.encourage_others,sharing_encourage_others,19,"Do you encourage others to publicly share research materials (i.e., data, code, and research procedures)?",NA,1,"No, and I don't plan to"
+epq.1.player.encourage_others,sharing_encourage_others,19,"Do you encourage others to publicly share research materials (i.e., data, code, and research procedures)?",NA,2,"No, but I plan to in the future"
+epq.1.player.encourage_others,sharing_encourage_others,19,"Do you encourage others to publicly share research materials (i.e., data, code, and research procedures)?",NA,3,"Yes, I do"
+epq.1.player.acc_favor_public_post,sharing_perc_other_prefer,20,"In your estimation, what percentage of accounting researchers favor sharing research materials (i.e., data, code, and research procedures) publicly?",NA,NA,NA
+epq.1.player.editors_believe,sharing_perc_editor_prefer,21,"If you had to guess, approximately what percentage of editors of the top six accounting journals believe that publicly sharing research materials (i.e., data, code, and research procedures) increases the value of a manuscript?",NA,NA,NA
+epq.1.player.acc_replicates,reprod_acc,22,How confident are you that the influential research findings in the area of accounting overall are reproducible?,NA,1,Not at all confident
+epq.1.player.acc_replicates,reprod_acc,22,How confident are you that the influential research findings in the area of accounting overall are reproducible?,NA,2,Slightly confident
+epq.1.player.acc_replicates,reprod_acc,22,How confident are you that the influential research findings in the area of accounting overall are reproducible?,NA,3,Somewhat confident
+epq.1.player.acc_replicates,reprod_acc,22,How confident are you that the influential research findings in the area of accounting overall are reproducible?,NA,4,Moderately confident
+epq.1.player.acc_replicates,reprod_acc,22,How confident are you that the influential research findings in the area of accounting overall are reproducible?,NA,5,Extremely confident
+epq.1.player.acc_sub_replicates,reprod_subfield,23,How confident are you that the influential research findings in your main subfield within accounting are reproducible?,NA,1,Not at all confident
+epq.1.player.acc_sub_replicates,reprod_subfield,23,How confident are you that the influential research findings in your main subfield within accounting are reproducible?,NA,2,Slightly confident
+epq.1.player.acc_sub_replicates,reprod_subfield,23,How confident are you that the influential research findings in your main subfield within accounting are reproducible?,NA,3,Somewhat confident
+epq.1.player.acc_sub_replicates,reprod_subfield,23,How confident are you that the influential research findings in your main subfield within accounting are reproducible?,NA,4,Moderately confident
+epq.1.player.acc_sub_replicates,reprod_subfield,23,How confident are you that the influential research findings in your main subfield within accounting are reproducible?,NA,5,Extremely confident
+epq.1.player.res_meth_replicates,reprod_method,24,How confident are you that the influential research findings in your main methodological area are reproducible?,NA,1,Not at all confident
+epq.1.player.res_meth_replicates,reprod_method,24,How confident are you that the influential research findings in your main methodological area are reproducible?,NA,2,Slightly confident
+epq.1.player.res_meth_replicates,reprod_method,24,How confident are you that the influential research findings in your main methodological area are reproducible?,NA,3,Somewhat confident
+epq.1.player.res_meth_replicates,reprod_method,24,How confident are you that the influential research findings in your main methodological area are reproducible?,NA,4,Moderately confident
+epq.1.player.res_meth_replicates,reprod_method,24,How confident are you that the influential research findings in your main methodological area are reproducible?,NA,5,Extremely confident
+epq.1.player.heard_prereg,prereg_familiar,25,How familiar are you with the practice of pre-registering hypotheses or analyses in advance of a study?,NA,1,Not at all familiar
+epq.1.player.heard_prereg,prereg_familiar,25,How familiar are you with the practice of pre-registering hypotheses or analyses in advance of a study?,NA,2,Slightly familiar
+epq.1.player.heard_prereg,prereg_familiar,25,How familiar are you with the practice of pre-registering hypotheses or analyses in advance of a study?,NA,3,Somewhat familiar
+epq.1.player.heard_prereg,prereg_familiar,25,How familiar are you with the practice of pre-registering hypotheses or analyses in advance of a study?,NA,4,Moderately familiar
+epq.1.player.heard_prereg,prereg_familiar,25,How familiar are you with the practice of pre-registering hypotheses or analyses in advance of a study?,NA,5,Extremely familiar
+epq.1.player.have_prereg,prereg_use,26,Have you ever pre-registered hypotheses or analyses in advance of a study?,NA,1,No
+epq.1.player.have_prereg,prereg_use,26,Have you ever pre-registered hypotheses or analyses in advance of a study?,NA,2,Yes
+epq.1.player.first_time_prereg,prereg_use_first_time,27,Approximately when was the first time you pre-registered hypotheses or analyses in advance of a study?,NA,NA,NA
+epq.1.player.trust_prereg,prereg_trust,28,How trustworthy do you find the work of scholars who tend to pre-register hypotheses or analyses as compared to the work of those who don't?,NA,1,Much less trustworthy
+epq.1.player.trust_prereg,prereg_trust,28,How trustworthy do you find the work of scholars who tend to pre-register hypotheses or analyses as compared to the work of those who don't?,NA,2,Somewhat less trustworthy
+epq.1.player.trust_prereg,prereg_trust,28,How trustworthy do you find the work of scholars who tend to pre-register hypotheses or analyses as compared to the work of those who don't?,NA,3,Equally trustworthy
+epq.1.player.trust_prereg,prereg_trust,28,How trustworthy do you find the work of scholars who tend to pre-register hypotheses or analyses as compared to the work of those who don't?,NA,4,Somewhat more trustworthy
+epq.1.player.trust_prereg,prereg_trust,28,How trustworthy do you find the work of scholars who tend to pre-register hypotheses or analyses as compared to the work of those who don't?,NA,5,Much more trustworthy

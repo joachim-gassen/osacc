@@ -1,0 +1,288 @@
+{{ block title }}
+    Please read the scenario below
+{{ endblock }}
+{{ block content }}
+    <style>
+    .otree-timer {
+        display: none;
+    }
+    .myclass::-webkit-slider-thumb {
+        box-shadow: 2px 2px 2px #000000, 0px 0px 1px #007afe;
+        border: 1px solid #000000;
+        height: 21px;
+        width: 10px;
+        border-radius: 0px;
+        background: #ffffff;
+        cursor: pointer;
+        -webkit-appearance: none !important;
+        margin-top: 0px; /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
+    }
+
+    .myclass::-moz-range-thumb {
+        box-shadow: 2px 2px 2px #000000, 0px 0px 1px #007afe;
+        border: 1px solid #000000;
+        height: 21px;
+        width: 10px;
+        border-radius: 0px;
+        background: #ffffff;
+        -webkit-appearance: none !important;
+        cursor: pointer;
+    }
+
+    .myclass::-ms-thumb {
+        box-shadow: 2px 2px 2px #000000, 0px 0px 1px #007afe;
+        border: 1px solid #000000;
+        height: 21px;
+        width: 10px;
+        -webkit-appearance: none !important;
+        border-radius: 0px;
+        background: #ffffff;
+        cursor: pointer;
+    }
+        .myclass::-ms-track {
+        width: 100%;
+        cursor: pointer;
+        background: transparent;
+        border-color: transparent;
+        color: transparent;
+    }
+
+    .myclass:focus {
+        outline: none;
+    }
+
+    .myclass {
+        -webkit-appearance: none;
+        width: 90%;
+        margin: 18px 0;
+        height: 12px;
+        background: #007afe;
+        border-radius: 15px;
+        border: 0.0px solid #ffffff;
+    }
+
+    .slider::-moz-range-thumb {
+        box-shadow: 2px 2px 2px #000000, 0px 0px 1px #007afe;
+        border: 1px solid #000000;
+        height: 21px;
+        width: 10px;
+        border-radius: 0px;
+        background: #ffffff;
+        cursor: pointer;
+        visibility: hidden;
+    }
+
+    .slider::-webkit-slider-thumb {
+        border: 1px solid #000000;
+        height: 21px;
+        width: 10px;
+        border-radius: 0px;
+        background: #ffffff;
+        cursor: pointer;
+        margin-top: 0px; /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
+        box-shadow: 2px 2px 2px #000000, 0px 0px 1px #007afe;
+        visibility: hidden;
+    }
+
+    .slider::-ms-thumb {
+        box-shadow: 2px 2px 2px #000000, 0px 0px 1px #007afe;
+        border: 1px solid #000000;
+        height: 21px;
+        width: 10px;
+        border-radius: 0px;
+        background: #ffffff;
+        cursor: pointer;
+        visibility: hidden;
+    }
+    .slider::-ms-track {
+        width: 100%;
+        cursor: pointer;
+        background: transparent;
+        border-color: transparent;
+        color: transparent;
+    }
+
+    .slider:focus {
+        outline: none;
+    }
+
+    .slider {
+        -webkit-appearance: none;
+        width: 90%;
+        margin: 18px 0;
+        height: 12px;
+        background: #007afe;
+        border-radius: 15px;
+        border: 0.0px solid #ffffff;
+    }
+    </style>
+
+    {% if control_treatment == 0 and private_treatment == 1 and journal_treatment == 0 %}
+
+<div class="card card-body bg-light instructions">
+    <p>You conducted a study and published it in an academic journal.</p>
+    <p>Another researcher contacts you and asks for access to your research materials (i.e., the data, code, and research procedures).</p>
+    <p>The researcher wants to:</p>
+    <ul>
+        <li>
+            understand how your study was conducted,
+        </li>
+        <li>
+            learn from your data and methodology,
+        </li>
+        <li>
+            contribute by generating new insights, and
+        </li>
+        <li>
+            potentially conduct a new study that builds on your study.
+        </li>
+    </ul>
+</div>
+
+    {% elif control_treatment == 1 and private_treatment == 1 and journal_treatment == 0 %}
+
+<div class="card card-body bg-light instructions">
+    <p>You conducted a study and published it in an academic journal.</p>
+    <p>Another researcher contacts you and asks for access to your research materials (i.e., the data, code, and research procedures).</p>
+    <p>The researcher wants to:</p>
+    <ul>
+        <li>
+            verify how your study was conducted,
+        </li>
+        <li>
+            investigate whether your data and methodology are sound,
+        </li>
+        <li>
+            control whether your findings can be reproduced, and
+        </li>
+        <li>
+            potentially conduct a new study that corrects your study.
+        </li>
+    </ul>
+</div>
+
+    {% elif control_treatment == 0 and private_treatment == 0 and journal_treatment == 0 %}
+
+<div class="card card-body bg-light instructions">
+    <p>You conducted a study and published it in an academic journal.</p>
+    <p>Another researcher contacts you and asks you to publicly share your research materials (i.e., the data, code, and research procedures).</p>
+    <p>The researcher wants to enable others to:</p>
+    <ul>
+        <li>
+            understand how your study was conducted,
+        </li>
+        <li>
+            learn from your data and methodology,
+        </li>
+        <li>
+            contribute by generating new insights, and
+        </li>
+        <li>
+            potentially conduct a new study that builds on your study.
+        </li>
+    </ul>
+</div>
+
+    {% elif control_treatment == 1 and private_treatment == 0 and journal_treatment == 0 %}
+
+<div class="card card-body bg-light instructions">
+    <p>You conducted a study and published it in an academic journal.</p>
+    <p>Another researcher contacts you and asks you to publicly share your research materials (i.e., the data, code, and research procedures).</p>
+    <p>The researcher wants to enable others to:</p>
+    <ul>
+        <li>
+            verify how your study was conducted,
+        </li>
+        <li>
+            investigate whether your data and methodology are sound,
+        </li>
+        <li>
+            control whether your findings can be reproduced, and
+        </li>
+        <li>
+            potentially conduct a new study that corrects your study.
+        </li>
+    </ul>
+</div>
+
+    {% elif control_treatment == 1 and private_treatment == 0 and journal_treatment == 1 %}
+
+<div class="card card-body bg-light instructions">
+    <p>You conducted a study and are considering two potential journal outlets. Both cover the same field and are of equal reputation.</p>
+    <p>While one journal has no data policy, the other journal has a data policy that requires you to submit your research materials (i.e., the data, code, and research procedures) so that they can be made publicly available to all interested parties.</p>
+    <p>The journal justifies its data policy by stating that it makes it easier for other researchers to:</p>
+    <ul>
+        <li>
+            verify how your study was conducted,
+        </li>
+        <li>
+            investigate whether your data and methodology are sound,
+        </li>
+        <li>
+            control whether your findings can be reproduced, and
+        </li>
+        <li>
+            potentially conduct a new study that corrects your study.
+        </li>
+    </ul>
+</div>
+
+    {% elif control_treatment == 0 and private_treatment == 0 and journal_treatment == 1 %}
+
+<div class="card card-body bg-light instructions">
+    <p>You conducted a study and are considering two potential journal outlets. Both cover the same field and are of equal reputation.</p>
+    <p>While one journal has no data policy, the other journal has a data policy that requires you to submit your research materials (i.e., the data, code, and research procedures) so that they can be made publicly available to all interested parties.</p>
+    <p>The journal justifies its data policy by stating that it makes it easier for other researchers to:</p>
+    <ul>
+        <li>
+            understand how your study was conducted,
+        </li>
+        <li>
+            learn from your data and methodology,
+        </li>
+        <li>
+            contribute by generating new insights, and
+        </li>
+        <li>
+            potentially conduct a new study that builds on your study.
+        </li>
+    </ul>
+</div>
+
+    {% endif %}
+    <br>
+        <div align="center">
+    <p>
+        {% if journal_treatment == 0 %}
+        <b>What is the likelihood that you would comply with the other researcher's request?</b><br>
+        {% elif journal_treatment == 1 %}
+        <b>What is the likelihood that you would submit your study to the journal with the data policy?</b><br>
+        {% endif %}
+        Please click on the blue bar to give your answer ranging from 0% (definitely not) to 100% (definitely).
+    </p>
+    <br>
+    <p id="feedback_share">
+        <br>
+    </p>
+        <input type="range" id="share" name="share" class="slider" step="1" min=0 max="100">
+            <p></p>
+        <button class="otree-btn-next btn btn-outline-primary">Next</button>
+        </div>
+    <input type="hidden" name="check_share" value="" id="id_check_share"/>
+
+{{ endblock }}
+{{ block scripts }}
+<script>
+	$(document).ready(function () {
+    	$('input[name=share]').on('input change', function () {
+    	    $('input[name=share]').removeClass('slider');
+            $('input[name=share]').addClass('myclass');
+        });
+	    $('input[name=share]').on('input', function() {
+        	document.getElementById("feedback_share").innerHTML = $(this).val()+'%';
+        	$('#id_check_share').val(1);
+    	});
+    });
+</script>
+
+{{ endblock }}

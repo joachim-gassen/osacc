@@ -1,0 +1,51 @@
+{% extends "global/Page.html" %}
+{% load staticfiles otree %}
+
+{% block title %}
+    Welcome!
+{% endblock %}
+
+{% block content %}
+    <style>
+    .otree-timer {
+        display: none;
+    }
+    </style>
+<div class="card card-body bg-light instructions">
+    <ul>
+        <li>
+            This is a study about sharing research materials, reproducibility, and pre-registration in accounting research.
+        </li>
+        <li>
+            The entire study only takes around 7 minutes to complete. We will ask you to read a short scenario, answer a few questions, and rate a few statements.
+        </li>
+        <li>
+            There is no physical or psychological discomfort. Also, we do not use deception.
+        </li>
+        <li>
+            Your decisions and answers will only be analyzed and stored in anonymous form. This anonymous data will only be used for academic purposes and will be shared with other academics for research purposes.
+        </li>
+        <li>
+            Please find the data protection declaration for this study via the following link: <a target="_blank" rel="noopener noreferrer" href="https://www.whu.edu/en/misc/privacy-policy-otree/">https://www.whu.edu/en/misc/privacy-policy-otree/</a>.
+        </li>
+    </ul>
+</div>
+<br>
+    {{ formfield_errors 'confirm_one' }}
+    <input name="confirm_one" id="confirm_one" type="checkbox" value="1"/>
+    <label for="confirm_one">I accept the terms above and consent to the data protection declaration.</label>
+    <p></p>
+<button class="otree-btn-next btn btn-outline-primary" onclick="show_alert(event);">Next</button>
+
+{% endblock %}
+{% block scripts %}
+<script>
+    function show_alert() {
+        var confirm_one = document.getElementById("confirm_one")
+        if (confirm_one.checked == false) {
+            window.alert("Please accept the terms to continue.");
+            event.preventDefault()
+        }
+    }
+</script>
+{% endblock %}

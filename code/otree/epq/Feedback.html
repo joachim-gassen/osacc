@@ -1,0 +1,29 @@
+{% extends "global/Page.html" %}
+{% load staticfiles otree %}
+
+{% block title %}
+    TESTING ONLY: Do you have any feedback for our study?
+{% endblock %}
+
+{% block content %}
+    <style>
+    .otree-timer {
+        display: none;
+    }
+    </style>
+<div class="card card-body bg-light instructions">
+    <p>The study is now over!</p>
+    <p>Please enter your feedback in the textbox below (if any).</p>
+</div>
+     <table class="table">
+    {% for field in form %}
+        <tr>
+            <td align="right">
+                {{ field }}
+            </td>
+        </tr>
+    {% endfor %}
+    </table>
+    <hr>
+    <button class="otree-btn-next btn btn-outline-primary">Next</button>
+{% endblock %}

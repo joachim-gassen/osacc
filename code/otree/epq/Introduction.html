@@ -1,0 +1,24 @@
+{% extends "global/Page.html" %}
+{% load staticfiles otree %}
+
+{% block title %}
+    Thank you!
+{% endblock %}
+
+{% block content %}
+    <style>
+    .otree-timer {
+        display: none;
+    }
+    </style>
+<div class="card card-body bg-light instructions" align="center">
+    This ends the evaluation of our scenario.<br>
+    We have a few more questions about your views on publicly sharing research materials, reproducibility, and pre-registration.<br>
+    Please click next to continue.
+</div>
+<br>
+    <button class="otree-btn-next btn btn-outline-primary">Next</button>
+
+{% endblock %}
+{% block scripts %}
+{% endblock %}

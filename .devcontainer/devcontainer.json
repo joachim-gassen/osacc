@@ -1,0 +1,19 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/rocker-org/devcontainer-templates/tree/main/src/r-ver
+{
+	"name": "osacc_rver_4.2",
+	"image": "ghcr.io/trr266/osacc:latest",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"REditorSupport.r",
+				"RDebugger.r-debugger",
+				"quarto.quarto",
+				"mathematic.vscode-pdf",
+				"george-alisson.html-preview-vscode",
+				"mechatroner.rainbow-csv",
+				"ms-azuretools.vscode-docker"
+			]
+		}
+	}
+}

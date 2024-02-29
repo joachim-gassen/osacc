@@ -1,0 +1,32 @@
+{% extends "global/Page.html" %}
+{% load staticfiles otree %}
+
+{% block title %}
+    Instructions
+{% endblock %}
+
+{% block content %}
+    <style>
+    .otree-timer {
+        display: none;
+    }
+    </style>
+<div class="card card-body bg-light instructions">
+    <ul>
+        <li>
+            On the next page, we will present a short scenario to you.
+        </li>
+        <li>
+            After reading the scenario, we will ask you two questions about it.
+        </li>
+        <li>
+            Next, we will ask some general questions about your views on sharing research materials, reproducibility, and pre-registration.
+        </li>
+    </ul>
+</div>
+<br>
+    <p>Please click next to start.</p>
+<button class="otree-btn-next btn btn-outline-primary">Next</button>
+
+
+{% endblock %}

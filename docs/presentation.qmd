@@ -1,0 +1,617 @@
+---
+title: "Accountants' Attitudes Towards Open Science"
+author: Joachim Gassen, Jacqueline Klug, and Victor van Pelt
+institute: "HU Berlin and WHU – Otto Beisheim School of Management"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+format: 
+  beamer: 
+    latex_engine: xelatex # pdflatex creates rastered fonts
+    slide_level: 3
+classoption: "aspectratio=169"
+bibliography: references.bib
+
+header-includes:
+- \usepackage{booktabs} 
+- \usepackage{tabularx}
+- \usepackage{multirow,makecell}
+- \usepackage{array}
+- \renewcommand\tabularxcolumn[1]{m{#1}}
+- \usepackage{makecell}
+- \usepackage{colortbl}
+- \usepackage{adjustbox}
+- \usepackage{tikz}
+- \usepackage{siunitx}
+- \usepackage{tabu}
+- \usetikzlibrary{arrows,arrows.meta,calc,positioning,matrix}
+- \input{materials/beamer_theme_trr266_16x9.sty}
+---
+
+```{r setup, include=FALSE, cache=F, message=F, warning=F, results="hide"}
+knitr::opts_chunk$set(
+  cache = FALSE, echo = FALSE, message = FALSE, warning = FALSE
+)
+
+suppressMessages({
+  library(tidyverse)
+  library(gt)
+  library(kableExtra)
+  library(modelsummary)
+  library(showtext)
+
+  devtools::source_url(
+    "https://raw.githubusercontent.com/trr266/treat/main/code/R/theme_trr.R"
+  )
+})
+
+set.seed(42)
+
+source("../code/table_functions.R")
+source("../code/figure_functions.R")
+
+sd <- readRDS("../data/generated/survey_response.rds")
+mr <- readRDS("../data/generated/merged_response.rds")
+vars <- read_csv("../data/external/variables.csv", show_col_types = FALSE)
+pop <- read_csv(
+	"../data/external/invited_authors_retracted.csv", show_col_types = FALSE
+)
+
+# Needs \usepackage{adjustbox} in preamble
+fit_gt_table_to_slide <- function(x, scale = 1) {
+	if (scale == 1) repstr <- "\\\\resizebox{\\\\columnwidth}{!}{\\\\begin{tabular}"
+	else repstr <- paste0("\\\\resizebox{", scale, "\\\\columnwidth}{!}{\\\\begin{tabular}")
+  x <- sub("\\\\begin\\{longtable\\}", repstr, x)
+  x <- sub("\\\\end\\{longtable\\}", "\\\\end{tabular}}", x)
+  x
+}
+
+fit_gt_table_to_slide_long <- function(x, scale = 1) {
+	if (scale == 1) repstr <- "\\\\resizebox*{!}{\\\\textheight}{\\\\begin{tabular}"
+	else repstr <- paste0("\\\\resizebox*{!}{", scale, "\\\\textheight}{\\\\begin{tabular}")
+  x <- sub("\\\\begin\\{longtable\\}", repstr, x)
+  x <- sub("\\\\end\\{longtable\\}", "\\\\end{tabular}}", x)
+  x
+}
+
+center_table <- function(x) {
+	x[1] <- paste0("\\begin{center}", x[1], "\\end{center}")
+	x
+}
+```
+
+```{r InstallTRRFonts}
+trr266_fonts_available <- all(c("Cambria", "Calibri Light") %in% font_families())
+
+if (!trr266_fonts_available) {
+  # On Mac with MS Office installation you need to add the Office
+  # Fonts to the font path. The following depends on your 
+  # installation but _should_ work in most cases
+  
+  office_font_path <- "/Applications/Microsoft Word.app/Contents/Resources/DFonts"
+  if (Sys.info()["sysname"] == "Darwin") {
+    if (dir.exists(office_font_path)) font_paths(office_font_path)
+    else stop("MS Office font path not found")
+  }
+  
+  rv <- tryCatch({
+    font_add(family = "Cambria", regular = "Cambria.ttc")
+    font_add(family = "Calibri Light", regular = "calibril.ttf")
+  }, error = function(e) {
+    message(sprintf("Failed to install TRR 266 fonts: %s", e))
+    invisible(font_families())        
+  })
+  
+  trr266_fonts_available <- all(c("Cambria", "Calibri Light") %in% rv)
+  if (trr266_fonts_available) message("Successfully installed TRR 266 fonts") 
+}
+```
+
+
+## Motivation
+
+\begin{center}
+\includegraphics[height =0.7\textheight]{"materials/ferguson_et_al_2023_uptake_over_time.png"} \\
+Ferguson et al. (2023, Nature Communications)
+\end{center}
+
+
+
+## Our Study
+
+Survey of authors that published in top six accounting journals over the period 2016-2021
+
+Descriptive Research Questions (relative to general social science results)
+
+- How do accountants assess the reproducibility of influential accounting work?
+- How do they perceive and use two prominent open science approaches to promote reproducibility:
+	- Public sharing of research materials (i.e., data, code, and procedures)
+	- Pre-registration of study designs
+	
+Experimental Question: Is the stated willingness to share research materials ...
+
+- ... affected by the rationale (collaboration versus control) and/or
+- ... affected by the scope (public or private sharing) of the sharing request?
+
+
+## Sample Composition
+
+|                                 |                    N (%) |
+|:--------------------------------|-------------------------:|
+| Authors identified (Raw Sample) |                    2,660 |
+| \- Excluded or missing          | 118 (4.4% of identified) |
+| = Emails sent                   |                    2,542 |
+| \- Emails bounced               |       206 (8.1% of sent) |
+| = Emails received               |                    2,336 |
+| Surveys Started                 |      391 (15.4% of sent) |
+| Surveys Partially Completed     |      254 (10.9% of sent) |
+| Surveys Fully Completed         |       222 (8.7% of sent) |
+
+## Invitation Email
+
+\begin{small}
+
+
+Subject: Share your views on Accounting Research
+
+Dear colleague,
+
+We are conducting a study about sharing research materials, reproducibility, and pre-registration in accounting research. You have been chosen to provide your opinion on this subject because you are a published author in one of the leading accounting journals. We obtained your email address from publicly available sources.
+
+Participating in our study takes around 7 minutes of your time. We will publicly share the anonymized data and results with the academic community in due course.
+
+As a token of gratitude for your time, we will donate 1,000 € multiplied by the response rate to the United Nations International Children's Emergency Fund (UNICEF).
+
+[...]
+
+
+\end{small}
+
+## Geographical Response Representation
+
+```{r Tab4GeoRep, asis = TRUE}
+tab <- create_regions_rep_table(pop, sd)
+tab_latex <- gt(tab) %>% 
+	cols_align("right", -1) %>% 
+	tab_spanner(label = "Population", columns = starts_with("Population")) %>%
+	tab_spanner(label = "Sample", columns = starts_with("Sample")) %>%
+	cols_label(
+    ends_with(" n") ~ "n",
+    ends_with(" %") ~ "%",
+    ends_with("Rate") ~ "Regional RR"
+	) %>%
+	tab_options(column_labels.vlines.style = "hidden") %>%
+	as_latex() %>%
+	fit_gt_table_to_slide()
+# tab_latex[1] <- sub("\\\\toprule\\n", "", tab_latex)
+tab_latex[1] <- sub("\\{Sample\\} &  ", "{Sample} &  \\\\multirowcell{2}{Regional \\\\\\\\ Response Rate}", tab_latex)
+sub("& Regional RR", "& ", tab_latex)
+```
+
+
+## Reproducibility Assessed Across the Social Sciences
+
+```{r Figure1, fig.width=8, fig.height=3.5, fig.align="center", fig.showtext = TRUE}
+p <- likert_plot(mr, "reprod", "demog_discipline", title_str = "How confident are you that the influential reserach findings in your area will replicate/reproduce?", llevels = vars$resp_label[80:84])
+if (trr266_fonts_available) {
+	p + theme(text = element_text(family = "Calibri Light", size = 7))
+} else p + theme(
+	title = element_text(size = 10),
+	legend.text = element_text(size = 6)
+)
+```
+
+
+## Accounting Assessment by Method
+
+```{r Tab4aReprMethod, asis = TRUE}
+tab <- create_pct_cross_tab_table(
+	sd, "reprod_acc", "demog_method", 
+	ctests = TRUE, df_only = TRUE
+) 
+
+gt(tab %>% select(-Other)) %>% 
+	cols_align("right", -1) %>% 
+	as_latex() %>%
+	fit_gt_table_to_slide()
+
+```
+
+
+## Assessment Gap (Method - General) 
+
+```{r Tab4cReprMethod, asis = TRUE}
+sd$reprod_method_delta <- as.numeric(sd$reprod_method) - as.numeric(sd$reprod_acc)
+tab <- create_pct_cross_tab_table(
+	sd, "reprod_method_delta", "demog_method", 
+	resp_label = sort(na.omit((unique(sd$reprod_method_delta)))),
+	ctests = TRUE, add_num_labels = FALSE, df_only = TRUE 
+) 
+gt(tab %>% select(-Other)) %>%
+	cols_align("right", -1) %>% 
+	as_latex() %>%
+	fit_gt_table_to_slide()
+```
+
+
+## Importance of Research Material Sharing Across the Social Sciences 
+
+```{r Figure2, fig.width=8, fig.height=3.5, fig.align="center", fig.showtext = TRUE}
+mr$sharing_important_rescaled = floor(mr$sharing_important)
+p <- likert_plot(mr, "sharing_important_rescaled", "demog_discipline", title_str = "To what extent do you believe that publicly sharing research materials is important?", llevels = vars$resp_label[49:53]) +
+	theme(legend.text = element_text(size = 6))
+if (trr266_fonts_available) {
+	p + theme(
+		text = element_text(family = "Calibri Light", size = 7),
+		legend.text = element_text(size = 6)
+	)
+} else p + theme(legend.text = element_text(size = 6))
+
+```
+
+
+## Accounting Assessment of Sharing Importance by Method
+
+```{r Tab6bSharingImportance, asis = TRUE}
+df <- sd %>% filter(demog_method != "Other")
+tab <- create_pct_cross_tab_table(
+	df, "sharing_important", "demog_method", 
+	ctests = TRUE, df_only = TRUE
+) 
+gt(tab) %>% 
+	cols_align("right", -1) %>% 
+	as_latex() %>%
+	fit_gt_table_to_slide()
+```
+
+
+## Research Material Sharing: Prescriptive versus Descriptive Views
+
+```{r Figure3, fig.width=8, fig.height=3.5, fig.align="center", fig.showtext = TRUE}
+p <- pres_desc_plot(sd) + theme(legend.position = "right")
+if (trr266_fonts_available) {
+	p + theme(text = element_text(family = "Calibri Light", size = 7))
+} else p
+```
+
+## Sharing Determinants: Experimental Manipulation
+
+You conducted a study and published it in an academic journal. Another researcher contacts you and asks you *(to publicly share | for access to)* your research materials (i.e., the data, code, and research procedures). The researcher wants *(others)* to:
+
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\begin{itemize}
+\item verify how your study was conducted,
+\item investigate whether your data and methodology are sound,
+\item control whether your findings can be reproduced, and
+\item potentially conduct a new study that corrects your study.                                \end{itemize}    
+
+\end{column}
+\begin{column}{0.5\textwidth}
+\begin{itemize}
+\item understand how your study was conducted,
+\item learn from your data and methodology,
+\item contribute by generating new insights, and
+\item potentially conduct a new study that builds on your study.                               
+\end{itemize}
+\end{column}
+\end{columns}
+ 
+## Experimental Findings on Sharing Determinants
+
+```{r, asis = TRUE}
+sd$exp_tment_collab <- 1 - sd$exp_tment_control
+modh1 <- lm(exp_pct_share ~ exp_tment_collab, data = sd)
+modh2 <- lm(exp_pct_share ~ exp_tment_private, data = sd)
+modh3 <- lm(exp_pct_share ~ exp_tment_collab*exp_tment_private, data = sd)
+tab_latex  <- modelsummary(
+	list(H1 = modh1, H2 = modh2, H3 = modh3), output = "gt",
+	coef_rename = function(x) {
+		x <- str_replace(x, fixed("exp_tment_collab"), "Collaboration rationale")
+		x <- str_replace(x, fixed("exp_tment_private"), "Private scope")
+		str_replace(x, fixed(":"), "×")
+	},
+	gof_map = list(
+		list(raw = "adj.r.squared", clean = "Adjusted R2", fmt = 3),
+		list(
+			raw = "nobs", clean = "Number of observations", 
+			fmt = function(x) format(x, big.mark=",")
+		)
+	),
+	stars = c('*' = .1, '**' = 0.05, '***' = .01),
+	estimate  = "{estimate}{stars}",
+) %>% as_latex()
+
+# The below is needed since some tex environment chock on the longtable environment
+# See https://github.com/vincentarelbundock/modelsummary/issues/50
+tab_latex[1] <- sub("\\(Intercept\\)", "Intercept", tab_latex) 
+
+sub("Adjusted R2", "\\\\midrule\\\\addlinespace[2.5pt]\nAdjusted R²", tab_latex)
+```
+
+
+## Reasons against Sharing (Close-Ended Question)
+
+```{r Tab9aSharingReasons, asis = TRUE}
+tab <- sd %>%
+	select(starts_with("sharing_reason"), -starts_with("sharing_reason_other")) %>% 
+	na.omit() %>%
+	pivot_longer(everything(), names_to = "reason", values_to = "val") %>%
+	group_by(reason) %>%
+	summarise(
+		sum = sum(val),
+		Total = sprintf("%d (%.1f %%)", sum(val), 100*sum(val)/n())
+	) %>%
+	arrange(-sum) %>% 
+	select(-sum) %>%
+	left_join(
+		sd %>%
+			select(demog_method, starts_with("sharing_reason"), -starts_with("sharing_reason_other")) %>% 
+			filter(demog_method != "Other") %>%
+			na.omit() %>%
+			pivot_longer(-1, names_to = "reason", values_to = "val") %>%
+			group_by(demog_method, reason) %>%
+			filter(sum(val) != 0) %>%
+			summarise(
+				stat = sprintf("%d (%.1f %%)", sum(val), 100*sum(val)/n())
+			) %>%
+			pivot_wider(id_cols = reason, names_from = demog_method, values_from = stat), 
+		by="reason"
+	) %>%
+	mutate(
+		reason =str_remove(reason, fixed("sharing_reason_")) %>% 
+				str_replace_all(fixed("_"), " ") %>% str_to_sentence()
+		) %>%
+	rename(Reason = reason)
+
+gt(tab) %>% 
+	cols_align("right", -1) %>% 
+	sub_missing(missing_text = "") %>%
+	as_latex() %>%
+	fit_gt_table_to_slide()
+```
+
+
+## Rationales about Sharing (Experimental Evidence) 
+
+```{r Tab9bSharingRationales, asis = TRUE}
+df <- sd %>% left_join(
+	readRDS("../data/generated/verbal_response_coded.rds") %>% 
+		select(-exp_reflect),
+	by = "id"
+) %>% mutate(
+	verbal_gave_reasons = !is.na(verbal_n_reasons),
+	verbal_mostly_positive = 1*(verbal_positive_reasons > verbal_negative_reasons),
+	exp_tment_colab = 1 - exp_tment_control,
+	exp_tment_group = 2*exp_tment_colab + exp_tment_private,
+	demog_active_res = as.numeric(demog_active_res) - 1,
+	demog_trust = (demog_trusting + demog_trustworthy)/2
+)
+
+reasons_overall <- df %>%
+	filter(verbal_gave_reasons) %>%
+	summarise(across(
+		starts_with(c("verbal_pos_", "verbal_neg_", "verbal_dep_")), sum
+	)) %>%
+	pivot_longer(
+		starts_with(c("verbal_pos_", "verbal_neg_", "verbal_dep_")), values_to = "n", names_to = "reason"
+	) %>% mutate(
+		reason = str_remove(reason, fixed("verbal_")),
+		pct_all = n/sum(df$verbal_gave_reasons) 		
+	)
+
+reasons_by_tgroup <- df %>%
+	filter(verbal_gave_reasons) %>%
+	group_by(exp_tment_group) %>%
+	summarise(across(
+		starts_with(c("verbal_pos_", "verbal_neg_", "verbal_dep_")), 
+		~ {sum(.x)/n()} 
+	)) %>%
+	pivot_longer(
+		starts_with(c("verbal_pos_", "verbal_neg_", "verbal_dep_")), values_to = "pct", names_to = "reason"
+	) %>% pivot_wider(
+		names_from = "exp_tment_group", names_prefix = "pct_tg", values_from = "pct"
+	) %>%
+	mutate(
+		reason = str_remove(reason, fixed("verbal_"))
+	)
+
+reasons <- reasons_overall %>% left_join(reasons_by_tgroup, by = "reason")
+
+tab <- reasons %>%
+	mutate(
+		type = str_extract(reason, "pos|neg|dep"),
+		reason = paste(
+			"...",
+			str_remove(reason, "pos_|neg_|dep_") %>% 
+				str_replace_all(fixed("_"), " ") %>%
+				tolower()
+		),
+		across(starts_with("pct"), ~ sprintf("%.1f %%", 100 * .x))
+	) %>%
+	mutate(other = (reason == "... other reasons")) %>%
+	arrange(type, other, -n) %>%
+	select(type, everything()) %>%
+	select(-other)
+
+names(tab) <- c(
+	"Rationale", "Reason", "N", 
+	"% Total", "% Control/Public", "% Control/Private", 
+	"% Collab/Public", "% Collab/Private"
+)
+
+tab <- rbind(
+	c("I share because it ... ", rep("", 6)),
+	tab %>% filter(Rationale == "pos") %>% select(-Rationale),
+	c("I do not share because ... ", rep("", 6)),
+	tab %>% filter(Rationale == "neg") %>% select(-Rationale),
+	c("It depends ... ", rep("", 6)),
+	tab %>% filter(Rationale == "dep") %>% select(-Rationale)
+)
+
+tab_latex <- gt(tab) %>% 
+	cols_align("right", -1) %>% 
+	as_latex()
+
+sub(
+	"career concerns related to failed replications or corrections",
+	"career concerns related to failed replications", tab_latex
+) %>%
+	fit_gt_table_to_slide(0.9) %>% center_table()
+```
+
+
+
+## Rationales for/against Sharing: Some Quotes
+
+```{r}
+
+# Later quotes need checking still - lots of potentially interesting stuff
+quotes <-c(11, 16, 18, 66, 67, 72, 80, 82, 84)
+# 83, 87, 88, 91, 105, 110
+ sd %>%
+ 	filter(row_number() %in% quotes) %>%
+ 	transmute(
+ 		Condition = sprintf(
+ 			"%s/%s", ifelse(exp_tment_collab, "Collab", "Control"),
+ 			ifelse(exp_tment_private, "Private", "Public")
+ 		),
+ 		Quote = exp_reflect
+ 	) %>% kable(booktabs = TRUE, linesep = "") %>% 
+ 	kable_styling(full_width = TRUE, font_size = 7)  %>% 
+ 	column_spec(1, width = "1.5cm")
+
+```
+
+
+## Pre-Registration: Awareness Across the Social Sciences
+
+```{r Tab10aPreRegAwareSocSciResp, asis = TRUE}
+tab <- create_pct_cross_tab_table(
+	mr, "prereg_heard", "demog_discipline", 
+	resp_label = c("No (0)", "Yes (1)"), 
+	add_num_labels = FALSE, df_only = TRUE
+) 
+gt(tab) %>% 
+	cols_align("right", -1) %>% 
+	as_latex() %>%
+	fit_gt_table_to_slide()
+```
+
+
+## Pre-Registration: Take-up over Time Across the Social Sciences
+
+```{r Figure4, fig.width=8, fig.height=3.5, fig.align="center", fig.showtext = TRUE}
+p <- pre_reg_over_time_plot(mr) + theme(legend.position = "right") 
+if (trr266_fonts_available) {
+	p + theme(text = element_text(family = "Calibri Light", size = 7))
+} else p
+
+```
+
+
+## Pre-Registration: Opinion Across the Social Sciences
+
+```{r Tab10cPreRegTimeSocSciResp, asis = TRUE}
+tab <- create_pct_cross_tab_table(
+	mr, "prereg_opinion", "demog_discipline", 
+	resp_label = get_resp_label("prereg_trust"), df_only = TRUE
+) 
+gt(tab ) %>% 
+	cols_align("right", -1) %>% 
+	as_latex() %>%
+	fit_gt_table_to_slide()
+```
+
+
+## Pre-Registration: Familiarity by Method
+
+```{r Tab11aPreRegFamiliarity, asis = TRUE}
+df <- sd %>% filter(demog_method != "Other")
+tab <- create_pct_cross_tab_table(
+	df, "prereg_familiar", "demog_method", 
+	ctests = TRUE, df_only = TRUE
+) 
+gt(tab) %>% 
+	cols_align("right", -1) %>% 
+	as_latex() %>%
+	fit_gt_table_to_slide()
+```
+
+## Pre-Registration: Usage by Method
+
+```{r Tab11bPreRegUse, asis = TRUE}
+
+tab <- create_pct_cross_tab_table(
+	df, "prereg_use", "demog_method", 
+	resp_label = c("No (0)", "Yes (1)"), 
+	add_num_labels = FALSE, ctests = TRUE, df_only = TRUE
+) 
+# Adjust levels to be zero based.
+tab[4,2:6] <- t(sprintf("%.2f", as.numeric(tab[4,2:6]) - 1))
+tab[5,2:6] <- t(sprintf("%.2f", as.numeric(tab[5,2:6]) - 1))
+gt(tab) %>% 
+	cols_align("right", -1) %>% 
+	as_latex() %>%
+	fit_gt_table_to_slide()
+```
+
+## Pre-Registration: Trust Effect by Method
+
+```{r Tab11cPreRegTrust, asis = TRUE}
+
+tab <- create_pct_cross_tab_table(
+	df, "prereg_trust", "demog_method", 
+	ctests = TRUE, df_only = TRUE
+) 
+gt(tab) %>% 
+	cols_align("right", -1) %>% 
+	as_latex() %>%
+	fit_gt_table_to_slide()
+```
+
+
+## Summary 
+
+We seem to face an **"accounting open science dilemma"**
+
+- We are skeptical about the reproducibility of our work and at the same time
+- somewhat behind the curve with regards to research material sharing and pre-registration
+
+## Discussion
+
+What now? We suggest a two-pronged approach
+
+- Take stock of the reproducibility of our work
+- Promote incentive-compatible open science approaches
+
+## Taking stock... It might not be as bad as we think!
+
+\begin{center}
+\includegraphics[width =0.7\textwidth]{"materials/fisar_et_al_2023_fields.jpeg"} \\
+Fišar et al. (2023, Management Science)
+\end{center}
+
+
+## Reproducibility Across Methods
+
+\begin{center}
+\includegraphics[width =0.8\textwidth]{"materials/fisar_et_al_2023_methods.jpeg"} \\
+Fišar et al. (2023, Management Science)
+\end{center}
+
+
+## Promote Incentive-Compatible Open Science Approaches
+
+- Use flagship projects to show that sharing can boost academic careers
+- Demonstrate that scientific programming skills (i) enhance efficiency, (ii) open up avenues for creative research ideas, and (iii) make it easier to share.
+- Change the error climate and move from the "policing" to a "collaboration" narrative for open science!
+
+Interesting aspect for further study: Role of open science in theoretical/analytical and qualitative work (e.g., Moravcsik PolSci 2014; Freese et al. SocSciRes 2022)
+
+
+## Reasons Against Sharing
+
+\begin{center}
+\includegraphics[height =0.7\textheight]{"materials/gomes_et_al_2022_sharing_concerns.jpeg"}\\
+Gomes et al. (2022, Proceedings of the Royal Society Series B)
+\end{center}
+
