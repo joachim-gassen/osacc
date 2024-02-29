@@ -65,7 +65,7 @@ source("../code/figure_functions.R")
 sd <- readRDS("../data/generated/survey_response.rds")
 mr <- readRDS("../data/generated/merged_response.rds")
 vars <- read_csv("../data/external/variables.csv", show_col_types = FALSE)
-pop <- read_csv("../data/external/invited_authors.csv", show_col_types = FALSE)
+pop <- read_csv("../data/external/invited_authors_retracted.csv", show_col_types = FALSE)
 ```
 
 ```{=tex}
