@@ -27,7 +27,7 @@ jobs:
         uses: devcontainers/ci@v0.3
         with:
           subFolder: .github
-          imageName: ghcr.io/trr266/osacc
-          cacheFrom: ghcr.io/trr266/osacc
+          imageName: ghcr.io/joachim-gassen/osacc
+          cacheFrom: ghcr.io/joachim-gassen/osacc
           platform: linux/amd64
           push: always

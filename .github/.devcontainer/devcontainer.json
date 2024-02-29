@@ -4,6 +4,6 @@
 	"name": "osacc_rver_4.2",
 	"dockerFile": "Dockerfile",
 	"build": {  
-		"cacheFrom": "ghcr.io/trr266/osacc:latest"
+		"cacheFrom": "ghcr.io/joachim-gassen/osacc:latest"
 	}
 }

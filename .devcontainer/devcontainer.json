@@ -2,7 +2,7 @@
 // README at: https://github.com/rocker-org/devcontainer-templates/tree/main/src/r-ver
 {
 	"name": "osacc_rver_4.2",
-	"image": "ghcr.io/trr266/osacc:latest",
+	"image": "ghcr.io/joachim-gassen/osacc:latest",
 	"customizations": {
 		"vscode": {
 			"extensions": [
