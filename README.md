@@ -12,7 +12,7 @@ If you are interested in reading the study, you need to build it ;-) Hang on.
 
 ### How do I create the output?
 
-This video tutorial shows how to implement option 1 from below and reproduce our analysis and its paper and presentation in less than ten minutes. 
+This video tutorial shows how to implement option 1 from below and reproduce our analysis in less than ten minutes. 
 
 <p>&nbsp;</p>
 <p align="center">
