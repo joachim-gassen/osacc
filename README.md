@@ -12,11 +12,22 @@ If you are interested in reading the study, you need to build it ;-) Hang on.
 
 ### How do I create the output?
 
+This video tutorial shows how to implement option 1 from below and reproduce our analysis and its paper and presentation in less than ten minutes. 
+
+<p>&nbsp;</p>
+<p align="center">
+<a href="https://www.youtube.com/watch?v=rGf-gJgkZ38">
+<img src="https://img.youtube.com/vi/rGf-gJgkZ38/mqdefault.jpg" alt="From Zero to Reproduction in Less than 10 Minutes!">
+</a>
+</p>
+<p>&nbsp;</p>
+
+
 You have three options: 
 
 1. GitHub codespaces (potentially the easiest): 
 
-If you have a GitHub account (it is free), you should be able to use [GitHub codespaces](https://github.com/features/codespaces). In this case: Click on "Code" (the green button) above this text, then on the "Codepsaces" tab, then on "create a codespace on main." Wait patiently. Eventually, Visual Studio Code will open in your browser. Run 'make all' in ther terminal window. Wait again and continue reading down below.
+If you have a GitHub account (it is free), you should be able to use [GitHub codespaces](https://github.com/features/codespaces). In this case: Click on "Code" (the green button) above this text, then on the "Codepsaces" tab, then on "create a codespace on main." Wait patiently. Eventually, Visual Studio Code will open in your browser. Run 'make all' in the terminal window. Wait again and continue reading down below.
 
 2. Local Visual Studio Code and Devcontainer (for the pros): 
 
@@ -70,3 +81,7 @@ tinytex::install_tinytex()
 
 If you have reproduced and even read our study, we would be super interested in hearing your views. Besides reaching out to us via email, you could also start a public discussion by opening up a GitHub Issue here in this repository. Be nice though, as this is a really fresh, rough, and early stage draft that you are reading ;-)
 
+
+### Disclaimer
+
+This project has been developed jointly with the [Open Science Data Center](https://www.accounting-for-transparency.de/projects/open-science-data-center/) of the [TRR 266 "Accounting for Transparency"](https://www.accounting-for-transparency.de). 

@@ -1,0 +1,10 @@
+# Local and project stuff
+.DS_Store
+secrets.env
+public/
+
+# R Stuff
+.Rproj.user
+*.Rproj
+.Rhistory
+.quarto
