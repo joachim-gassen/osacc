@@ -3,7 +3,7 @@ osacc: Accountants' Attitudes towards Open Science
 
 This is the repo for the in-development study
 
-> Gassen, Joachim, Jacqueline, Klug and Victor van Pelt (2024): Accountants' Attitutes Towards Open Science.
+> Gassen, Joachim, Jacqueline Klug and Victor van Pelt (2024): Accountants' Attitutes Towards Open Science.
 
 This repository contains all the data and code to reproduce our work. In addition, we include the [oTree](https://www.otree.org) research materials that we used to conduct the survey and the experiment embedded in it.
 
@@ -37,7 +37,7 @@ If you have [docker](https://www.docker.com) and [visual studio code](https://co
 
 Alternatively, if you have RStudio installed, the following process should enable you to reproduce our output locally.
 
-- You will need make/Rtools: For Windows: Install [Rtools](https://cran.r-project.org/bin/windows/Rtools/).For MacOS: You need to install the Mac OS developer tools. Open a terminal and run `xcode-select --install`. Follow the instructions. For Linux: We have never seen a Unix environment without 'make'. 
+- You will need make/Rtools: For Windows: Install [Rtools](https://cran.r-project.org/bin/windows/Rtools/). For MacOS: You need to install the Mac OS developer tools. Open a terminal and run `xcode-select --install`. Follow the instructions. For Linux: We have never seen a Unix environment without 'make'. 
 - Download, clone or fork this repository to your local computing environment.
 - Create an R Studio project in the folder.
 - Before building everything you most likely need to install additional packages. See the code below for installing the packages.
