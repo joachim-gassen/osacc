@@ -9,8 +9,7 @@
 \RequirePackage{etoolbox}
 \RequirePackage{cmbright}
 \RequirePackage{kvoptions}
-%\RequirePackage{xparse}
-
+\RequirePackage[absolute,overlay]{textpos}
 \usepackage{ifxetex}
 \ifxetex
   \usepackage{fontspec}
@@ -138,27 +137,27 @@
 % Title page
 \defbeamertemplate*{title page}{trr266}[1][]
 {
-  \vskip.5cm
-  \includegraphics[keepaspectratio, height=1.5cm]{materials/trr266_logo.eps}
-  \vskip1.5cm
-    \begin{beamercolorbox}[wd=12cm,leftskip=1cm,#1]{title page header}
-      \usebeamerfont{title}\inserttitle\par%
-      \usebeamerfont{subtitle}\insertsubtitle\par%
-    \end{beamercolorbox}
-    \vskip1.5cm
-    \begin{beamercolorbox}[wd=12cm,leftskip=1cm,sep=1pt,#1]{author}
-      \usebeamerfont{author}\insertauthor%
-    \end{beamercolorbox}
-     \vskip1.5cm
-    \begin{beamercolorbox}[wd=14cm,leftskip=2cm,#1]{institute}
-      \usebeamerfont{author}\insertinstitute%
-    \end{beamercolorbox}
-     \vskip.1cm
-    \begin{beamercolorbox}[wd=12cm,leftskip=2cm,#1]{date}
-      \usebeamerfont{author}\insertdate%
-    \end{beamercolorbox}
+	\begin{textblock*}{\textwidth}(0.1\textwidth,0.1\textheight)
+		\includegraphics[keepaspectratio, height=1.5cm]{materials/trr266_logo.eps}
+	\end{textblock*}
+	\begin{textblock*}{\textwidth}(0.1\textwidth,0.4\textheight)
+		\begin{beamercolorbox}[#1]{title page header}
+		 	\usebeamerfont{title}\inserttitle\par%
+  	\end{beamercolorbox}
+	\end{textblock*}
+	\begin{textblock*}{\textwidth}(0.1\textwidth,0.6\textheight)
+  	\begin{beamercolorbox}[sep=1pt,#1]{author}
+  		\usebeamerfont{author}\insertauthor\par%
+			\usebeamerfont{author}\insertinstitute%
+  	\end{beamercolorbox}
+	\end{textblock*}
+	\begin{textblock*}{\textwidth}(0.2\textwidth,0.9\textheight)
+		\begin{beamercolorbox}[sep=1pt,#1]{date}
+  		\usebeamerfont{subtitle}\insertsubtitle\par%
+  		\usebeamerfont{author}\insertdate%
+  	\end{beamercolorbox}
+	\end{textblock*}
   \vfil
-
 }
 
 % Items

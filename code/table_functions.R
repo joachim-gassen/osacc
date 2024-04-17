@@ -236,10 +236,11 @@ create_continuous_table <- function(df, var, groups = GROUPS) {
 }
 
 ttest_group_by_group <- function(df, var, groupvar, xg, yg) {
-	rv <- t.test(
-		as.numeric(df[df[, groupvar] == xg, var]), 
-		as.numeric(df[df[, groupvar] == yg, var])
-	)
+	x <- as.numeric(df[df[, groupvar] == xg, var]) %>% na.omit()
+	y <- as.numeric(df[df[, groupvar] == yg, var]) %>% na.omit()
+	if (length(x) <= 1) return(1)
+	if (length(y) <= 1) return(1)
+	rv <- t.test(x, y)
 	rv$p.value
 }
 
@@ -299,17 +300,28 @@ create_cross_tab_table <- function(df, var, cross_var, df_only = FALSE) {
 }
 
 create_pct_cross_tab_table <- function(
-		df, var, cross_var, resp_label = NULL, 
-		ctests = FALSE, ctests_level = 0.1, 
+		df, var, cross_var, include_total = FALSE, resp_label = NULL, 
+		ctests = FALSE, ctests_level = 0.1, drop_levels = "",
 		add_num_labels = TRUE, df_only = FALSE
 ) {
 	df$var <- as.numeric(df[[var]])
-	if (is.factor(df[[cross_var]])) {
-		df$cross_var <- droplevels(df[[cross_var]])
-	} else df$cross_var <- df[[cross_var]]
+	df$cross_var <- df[[cross_var]]
+	if (include_total) full_df <- df
+	if (drop_levels != "") {
+		df <- df %>% filter(! as.character(cross_var) %in% drop_levels) 
+	}
+	if (is.factor(df$cross_var)) df$cross_var <- droplevels(df$cross_var)
 	if (is.null(resp_label)) resp_label <- get_resp_label(var)
-	tab <- table(df$var, df$cross_var)
-	freqs <- data.frame(tab) %>%
+	if (is.numeric(df$cross_var)) df$cross_var <- as.factor(df$cross_var)
+	
+	tab_df <- data.frame(table(df$var, df$cross_var))
+	if (include_total) {
+		full_df$total <- "Total"
+		total_df <- data.frame(table(full_df$var, full_df$total))
+		tab_df <- bind_rows(total_df, tab_df)
+	}
+	
+	freqs <- tab_df %>%
 		pivot_wider(id_cols = Var1, names_from = Var2, values_from = Freq) %>%
 		mutate(Var1 = if(add_num_labels) 
 			sprintf("%s (%d)", resp_label, Var1) else
@@ -319,7 +331,6 @@ create_pct_cross_tab_table <- function(
 	
 	pct <- freqs %>%
 		mutate(across(-1, ~sprintf("%d (%.1f %%)", .x, 100*(.x/sum(.x)))))
-	
 	
 	stats <- df %>%
 		group_by(cross_var) %>%
@@ -331,19 +342,36 @@ create_pct_cross_tab_table <- function(
 			Median = sprintf("%.2f", median(var))
 		) 
 	
+	if (include_total) {
+		stats <- bind_rows(
+			full_df %>%
+				select(var) %>%
+				na.omit() %>%
+				summarise(
+					cross_var = "Total",
+					n = sprintf("%d", n()),
+					Mean = sprintf("%.2f", mean(var)),
+					Median = sprintf("%.2f", median(var))
+				),
+			stats
+		)
+	}
+	
 	if (ctests) {
 		ctests <- NULL
 		for (g in levels(df$cross_var)) {
 			pv <- ttest_group_by_other_groups(df, "var", "cross_var", g)
 			ctests <- c(ctests, paste(substr(names(pv[pv < ctests_level]), 1, 2), collapse = ", "))
 		}
+		if (include_total) ctests <- c("", ctests)
 		stats <- stats %>% mutate(
-			`Significantly different from` = ctests
+			`Different from` = ctests
 		) %>% t() %>% data.frame() 
 	} else {
 		stars <- starme(
 			unname(summary(lm(var ~ cross_var, df))$coefficients[-1,4])
 		)
+		if (include_total) stars <- c("", stars)
 		stats <- stats %>%
 			mutate(
 				Mean = paste0(Mean, c("", stars))
@@ -361,21 +389,30 @@ create_pct_cross_tab_table <- function(
 		kable_classic(full_width = FALSE)
 }
 
-create_cont_cross_tab_table <- function(df, var, cross_var) {
-	df$cross_var <- df[, cross_var]
-	df$var <- df[, var]
+create_cont_cross_tab_table <- function(
+		df, var, cross_var, include_total = FALSE, drop_levels = "", df_only = FALSE
+) {
+	df$var <- as.numeric(df[[var]])
+	df$cross_var <- df[[cross_var]]
+	if (include_total) full_df <- df
+	if (drop_levels != "") {
+		df <- df %>% filter(! as.character(cross_var) %in% drop_levels) 
+	}
+	if (is.factor(df$cross_var)) df$cross_var <- droplevels(df$cross_var)
+	if (is.numeric(df$cross_var)) df$cross_var <- as.factor(df$cross_var)
+
 	tab <- df %>%
 		filter(!is.na(var), !is.na(cross_var)) %>%
 		group_by(cross_var) %>%
 		summarise(
-			mean = mean(var),
-			sd = sd(var),
-			min = min(var),
-			p25 = quantile(var, 0.25),
-			median = median(var),
-			p75 = quantile(var, 0.75),
-			max = max(var),
-			n = n()
+			`Mean` = mean(var),
+			`Std. Dev.` = sd(var),
+			`Minimum` = min(var),
+			`25 %` = quantile(var, 0.25),
+			`Median` = median(var),
+			`75 %` = quantile(var, 0.75),
+			`Maximum` = max(var),
+			`N` = n()
 		) %>% 
 		pivot_longer(
 			cols = everything() & !cross_var, names_to = "stat", values_to = "val"
@@ -384,23 +421,43 @@ create_cont_cross_tab_table <- function(df, var, cross_var) {
 			names_from = cross_var, values_from = "val"
 		)
 	
+	if (include_total) {
+		total <- full_df %>%
+			filter(!is.na(var), !is.na(cross_var)) %>%
+			summarise(
+				`Mean` = mean(var),
+				`Std. Dev.` = sd(var),
+				`Minimum` = min(var),
+				`25 %` = quantile(var, 0.25),
+				`Median` = median(var),
+				`75 %` = quantile(var, 0.75),
+				`Maximum` = max(var),
+				`N` = n()
+			) 
+		tab <- tab %>%
+			mutate(Total = t(total)[,1]) %>%
+			select(stat, Total, everything())
+	}
+	
 	strtab <- matrix(
 		sprintf("%.1f", as.matrix(tab[,2:ncol(tab)])),
 		nrow = nrow(tab), ncol = ncol(tab)-1
 	)
 	strtab[nrow(strtab),] <- as.integer(as.matrix(tab)[nrow(tab),2:ncol(tab)])
-	colnames(strtab) <- levels(df$cross_var)
+	colnames(strtab) <- colnames(tab)[2:ncol(tab)]
 	rownames(strtab) <- tab$stat
 	
 	
 	testtab <- matrix("", nrow = 1, ncol = ncol(tab)-1)
-	for (g in levels(df[, cross_var])) {
+	for (g in colnames(strtab)) {
+		if (g == "Total") break
 		pv <- ttest_group_by_other_groups(df, var, cross_var, g)
-		testtab[1, which(levels(df[, cross_var]) == g)] <-
+		testtab[1, which(colnames(strtab) == g)] <-
 			paste(names(pv[pv < 0.1]), collapse = ", ")
 	}
 	rownames(testtab) <- "t-Test diff. from"
 	strtab <- rbind(strtab, testtab)
+	if (df_only) return(strtab)
 	kable(
 		strtab, table.attr = 'data-quarto-disable-processing="true"',
 		align = "r"

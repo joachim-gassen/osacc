@@ -3,7 +3,7 @@ osacc: Accountants' Attitudes towards Open Science
 
 This is the repo for the in-development study
 
-> Gassen, Joachim, Jacqueline Klug and Victor van Pelt (2024): Accountants' Attitutes Towards Open Science.
+> Gassen, Joachim, Jacqueline Klug, and Victor van Pelt (2024): Accountants' Attitutes Towards Open Science.
 
 This repository contains all the data and code to reproduce our work. In addition, we include the [oTree](https://www.otree.org) research materials that we used to conduct the survey and the experiment embedded in it.
 

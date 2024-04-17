@@ -1,4 +1,4 @@
-## Audit Protocol 
+## Observational Data Collection Manual
 
 This describes the procedure that we will use to identify whether accounting researchers have pre-registered a study and/or publicly shared research materials (i.e., data, code, and research procedures) in the past. It is heavily inspired by the audit protocol that [Ferguson et al. (2023)](https://doi.org/10.1038/s41467-023-41111-1) use (see the Section 1.4.1 of their [Supplementary Information](https://static-content.springer.com/esm/art%3A10.1038%2Fs41467-023-41111-1/MediaObjects/41467_2023_41111_MOESM1_ESM.pdf).
 
@@ -10,7 +10,7 @@ For each author on the list, please follow the following protocol to collect the
 
 2. Using the information presented on the homepage (and sub-pages but no external links), verify whether there is a clear link to shared research materials or a pre-registration (`hpage_resmat` (Boolean), `hpage_prereg`, (Boolean))
 
-3. Use [Scopus](https://www.scopus.com) (need to be on HU net to use Scopus) to find papers published by the authors. Record the scopus ID (`scopus_id`), both in `data/external/audit_autors.csv` and in `data/external/audit_papers.csv`. For all studies published starting 2016 or later that have a DOI, use this DOI to check whether the webpage (not the paper itself), makes a clear reference to to shared research materials or a pre-registration. Record the data for *each paper separately* in `data/external/audit_papers.csv` (`scopus_id` (char), `doi` (char), `resmat` (Boolean), `prereg` (Boolean)).
+3. Use [Scopus](https://www.scopus.com) (need to be on HU net to use Scopus) to find papers published by the authors. Record the scopus ID (`scopus_id`), both in `data/external/obs_data_autors.csv` and in `data/external/obs_data_papers.csv`. For all studies published starting 2016 or later that have a DOI, use this DOI to check whether the webpage (not the paper itself), makes a clear reference to to shared research materials or a pre-registration. Record the data for *each paper separately* in `data/external/obs_data_papers.csv` (`scopus_id` (char), `doi` (char), `resmat` (Boolean), `prereg` (Boolean)).
 
 4. Some journals have dedicated and code policies and require authors to provide data and/or code. For example, the Journal of Accounting Research or Management Science, but also other journals (Journal of Finance, Top 5 Econ Journals, etc.). Please make sure to capture also these instances. Hint: The data/code contributions for JAR can be found [here](https://www.chicagobooth.edu/research/chookaszian/journal-of-accounting-research/online-supplements-and-datasheets)
 
