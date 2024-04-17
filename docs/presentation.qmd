@@ -6,7 +6,7 @@ institute: "HU Berlin and WHU – Otto Beisheim School of Management"
 date: today
 date-format: "MMMM D, YYYY"
 format: 
-  beamer: 
+  beamer:
     latex_engine: xelatex # pdflatex creates rastered fonts
     slide_level: 3
     
@@ -652,3 +652,10 @@ Interesting aspect for further study: Role of open science in theoretical/analyt
 Gomes et al. (2022, Proceedings of the Royal Society Series B)
 \end{center}
 
+## Thank You!
+
+\begin{center}
+For additional descriptive analyses of our survey data, check out our \href{https://jgassen.shinyapps.io/osacc/}{survey dashboard}.
+
+All code and data of this project are available on \href{https://github.com/joachim-gassen/osacc}{GitHub}.
+\end{center}

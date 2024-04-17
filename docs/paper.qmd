@@ -87,6 +87,7 @@ Surveying a sample of scholars that have published in leading accounting journal
 \textbf{Keywords}: Accounting Research, Open Science, Reproducibility, Pre-Registration, Survey \newline
 \textbf{Data Availability}: Data available in code repository \newline
 \textbf{Code Repository}: \href{https://github.com/joachim-gassen/osacc}{github.com/joachim-gassen/osacc}  \newline
+\textbf{Survey Dashboard}: \href{https://jgassen.shinyapps.io/osacc/}{https://jgassen.shinyapps.io/osacc/} \newline
 \textbf{Declaration of Interest}: The author(s) declare(s) that they have no conflict of interest \newline
 \end{flushleft}
 ```
@@ -130,15 +131,14 @@ To collect the attitudes of accounting researchers towards open science, we cond
 
 Table 1 displays our sample selection procedures. Of the 2,660 potential respondents we identified, we excluded 118 for various reasons.[^3] Furthermore, for 206 emails bounced, we received a notification that the email address was unreachable. Of the remaining 2,336 successfully reached accounting researchers, 391 started the study (15,4% of the total emails sent), 254 partially completed the study (10,9% of the total emails sent), and 222 fully completed the study (8,7% of the total emails sent).[^4] Table 2 displays our final sample's demographics and characteristics. Panel A reveals that the majority of the respondents are male, 35 years or older (87.8%), specialize in Financial Accounting and Reporting or Managerial Accounting (70.3%), has Archival or Field Research as their primary research method (55.9%), and is from North America or Europe (91%).
 
-\centerline{--- Insert Table 2 about here ---}
-
 [^3]: We removed 41 authors because we found no email address, 41 authors because they appeared in the data twice with two author IDs but were the same person, 28 authors because they were a current member of one of our affiliated universities or academic research centers, 5 authors because they gave us advice for this study, 2 authors because they had passed away, and 1 author due to an incorrect email address.
 
 [^4]: As the dependent variable of our hypothetical scenario analysis outlined below is the first data we collect, 254 is the sample size for this analysis. For the descriptive analyses, we settle for the number of participants that answered the respective question and, if applicable, also provided the necessary demographics for cross-sectional splits. Depending on this, the sample sizes for the descriptive analyses vary from 222 to 229 responses.
 
+\centerline{--- Insert Table 2 about here ---}
 
 
-Panel B of Table 2 contrasts our respondent sample with our sampling population. Given the anonymity of our response and the data that we can collect about our population, we can only compare the geographic dispersion of our sample. Panel B reveals that, in particular, researchers from North America and Europe are over-represented, and researchers from Asia are under-represented in the sample. Given that response rate assessment is inherently challenging, we generally avoid speculating about potential reasons for this sampling imbalance. However, it seems likely that the study's all-European author team might have positively influenced the European response. While we control for geographical effects in our response (not-tabulated) and find only mild variation across regions (researchers from North America tend to state higher sharing activities and preferences), we conclude from this sampling imbalance that our results mostly speak to the attitudes of accounting scholars from North America and Europe and that we can say very little about researchers located in Asia and other geographical regions that happen to have low response rates.
+Panel B of Table 2 contrasts our respondent sample with our sampling population. Given the anonymity of our response and the data that we can collect about our population, we can only compare the geographic dispersion of our sample. Panel B reveals that, in particular, researchers from North America and Europe are over-represented, and researchers from Asia are under-represented in the sample. Given that response rate assessment is inherently challenging, we generally avoid speculating about potential reasons for this sampling imbalance. However, it seems likely that the study's all-European author team might have positively influenced the European response. While we control for geographical effects in our response (not-tabulated but available using our \href{https://jgassen.shinyapps.io/osacc/}{survey dashboard}) and find only mild variation across regions (researchers from North America tend to state higher sharing activities and preferences), we conclude from this sampling imbalance that our results mostly speak to the attitudes of accounting scholars from North America and Europe and that we can say very little about researchers located in Asia and other geographical regions that happen to have low response rates.
 
 ### Variable Measurement
 
@@ -146,7 +146,7 @@ To ensure that our findings are comparable with related prior work, we adapted k
 
 The first stage of the survey included questions about respondents' views on publicly sharing research materials, which we described as comprising data, code, and research procedures. Specifically, we asked respondents about their familiarity with the public sharing of research materials and their views of their importance. We also asked them about their perceptions of the prevalence of sharing in the accounting research community, how often they tended to share, and whether they planned to share in the future. Conditional on whether respondents indicated that they do not always share, we also asked them for the reasons behind not sharing. Lastly, we asked respondents to estimate what percentage of accounting researchers favor sharing and their approximation of the percentage of editors of the top six accounting journals that believe sharing increases the value of a manuscript.
 
-The second stage of the survey featured a selection of questions about respondents' views on reproducibility and pre-registration, which we also borrowed and adapted from @FLCPSWMBP_2023 . First, we asked respondents about their confidence in the reproducibility of accounting research. We also asked them about their subfield within the domain of accounting (i.e., Auditing, Financial Accounting and Reporting, Managerial Accounting, Taxation, Accounting information systems, and Other) and whether they believe the findings in their field are reproducible. Next, we asked the same questions for their methodological area (i.e., Analytical, Archival/Field, Experimental, Qualitative, Survey, and Other). Subsequently, we asked respondents about their familiarity and experience with the practice of pre-registration. Lastly, we asked them about their perceptions of the trustworthiness of pre-registered research compared to non-pre-registered research. We completed the survey by asking a few demographic questions that are primarily presented in Table 2. For a complete overview of the survey questions included in our study, please see Appendix A.
+The second stage of the survey featured a selection of questions about respondents' views on reproducibility and pre-registration, which we also borrowed and adapted from @FLCPSWMBP_2023 . First, we asked respondents about their confidence in the reproducibility of accounting research. We also asked them about their subfield within the domain of accounting (i.e., Auditing, Financial Accounting and Reporting, Managerial Accounting, Taxation, Accounting information systems, and Other) and whether they believe the findings in their field are reproducible. Next, we asked the same questions for their methodological area (i.e., Analytical, Archival/Field, Experimental, Qualitative, Survey, and Other). Subsequently, we asked respondents about their familiarity and experience with the practice of pre-registration. Lastly, we asked them about their perceptions of the trustworthiness of pre-registered research compared to non-pre-registered research. We completed the survey by asking a few demographic questions that are primarily presented in Table 2. For a complete overview of the survey questions included in our study, please see Appendix A. Besides the findings that follow, all answers to these questions can be explored using our \href{https://jgassen.shinyapps.io/osacc/}{survey dashboard}.
 
 ## Findings
 
@@ -1186,6 +1186,10 @@ This table is based on our survey data and three separate questions. The respons
 ## Online Supplement {.unnumbered}
 
 The public GitHub repository at \href{https://github.com/joachim-gassen/osacc}{https://github.com/joachim-gassen/osacc} contains the data and the code of this project.
+
+To explore our survey data in more depth, we encourage the use of our [online survey dashboard](https://jgassen.shinyapps.io/osacc/). Using this dashboard, you can explore the response to all survey questions, partitioning it by respondents' demographics. 
+
+\newpage
 
 ## Appendix A: Survey Administration and Instrument {.unnumbered}
 
