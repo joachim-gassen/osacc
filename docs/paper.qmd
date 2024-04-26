@@ -1,6 +1,6 @@
 ---
 title: |
-  | Accountants' Attitudes Towards Open Science^[Joachim Gassen is based at Humboldt-Universität zu Berlin while Jacqueline Klug and Victor van Pelt are affiliated with WHU Otto Beisheim School of Management. We thank Kris Hardies and  audiences of workshops at University of Antwerp and Humboldt University Berlin for providing helpful feedback. Excellent research assistance by Benedikt Hahn, Fabian Kalife, and Timnah Weckner is gratefully acknowledged. This work was supported by Deutsche Forschungsgemeinschaft (Project-ID 403041268, TRR 266 Accounting for Transparency).]
+  | Accountants' Attitudes Towards Open Science^[Joachim Gassen is based at Humboldt-Universität zu Berlin while Jacqueline Klug and Victor van Pelt are affiliated with WHU Otto Beisheim School of Management. We thank Kris Hardies as well as audiences at University of Antwerp, Humboldt University Berlin, and WHU for providing helpful feedback. Excellent research assistance by Benedikt Hahn, Fabian Kalife, and Timnah Weckner is gratefully acknowledged. This work was supported by Deutsche Forschungsgemeinschaft (Project-ID 403041268, TRR 266 Accounting for Transparency).]
 author: 
   - name: Joachim Gassen
     email: gassen@wiwi.hu-berlin.de
@@ -77,17 +77,22 @@ source("../code/obs_data_analyses.R")
 \thispagestyle{empty}
 \begin{abstract}
 \singlespace
-Surveying a sample of scholars that have published in leading accounting journals, we document that we accounting researchers are more skeptical about the reproducibility of our influential findings than researchers from other social science areas are about theirs. Also, we are less familiar with the public sharing of research materials (data, code, and research procedures) and have less experience with pre-registrating our study designs, two prominent open science measures to increase the reproducibility of research. Our respondents state that they are open to sharing and would likely share research materials under a hypothetical scenario, regardless of provided rationale and scope. They also believe that other accounting researchers, as well as editors, are in favor of research material sharing. However, they are skeptical about the actual prevalence of research material sharing in the accounting research community. In addition, they are more reluctant than researchers from neighboring fields to pre-register their study plans. We interpret this descriptive evidence as indicating an "accounting open science dilemma" and suggest strategies for addressing it.
+Surveying a sample of scholars who have published in leading accounting journals, we document that we accounting researchers are more skeptical about the reproducibility of our influential findings than researchers from other social science areas are about theirs. Also, we are less familiar with the public sharing of research materials (data, code, and research procedures) and have less experience with pre-registrating our study designs, two prominent open science measures to increase the reproducibility of research. Our respondents state that they are open to sharing and would likely share research materials under a hypothetical scenario, regardless of provided rationale and scope. They also believe that other accounting researchers, as well as editors, are in favor of research material sharing. However, they are skeptical about the actual prevalence of research material sharing in the accounting research community. In addition, they are more reluctant than researchers from neighboring fields to pre-register their study plans. We interpret this descriptive evidence as indicating an "accounting open science dilemma" and suggest strategies for addressing it.
 \end{abstract}
 ```
-\vspace{2cm}
+
 
 ```{=tex}
+\vspace{0.5cm}
+\begin{center}
+\textbf{Preliminary and Incomplete}
+\end{center}
+\vspace{0.75cm}
 \begin{flushleft}
 \textbf{Keywords}: Accounting Research, Open Science, Reproducibility, Pre-Registration, Survey \newline
 \textbf{Data Availability}: Data available in code repository \newline
-\textbf{Code Repository}: \href{https://github.com/joachim-gassen/osacc}{github.com/joachim-gassen/osacc}  \newline
-\textbf{Survey Dashboard}: \href{https://jgassen.shinyapps.io/osacc/}{https://jgassen.shinyapps.io/osacc/} \newline
+\textbf{Code Repository}: \href{https://github.com/joachim-gassen/osacc}{https://github.com/joachim-gassen/osacc}  \newline
+\textbf{Survey Dashboard}: \href{https://jgassen.shinyapps.io/osacc/}{https://jgassen.shinyapps.io/osacc} \newline
 \textbf{Declaration of Interest}: The author(s) declare(s) that they have no conflict of interest \newline
 \end{flushleft}
 ```
@@ -152,7 +157,9 @@ The second stage of the survey featured a selection of questions about responden
 
 ### Reproducibility
 
-The first goal of the survey was to gauge the perceptions of accounting researchers regarding the reproducibility of influential findings in the accounting literature. Table 3 displays a detailed overview of our respondents' answers to the question, "How confident are you that the influential findings in the area of accounting overall are reproducible?" The table also contrasts the answers provided by our respondents with the answers submitted by researchers in other fields in the survey conducted by @FLCPSWMBP_2023 , who asked the question "How confident are you that the influential research findings in \[discipline\] would replicate?" We changed the wording from "replicating" to "reproducing" in our adapted question to make it more recognizable to a diverse group of researchers, such as those in the academic accounting community. Namely, the term "reproducibility" is a focal point in the discussion across the social sciences, including accounting [@B_2016; @CDF_2016; @M_2017; @HLL_2000]. In contrast, the term"replication" may or may not have different interpretations for different researchers. For instance, experimental researchers it refers to a distinct activity (i.e., repeating an experimental study), while for archival researchers, it refers to a similar activity (i.e., re-analyzing the same data using the same procedures).
+The first goal of the survey was to gauge the perceptions of accounting researchers regarding the reproducibility of influential findings in the accounting literature. Table 3 displays a detailed overview of our respondents' answers to the question, "How confident are you that the influential findings in the area of accounting overall are reproducible?" The table also contrasts the answers provided by our respondents with the answers submitted by researchers in other fields in the survey conducted by @FLCPSWMBP_2023 , who asked the question "How confident are you that the influential research findings in \[discipline\] would replicate?" We changed the wording from "replicate" to "reproduce" in our adapted question to make it more recognizable to a diverse group of researchers, such as those in the academic accounting community. Namely, the term "reproducibility" is a focal point in the discussion across the social sciences, including accounting [@B_2016; @CDF_2016; @M_2017; @HLL_2000]. In contrast, the term "replication" may or may not have different interpretations for different researchers. For instance, for experimental researchers it refers to a distinct activity (i.e., repeating an experimental study), while for archival researchers, it refers to a similar activity (i.e., re-analyzing the same data using the same procedures).
+
+<!-- Definition of replicability in the Fergusson et al study (from the survey materials on OSF): "For these questions, please define replication as a test of whether (a) new studies (b) on the same topic (c) in a broadly similar sample support the same results." --!>
 
 
 \centerline{--- Insert Table 3 about here ---}
@@ -318,7 +325,8 @@ Table 11 lists the frequencies and percentages for three questions about pre-reg
 
 \centerline{--- Insert Figure 5 about here ---}
 
-Panel B reports data on the first-year respondents pre-registered. Namely, we asked them: "Approximately when was the first time you pre-registered hypotheses or analyses in advance of a study?"[^10] The findings exhibit a clear pattern: Accounting researchers started considering pre-registration for the first time significantly later than researchers in other social science fields (two-tailed p-value \< 0.010). The take-up started around 2018 compared to 2015-2016 for the other fields. This finding is also supported by Figure 4 showing that the take-up of pre-registration in accounting over time lags behind the other social science areas.
+Panel B reports data on the first-year respondents pre-registered. Namely, we asked them: "Approximately when was the first time you pre-registered hypotheses or analyses in advance of a study?"[^10] The findings exhibit a clear pattern: Accounting researchers started considering pre-registration for the first time significantly later than researchers in other social science fields (two-tailed p-value \< 0.010). The take-up started around 2018 compared to 2015-2016 for the other fields. This finding is also supported by Figure 5 showing that the take-up of pre-registration in accounting over time lags behind the other social science areas.
+
 
 [^10]: The question used in @FLCPSWMBP_2023 was "Approximately when was the first time you pre-registered hypotheses or analyses in advance of a study?"
 

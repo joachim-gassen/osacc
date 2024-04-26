@@ -338,33 +338,6 @@ tab_latex[1] <- sub("\\(Intercept\\)", "Intercept", tab_latex)
 sub("Adjusted R2", "\\\\midrule\\\\addlinespace[2.5pt]\nAdjusted R²", tab_latex)
 ```
 
-## Observational Data on Sharing Behavior: Author Level
-
-```{r, asis = TRUE}
-gt(tab_by_author) %>% 
-	cols_align("right", -1) %>% 
-	as_latex() %>%
-	fit_gt_table_to_slide()
-```
-
-## Observational Data on Sharing Behavior: Journal Level
-
-```{r, asis = TRUE}
-gt(tab_by_journal) %>% 
-	cols_align("right", -1) %>% 
-	as_latex() %>%
-	fit_gt_table_to_slide()
-```
-
-## Observational Data: Paper-level Sharing over Time
-
-```{r Figure4, fig.width=8, fig.height=3.5, fig.align="center", fig.showtext = TRUE}
-p <- plot_resmat_sharing_over_cyear
-if (trr266_fonts_available) {
-	p + theme(text = element_text(family = "Calibri Light", size = 12))
-} else p
-```
-
 ## Reasons against Sharing (Close-Ended Question)
 
 ```{r Tab9aSharingReasons, asis = TRUE}
@@ -519,6 +492,35 @@ quotes <-c(11, 16, 18, 66, 67, 72, 80, 82, 84)
 ```
 
 
+## Observational Data on Sharing Behavior: Author Level
+
+```{r, asis = TRUE}
+gt(tab_by_author) %>% 
+	cols_align("right", -1) %>% 
+	as_latex() %>%
+	fit_gt_table_to_slide()
+```
+
+## Observational Data on Sharing Behavior: Journal Level
+
+```{r, asis = TRUE}
+gt(tab_by_journal) %>% 
+	cols_align("right", -1) %>% 
+	as_latex() %>%
+	fit_gt_table_to_slide()
+```
+
+## Observational Data: Paper-level Sharing over Time
+
+```{r Figure4, fig.width=8, fig.height=3.5, fig.align="center", fig.showtext = TRUE}
+p <- plot_resmat_sharing_over_cyear
+if (trr266_fonts_available) {
+	p + theme(text = element_text(family = "Calibri Light", size = 12))
+} else p
+```
+
+
+<!---
 ## Pre-Registration: Awareness Across the Social Sciences
 
 ```{r Tab10aPreRegAwareSocSciResp, asis = TRUE}
@@ -532,7 +534,7 @@ gt(tab) %>%
 	as_latex() %>%
 	fit_gt_table_to_slide()
 ```
-
+--->
 
 ## Pre-Registration: Take-up over Time Across the Social Sciences
 
@@ -645,7 +647,7 @@ Fišar et al. (2023, Management Science)
 Interesting aspect for further study: Role of open science in theoretical/analytical and qualitative work (e.g., Moravcsik PolSci 2014; Freese et al. SocSciRes 2022)
 
 
-## Reasons Against Sharing
+## Reasons Against Sharing and Their Counter Arguments
 
 \begin{center}
 \includegraphics[height =0.7\textheight]{"materials/gomes_et_al_2022_sharing_concerns.jpeg"}\\
