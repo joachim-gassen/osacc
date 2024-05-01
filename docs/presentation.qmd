@@ -501,6 +501,7 @@ gt(tab_by_author) %>%
 	fit_gt_table_to_slide()
 ```
 
+
 ## Observational Data on Sharing Behavior: Journal Level
 
 ```{r, asis = TRUE}
@@ -509,6 +510,15 @@ gt(tab_by_journal) %>%
 	as_latex() %>%
 	fit_gt_table_to_slide()
 ```
+
+
+## To Compare: Policy Effect for Management Science
+
+\begin{center}
+\includegraphics[width =0.7\textwidth]{"materials/fisar_et_al_2023_policy.jpeg"} \\
+Fišar et al. (2023, Management Science)
+\end{center}
+
 
 ## Observational Data: Paper-level Sharing over Time
 

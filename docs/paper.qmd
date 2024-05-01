@@ -1,6 +1,6 @@
 ---
 title: |
-  | Accountants' Attitudes Towards Open Science^[Joachim Gassen is based at Humboldt-Universität zu Berlin while Jacqueline Klug and Victor van Pelt are affiliated with WHU Otto Beisheim School of Management. We thank Kris Hardies as well as audiences at University of Antwerp, Humboldt University Berlin, and WHU for providing helpful feedback. Excellent research assistance by Benedikt Hahn, Fabian Kalife, and Timnah Weckner is gratefully acknowledged. This work was supported by Deutsche Forschungsgemeinschaft (Project-ID 403041268, TRR 266 Accounting for Transparency).]
+  | Accountants' Attitudes Towards Open Science^[Joachim Gassen is based at Humboldt-Universität zu Berlin while Jacqueline Klug and Victor van Pelt are affiliated with WHU Otto Beisheim School of Management. We thank Kris Hardies as well as audiences at University of Antwerp, Stanford University, Humboldt University Berlin, and WHU for providing helpful feedback. Excellent research assistance by Benedikt Hahn, Fabian Kalife, and Timnah Weckner is gratefully acknowledged. This work was supported by Deutsche Forschungsgemeinschaft (Project-ID 403041268, TRR 266 Accounting for Transparency).]
 author: 
   - name: Joachim Gassen
     email: gassen@wiwi.hu-berlin.de

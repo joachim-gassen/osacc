@@ -28,6 +28,7 @@ ALL_TARGETS := $(PAPER) $(PRESENTATION) $(SURVEY_RESPONSE) $(VERBAL_RESPONSE) \
 PRES_MATERIALS := docs/materials/ferguson_et_al_2023_uptake_over_time.png \
 	docs/materials/fisar_et_al_2023_fields.jpeg \
 	docs/materials/fisar_et_al_2023_methods.jpeg \
+	docs/materials/fisar_et_al_2023_policy.jpeg \
 	docs/materials/gomes_et_al_2022_sharing_concerns.jpeg \
 	docs/materials/beamer_theme_trr266_16x9.sty \
 	docs/materials/trr266_logo.eps
