@@ -1,6 +1,7 @@
 ---
 title: |
-  | Accountants' Attitudes Towards Open Science^[Joachim Gassen is based at Humboldt-Universität zu Berlin while Jacqueline Klug and Victor van Pelt are affiliated with WHU Otto Beisheim School of Management. We thank Kris Hardies as well as audiences at University of Antwerp, Stanford University, Humboldt University Berlin, and WHU for providing helpful feedback. Excellent research assistance by Benedikt Hahn, Fabian Kalife, and Timnah Weckner is gratefully acknowledged. This work was supported by Deutsche Forschungsgemeinschaft (Project-ID 403041268, TRR 266 Accounting for Transparency).]
+  | How does the Accounting Research Community
+  | Think About Open Science?^[Joachim Gassen is based at Humboldt-Universität zu Berlin while Jacqueline Klug and Victor van Pelt are affiliated with WHU Otto Beisheim School of Management. We thank Kris Hardies as well as audiences at University of Antwerp, BI Norwegian Business School, Humboldt University Berlin, Stanford University, and WHU for providing helpful feedback. Scott Summers and David Wood thankfully provided data from the BYU Accounting Research Rankings. Excellent research assistance by Benedikt Hahn, Fabian Kalife, and Timnah Weckner is gratefully acknowledged. This work was supported by Deutsche Forschungsgemeinschaft (Project-ID 403041268, TRR 266 Accounting for Transparency).]
 author: 
   - name: Joachim Gassen
     email: gassen@wiwi.hu-berlin.de
@@ -47,7 +48,14 @@ header-includes:
   - \usepackage{pdfpages}
   - \usepackage{pdflscape}
   - \usepackage{csquotes}
+  - \usepackage{lscape}
+  - \usepackage{graphicx}
+  - \usepackage{pdflscape}
   - \renewcommand{\mkbegdispquote}[2]{\itshape}
+  - \usepackage{longtable}
+  - \usepackage{geometry}
+  - \geometry{a4paper, margin=1in}
+  - \usepackage{setspace}
 ---
 
 ```{r setup, include=FALSE}
@@ -66,30 +74,31 @@ sd <- readRDS("../data/generated/survey_response.rds")
 mr <- readRDS("../data/generated/merged_response.rds")
 vars <- read_csv("../data/external/variables.csv", show_col_types = FALSE)
 pop <- read_csv("../data/external/invited_authors_anon.csv", show_col_types = FALSE)
+byu <- read_csv("../data/external/byu_author_data_anon.csv", show_col_types = FALSE)
 
 authors <- read_csv("../data/external/obs_data_authors_anon.csv", show_col_types = FALSE)
 papers <- read_csv("../data/external/obs_data_papers_anon.csv", show_col_types = FALSE) 
 	
 source("../code/obs_data_analyses.R")
+
+gt_add_header_mpage_table <- function(x) {
+  x <- sub("\\\\midrule", "\\\\midrule \\\\endhead", x)
+  x
+}
+
 ```
 
 ```{=tex}
 \thispagestyle{empty}
 \begin{abstract}
 \singlespace
-Surveying a sample of scholars who have published in leading accounting journals, we document that we accounting researchers are more skeptical about the reproducibility of our influential findings than researchers from other social science areas are about theirs. Also, we are less familiar with the public sharing of research materials (data, code, and research procedures) and have less experience with pre-registrating our study designs, two prominent open science measures to increase the reproducibility of research. Our respondents state that they are open to sharing and would likely share research materials under a hypothetical scenario, regardless of provided rationale and scope. They also believe that other accounting researchers, as well as editors, are in favor of research material sharing. However, they are skeptical about the actual prevalence of research material sharing in the accounting research community. In addition, they are more reluctant than researchers from neighboring fields to pre-register their study plans. We interpret this descriptive evidence as indicating an "accounting open science dilemma" and suggest strategies for addressing it.
+To understand how the accounting research community thinks about open science, we survey a sample of scholars who have published in leading accounting journals. Building on a voluntary disclosure-themed discussion of the costs and benefits of open accounting research, we document that accounting researchers tend to be more skeptical about the reproducibility of their influential findings than researchers from other social science areas are about theirs. Also, they are less familiar with the public sharing of research materials and pre-register their study designs less often. While they believe that accounting researchers in general and editors in particular favor research material sharing, they are skeptical about its actual prevalence in the accounting research community. We contrast these survey results with observational data, documenting that research material sharing is indeed relatively rare and often linked to journals with data and code sharing policies. We interpret this descriptive evidence as indicating an "accounting open science dilemma" and suggest strategies for addressing it.
 \end{abstract}
 ```
-
-
 ```{=tex}
 \vspace{0.5cm}
-\begin{center}
-\textbf{Preliminary and Incomplete}
-\end{center}
-\vspace{0.75cm}
 \begin{flushleft}
-\textbf{Keywords}: Accounting Research, Open Science, Reproducibility, Pre-Registration, Survey \newline
+\textbf{Keywords}: Accounting Research, Open Science, Reproducibility, Research Material Sharing, Pre-Registration, Survey \newline
 \textbf{Data Availability}: Data available in code repository \newline
 \textbf{Code Repository}: \href{https://github.com/joachim-gassen/osacc}{https://github.com/joachim-gassen/osacc}  \newline
 \textbf{Survey Dashboard}: \href{https://jgassen.shinyapps.io/osacc/}{https://jgassen.shinyapps.io/osacc} \newline
@@ -102,187 +111,237 @@ Surveying a sample of scholars who have published in leading accounting journals
 
 ## Introduction
 
-Cumulative science builds on reproducible research.[^1] Across all fields of science [@B_2016; @CDF_2016; @M_2017] and within accounting [@HLL_2000; @G_2023; @S_2023; @CGL_2023], scholars have diagnosed shortcomings in reproducibility and advocated open science methods like public sharing of research materials and the pre-registration of study plans as potential strategies to improve the reproducibility of our work. Prior work across the social sciences has documented an overall uptake of open sciences approaches across several disciplines [@FLCPSWMBP_2023]. We contrast these findings with a survey that we conducted among accounting researchers to explore the perceptions and attitudes toward open science in our field.
+Cumulative science builds on the reproducibility of research, which is the ability to recreate the results of prior studies using the same materials as were used by the original researchers [@NSF_2015].[^1] Across all fields of science [@B_2016; @CDF_2016; @M_2017] and within accounting [@HLL_2000; @G_2023; @S_2023; @CGL_2023], scholars have diagnosed shortcomings in reproducibility and advocated the use of various open science methods. Open science implies conducting research in ways that allow others to collaborate and contribute. Two central open science methods that have been put forward as strategies to improve the reproducibility of our work are the public sharing of research materials and the pre-registration of study plans. Over the last years, there has been a significant uptake of these open sciences methods in social science areas outside of accounting [@FLCPSWMBP_2023].
 
-[^1]: While in the survey itself, we use the term reproducibility without an exact definition, throughout this article, we follow the notion of @NSF_2015 to define reproducibility as the "ability of a researcher to duplicate the results of a prior study using the same materials and procedures as were used by the original investigator" while replicability "refers to the ability of a researcher to duplicate the results of a prior study if the same procedures are followed but new data are collected". For a more in-depth discussion of the related terminological debate, see @GFI_2016. The key reason why we do not provide an exact definition in the survey is that the differences between reproducibility and replicability are subtle and vary across accounting subfields. For archival studies, reproducibility and replicability should be essentially the same, while for experimental studies they clearly differ.
+Research material sharing and pre-registrations can be understood as disclosure mechanisms that allow researchers to contribute public goods to the research community while also signaling the quality of their work. However, limited individual benefits and significant direct as well as indirect costs make it likely that researchers, on average, will rationally under-engage in these activities, potentially resulting in a socially sub-optimal under-provision of public research materials and on overall lacking research transparency. Following these thoughts and building on prior literature in neighboring fields, we conduct a survey among accounting researchers to explore the perceptions and attitudes towards open science in our field.
 
-Based on the responses of `r nrow(sd)` published accounting researchers, we find that our attitudes towards open science clearly differ from those of other researchers in the social sciences. Most prominently, we tend to hold a generally more critical view of the reproducibility of our influential work. Compared to the fields of economics and sociology, for example, we are about half a point more skeptical about the reproducibility of the influential work in our field on a 5-point Likert scale. Exploring this assessment across our respondents' demographics, we find this skepticism to be relatively stable. Analytical and qualitative researchers are somewhat more pessimistic than the other methodologies. Analytical researchers tend to be particularly more critical of research that uses non-analytical methods.
+Based on the responses of `r nrow(sd)` published accounting researchers, we find that attitudes towards open science clearly differ from those of other social science researchers. Most prominently, accounting researchers tend to hold a generally more pessimistic view of the reproducibility of influential work within their field. Compared to economists and sociologists, for example, accounting researchers are about half a point more skeptical on a 5-point Likert scale. Exploring this assessment across the respondents' demographics, we find this skepticism to be relatively stable. Analytical and qualitative researchers are somewhat more pessimistic. Analytical researchers tend to be particularly more critical of research that uses non-analytical methods.
 
-Given this finding, one would expect accounting researchers to take a more proactive stance and embrace two prominent open science approaches that methodological work has identified to increase the reproducibility of research: The public sharing of research materials (i.e., data, code and research procedures) and the pre-registration of research plans. Turning first to the public sharing of research materials, we document that, again, compared to researchers from other social science areas, we accounting researchers are somewhat less familiar with this activity. Also, we find it somewhat less important. Familiarity is generally largest for respondents using archival, field, and experimental methods and smallest for respondents using qualitative methods, which also perceive sharing as less important.
+Given this finding, one would expect accounting researchers to take a proactive stance and embrace two prominent open science methods that are expected to increase the reproducibility of research: The public sharing of research materials (i.e., data, code and research procedures) and the pre-registration of research plans. Turning first to the public sharing of research materials, we document that, again compared to researchers from other social science areas, accounting researchers are somewhat less familiar with this activity and assess it to be somewhat less important. Familiarity is largest for respondents using archival, field, and experimental methods and lowest for respondents using qualitative methods, who also perceive the sharing of research materials as less important.
 
+Similar to, albeit even more pronounced than, other social science researchers, there is a stark contrast in accounting researchers' perceived (prescriptive) importance of research material sharing, their stated willingness to share research materials, and their (descriptive) perception about actual sharing behavior in the accounting research community. 57% of our respondents state that they, at least sometimes, publicly share their research materials. In addition, our respondents believe that about 44% of them favor publicly sharing research materials, and they believe 61% of the top-six accounting editors to be in favor of publicly sharing research materials. Although this sounds comforting and consistent with a general supportive stance of the accounting community toward research material sharing, the percentage comes down to a much more sobering 28% when respondents are asked about actual sharing behavior in the accounting research community. This assessment and the gap it reveals differ significantly across methodological areas. Analytical researchers have the most narrow gap (they expect 43% of accounting researchers to be in favor and 38% to actually share research materials). Archival researchers, in turn, have the widest gap (45% expected to be in favor versus 24% expected to actually share). The overall lowest numbers are again reported by qualitative researchers (36% versus 18%).
 
-Similar to, albeit even more pronounced than, other social science researchers, there is a stark contrast in our perceived (prescriptive) importance of research material sharing, our stated willingness to share research materials, and our (descriptive) perception about actual sharing behavior. In a hypothetical scenario, the average stated likelihood for sharing research materials by our respondents is relatively high (i.e., 72%), and this likelihood is more or less unaffected by the randomized nature of the provided rationale (i.e., collaboration or control) and the provided scope (public versus private sharing).[^2] Also, 50% of our respondents state that they, at least sometimes, publicly share their research materials. In addition, our respondents believe that about 44% of us favor publicly sharing research materials, and they believe 61% of the top-six accounting editors to be in favor of publicly sharing research materials.
-
-[^2]: We pre-registered this experimental part of our study. The pre-registration materials can be accessed [here](https://osf.io/frmzt/).
-
-All this sounds comforting and consistent with a general supportive stand of the accounting community towards public research material sharing. However, when asked about respondents' perceptions about actual sharing behavior, the percentage comes down to a much more sobering 28%. This sober number and the gap it reveals differ significantly across the different accounting methodological areas. Analytical researchers have the narrowest gap (they expect 43% of accounting researchers to be in favor and 38% to actually share research materials). Archival researchers, in turn, have the widest gap (45% expected to be in favor versus 24% expected to actually share). The overall lowest numbers are again reported by qualitative researchers (36% versus 18%).
-
-Using observational data from a country-stratified random sample of `r nrow(authors)` authors from our target population to contrast these perceptions with actual behavior, we find at least some evidence for research material sharing for 39 % of this random sample. This number is largely in line with the self-reported figures but masks that research material sharing in accounting seems to be largely an occasional compliance activity: Only for 7.5 % of the papers that we analyze we find evidence for research material sharing and when we exclude Journal of Accounting Research and Management Science, two journals with data and code policies in place, the share of authors for which we document research material sharing evidence drops from 39 to 23 %.
-
-In light of these numbers, it is a logical next step to explore the main reasons against sharing research materials. Overall, the most commonly stated reasons for not sharing research materials are the proprietary nature of the used data (56% of respondents give this reason), the time it takes to make materials available (30%), and the fear of being scooped when materials become publicly available (23%). Additionally, 34% of respondents state that there is no need for sharing as their data is already publicly available. Unsurprisingly, the reasons clearly differ across methods. For qualitative researchers, deidentification problems are very prominent (46%), and analytical researchers consider the time it takes to make materials available far less of a reason than researchers using other methods (i.e., 9.5% versus 30% overall).
-
-Regarding pre-registration, it seems that we accounting researchers are at least as familiar with the concept as other social science researchers. However, our respondents report that they started using it later than other social science researchers (roughly two years) and that they use it less frequently (17% versus 27%). Our trust in pre-registered work is generally comparable with other social scientists but significantly lower than the trust levels of researchers in Psychology (the field that reports the highest usage rates of pre-registration). A detailed look into differences among the different methodological fields within accounting also reflects this, as we find that experimental researchers use pre-registration the most (28%) and express the strongest belief that the practice increases the trustworthiness of research.
+Regarding pre-registration, accounting researchers seem as familiar with the concept as other social science researchers. However, our respondents report that they started using it later than other social science researchers (roughly two years) and that they use it less frequently (17% versus 27%). Their trust in pre-registered work is generally comparable with other social science researchers but significantly lower than the trust levels of researchers in Psychology (the field that reports the highest usage rate of pre-registration). A detailed look into differences across methodological fields also reflects this, as we find that experimental researchers use pre-registration most (28%) and express the strongest belief that it increases the trustworthiness of research.
 
 
-Taken together, our findings indicate somewhat of an "accounting open science dilemma": We accounting researchers tend to be skeptical about both the reproducibility of our work, and the ability of research material sharing and pre-registration to improve it. This results in these tools currently being less established in the accounting domain than in other fields. In addition, the challenges that hinder reproducibility and the potential effectiveness of open science tools vary across methodological paradigms. Qualitative research faces different challenges than archival quantitative work, and they both differ again from experimental studies. We conclude by discussing these challenges and providing suggestions on how our diagnosed dilemma might be overcome.
+To contrast these perceptions from our survey with actual behavior, we gather additional observational data from a country-stratified random sample of `r nrow(authors)` authors of our target population. We find evidence for at least some form of research material sharing for 39% of the authors in this sample. This number is similar to the self-reported perception of actual research material sharing in our survey (i.e., 38%). However, when we inspect the observational data further, we find that research material sharing in accounting is largely an occasional compliance activity. For instance for 7.5% of the papers written by the authors in the observational data show evidence for research material sharing. Also, when we exclude Journal of Accounting Research and Management Science, two journals with data and code sharing policies, the share of authors for which we document at least some form of research material sharing drops from 39% to 23%. Furthermore, we document very few pre-registrations in our observational data, and all are linked to the Registered Report Initiative of the Journal of Accounting Research.
 
-## Survey Methodology and Variable Measurement
+In light of these numbers, a logical next step is to explore the main rationales for and against sharing research materials. We do so based on a short experimental design using a hypothetical scenario and by using our survey data.[^2] In our hypothetical scenario involving a fellow researcher requesting access to participants' research materials, our participants state that they would be very likely to share on average (mean probability is 72%). We find no evidence that this probability is affected by the randomized nature of the provided rationale (i.e., collaboration or control) and the provided scope of the sharing decision (public versus private sharing). Based on the verbal response of our participants, researchers tend to share their materials as they believe that this improves the quality of their research and of research in general. Also, they share because they want to support their fellow researchers. The most commonly stated reasons for not sharing research materials are the proprietary nature of the data used (56% of respondents give this reason), the time it takes to make materials available (30%), and the fear of being scooped when materials become publicly available (23%). The reasons differ across methods. For qualitative researchers, deidentification problems are very prominent (46%), and analytical researchers consider the time it takes to make materials available far less of a reason than researchers using other methods (i.e., 9.5% versus 30% overall).
 
-### Survey Design and Administration
+Taken together, our findings indicate somewhat of an "accounting open science dilemma": We accounting researchers tend to be skeptical about both the reproducibility of our work, and the ability of research material sharing and pre-registration to improve it. This is consistent with these tools currently being less established in the accounting domain than in other fields. The challenges that hinder reproducibility and the potential effectiveness of open science methods vary across methodological paradigms. Qualitative research faces different challenges than archival quantitative work, and they both differ again from experimental studies. We conclude by discussing these challenges and providing suggestions on how our diagnosed dilemma might be overcome.
 
-To collect the attitudes of accounting researchers towards open science, we conducted a survey among members of the academic accounting community. The survey has been designed using oTree [@CSW_2016]. To recruit respondents for our survey, we identified authors who published in the "Top 6" accounting journals, i.e., Accounting, Organizations and Society, Contemporary Accounting Research, Journal of Accounting and Economics, Journal of Accounting Research, Review of Accounting Studies, The Accounting Review, over the period 2016 to 2021. We chose these six accounting journals because they are commonly known to be top accounting journals within the academic accounting community. We realize that this is not an exhaustive list and that there are divergent views about journals within the accounting community. Yet, we believe that, taken together, these journals provide us with a representative list of publishing accounting academics. We started compiling the list of authors from 2016 because this is the year that Open Science and, more specifically, the reproducibility of research became a more widespread topic of debate among academics within the social sciences and, presumably, accounting researchers [@OSC_2015; @B_2016; @CDF_2016; @M_2017]. After receiving approval from an ethical review board, also guaranteeing the anonymity of the participating respondents, we sent out initial invitations and a total of three reminders. We allowed potential respondents to opt out of future emails every time we reached out to them. Please see Appendix A for the invitation emails.
+## Expectations and Study Design
+
+### Costs and Benefits of Open Accounting Research
+
+Accounting is a field within the social sciences. As such, many of the arguments that have been developed with regard to the costs and benefits of open science in general [@AM_2019; @ABC_2021; @G_2022; @FLCPSWMBP_2023] also apply to the field of accounting. In the following, we present and extend some of these thoughts in a voluntary disclosure framework [@BCLW_2010]. For this purpose, our discussion will be primarily anchored on research material sharing (the main focus of our study) but should largely extend to pre-registration. Understood as a disclosure activity related to underlying research, publicly available research materials constitute a public good. To the extent that they are reusable, they accelerate scientific discoveries, improving the quantity and very likely also the quality of research. Even if they are not really reusable or reusing them would be prohibitively costly, they still reduce the costs of reproducing the original work, thereby reducing assurance costs. As the work in auditing [e.g., @S_1980] posits, reduced auditing costs (easier reproduction) should lead to an overall increase in audit quality (more and better reproductions) resulting in better financial reporting quality (better research).
+
+This means that similar to other disclosure activities, sharing research materials does not necessarily benefit the producer but the research community at large. While intrinsic motivation for good research can be expected to be a strong determinant for individuals self-selecting into the academic accounting profession, one can still expect accounting researchers to under-engage in research material sharing because the production costs are mostly private while the benefits are mostly public. So, are there any private benefits of research material sharing? Besides the warm glow of helping others, research material sharing likely improves the quality of the sharing individual's research output. First, it increases the likelihood that mistakes, conditionally on being present, are being detected. As it seems safe to assume that such incidents impose a cost on sharing researchers, this should increase their incentives to increase research quality prior to sharing. Second, if research materials are shared relatively early, the sharing researcher can directly benefit from community feedback prior to the ultimate publication of the study. Finally, uncovered mistakes are an important learning opportunity, likely improving research quality in the long run.
+
+Based on these arguments, there are reasons to believe that voluntary research material sharing can act as a signal for research quality, creating an incentive for researchers to use it to signal the quality of their work in the publishing and career process. In ideal circumstances, we should obtain the well-known unraveling result where researchers even share and improve low-quality research because the research community would otherwise assume the worst [@M_1981]. One critical obstacle to the unraveling result are disclosure costs [@V_1983], also known as proprietary costs in the contemporary disclosure literature. Thus, for research materials sharing to be viable it is important that the costs of sharing are sufficiently low, especially for researchers that produce high quality work. Thus, it critically hinges on the above quality assurance process. Also, it depends on the direct and indirect costs of research material sharing to be bearable and to be at least comparable for high and low quality researchers.
+
+The direct costs of research material sharing can be sizable. Preparing data, code and research procedures for dissemination requires time. While this time can be expected to also have a quality improvement effect (see above), at least some of the documentation work and code refactoring to increase accessibility and reusability creates costs that will not directly pay off on the quality of the underlying work. Another important factor to consider is the cost of maintaining publicly available materials. While some replication packages or similar materials are static in nature and require only limited maintenance, data and code packages can require ongoing updating and support activities. One important aspect of maintenance costs is that they increase significantly with public demand. As demand is directly linked to the scientific impact of the underlying work it can be argued that high maintenance cost sharing activities are likely to also be high benefit activities.
+
+The indirect costs of research material sharing are first and foremost linked to the quality assurance process outlined above. Flaws in publicly shared research materials can trigger more behavioral effects (shame, regret) but also reputation costs. Another important aspect are proprietary costs from scientific competition. While likely to be positive from the societal perspective, the indirect individual costs of being "scooped" for an interesting follow-up project can be sizable. Finally, there is also the possibility of unethical misuse of shared research materials. Malevolent researchers might use shared materials without proper attribution or use it with a strategy of "reverse p-hacking", meaning creating reproductions or replications that communicate a biased picture of the overall evidence to increase their chances for publication.
+
+Rational researchers can be expected to voluntarily share research materials when their private benefits outweigh their private costs. Whether this happens will critically depend on whether the signaling mechanism outlined above unfolds. In a credence good market like research, signaling is a key mechanism to avoid market failure. Based on the discussion above, a critical aspect could be the proprietary cost of competition as one could argue that this cost is higher for high quality researchers with innovative ideas than for low quality researchers that will likely face limited demand for their materials. Also the risks of reputation costs or misuse of materials could be higher for high quality researchers. On the other hand, it can be argued that direct costs should be lower for high quality researchers because of superior skills. Finally, outside options should be generally higher for high quality researchers meaning that they face higher opportunity costs of their time but also less competitive pressure to keep their materials private.
+
+The discussion should sound somewhat familiar to those that study voluntary disclosures by firms. What is different from our traditional firm-setting is that most researchers are not acting as entrepreneurs. Instead, they are employed by academic institutions or act as civil servants. This can to some extend mute the relevance of the benefits and the costs outlined above, at least for those researchers that hold tenured positions. In addition, the employing institutions might also interact with the decision whether or not to make research materials available. They are designing performance and tenure evaluation criteria that incentivize researchers. Also, they compensate researchers for their time and they provide them with infrastructure that influences and at times drastically reduces the direct costs of research material sharing. They might even hold property rights on the intellectual capital that their employees generate. Based on the public announcements of many leading academic institutions, it seems as if these are generally advocating the positive externalities of research material sharing. However, the incentive systems designed by these institutions appear at least in parts inconsistent with these announcements, as they are valuing individual research achievements in form of publications and only rarely publicly available research materials.
+
+Finally, publishers and journals are influential for research material sharing decisions as well. Leading journals have established demanding data and code sharing guidelines, essentially transforming the voluntary disclosure decision to a mandatory disclosure requirement. While journals also compete for the best papers and it is an interesting question how this competition affects the dissemination of data and code sharing guidelines, it seems as if imposing mandatory disclosure rules is a classic response to overcome the diagnosed public good problem.
+
+### Research Questions and Survey Design
+
+Following the discussion above, we designed our survey to address three overlapping research questions.
+
+1.  How does the accounting research community assess the reproducibility of their influential work?
+
+2.  What are the views of the accounting research community about research material sharing and pre-registration, two prominent open science methods to increase the reproducibility of research?
+
+3.  What are the (perceived) costs and benefits of research material sharing?
+
+The first two questions are descriptive in nature. Assuming that the signaling mechanism above or other incentives have not succeeded in removing all insecurity about the reproducibility of influential accounting work, we expect to find some variation in our response with regard to research question one. More importantly, we want to compare the response of our sample with responses by researchers from other social science fields. The second question explores whether accounting researchers believe that research material sharing and pre-registration are viable strategies to increase the reproducibility of research. Again, comparing the views of accounting academics with the views of neighboring fields will be instrumental here.
+
+The third question strives to understand the potential causes behind these assessments. Using a small experimental component, our survey tests whether two aspects of a hypothetical sharing request, its rationale (collaboration or control) and its scope (public versus private), affect the stated hypothetical likelihood of sharing. Our motivation for the treatments is that the rationale should shift the focus from benefits (collaboration) to costs (control) while the scope treatment should manipulate the salience of indirect costs. Besides studying the effect of these two experimental treatments, we also use verbal and structured survey response data to uncover perceived benefits and costs from research material sharing.
+
+To verify whether the assessments provided by our survey participants are consistent with their behavior in the field, we also conduct an observational study that uses data from 100 authors of our target population to contrast the survey response with the actual research material sharing and pre-registration behavior in the field.
+
+To ensure that our findings with respect to research questions one and two are comparable with related prior work, we adapted key questions from the Survey of Open Science Practices and Attitudes in the Social Sciences [@FLCPSWMBP_2023], published in Nature Communications. Similar to our survey, this study solicits the views of published researchers and PhD students on reproducibility, research material sharing, and pre-registration. However, there are key differences between the depth and target audience of our study and the study of @FLCPSWMBP_2023, warranting some adjustments. The latter lasted approximately 45 minutes and had a compensation element rewarding respondents for their participation. Our study, in contrast, is anonymous and has been designed to be completed in less than 10 minutes. It includes only mild incentivization in the form of a donation to UNICEF. Regardless of our adaptions, the ordering, phrasing, and answering scales of questions in our survey are similar. The adaptions enable us to considerably shorten the survey and to ensure that accounting researchers can relate the questions to their commonly accepted research practices. We pre-tested our adapted questions among a group of doctoral students specializing in accounting, which indicated no issues with the adapted questions. Appendix C includes a matching table providing an overview of every question and answer scale that we adapted from @FLCPSWMBP_2023.
+
+Our survey has been designed using oTree [@CSW_2016]. The first stage of the survey includes questions about respondents' views on publicly sharing research materials, which we describe as comprising data, code, and research procedures. Specifically, we ask respondents about their familiarity with the public sharing of research materials and their views of its importance. We also ask them about their perceptions of the prevalence of sharing in the accounting research community, how often they tend to share, and whether they plan to share in the future. Conditional on whether respondents indicate that they do not always share, we also ask them for the reasons behind not sharing. Lastly, we ask respondents to estimate what percentage of accounting researchers favor sharing and their approximation of the percentage of editors of the top six accounting journals that believe sharing increases the value of a manuscript.
+
+The second stage of the survey features a selection of questions about respondents' views on reproducibility and pre-registration, which we also borrowed and adapted from @FLCPSWMBP_2023. First, we ask respondents about their confidence in the reproducibility of accounting research. We also asked them about their subfield within the domain of accounting (i.e., Auditing, Financial Accounting and Reporting, Managerial Accounting, Taxation, Accounting information systems, and Other) and whether they believe the findings in their field are reproducible. Next, we ask the same questions for their methodological area (i.e., Analytical, Archival/Field, Experimental, Qualitative, Survey, and Other).
+
+After eliciting respondents' perceptions on reproducibility, a set of questions explores their familiarity and experience with the practice of pre-registration. Lastly, we ask them about their perceptions of the trustworthiness of pre-registered research compared to non-pre-registered research. The survey ends with a few demographic questions. For a complete overview of the survey questions included in our study, please see Appendix A. All answers can be explored using our \href{https://jgassen.shinyapps.io/osacc/}{survey dashboard} and the data itself are available in our public \href{https://github.com/joachim-gassen/osacc/}{GitHub repository} .
+
+### Survey Administration and Response Sample
+
+To recruit respondents for our survey, we identified authors who published in the "Top 6" accounting journals, i.e., Accounting, Organizations and Society, Contemporary Accounting Research, Journal of Accounting and Economics, Journal of Accounting Research, Review of Accounting Studies, The Accounting Review, over the period 2016 to 2021. We chose these six accounting journals because they are commonly characterized as the leading accounting journals within the academic accounting community. We realize that this is not an exhaustive list and that there are divergent views about journals within the accounting community. Yet, we believe that, taken together, these journals provide a sufficiently broad target population of accounting academics.
+
+We start compiling the list of authors from 2016 because this is the year that Open Science and, more specifically, the reproducibility of research became a more widespread topic of debate among academics within the social sciences and, presumably, accounting researchers [@OSC_2015; @B_2016; @CDF_2016; @M_2017]. After receiving approval from an ethical review board and guaranteeing the anonymity of the participating respondents, we sent out initial invitations and a total of three reminders. We allowed potential respondents to opt out of future emails every time we reached out to them. Please see Appendix A for the invitation emails and all reminders.
 
 \centerline{--- Insert Table 1 about here ---}
 
-Table 1 displays our sample selection procedures. Of the 2,660 potential respondents we identified, we excluded 118 for various reasons.[^3] Furthermore, for 206 emails bounced, we received a notification that the email address was unreachable. Of the remaining 2,336 successfully reached accounting researchers, 391 started the study (15,4% of the total emails sent), 254 partially completed the study (10,9% of the total emails sent), and 222 fully completed the study (8,7% of the total emails sent).[^4] Table 2 displays our final sample's demographics and characteristics. Panel A reveals that the majority of the respondents are male, 35 years or older (87.8%), specialize in Financial Accounting and Reporting or Managerial Accounting (70.3%), has Archival or Field Research as their primary research method (55.9%), and is from North America or Europe (91%).
-
-[^3]: We removed 41 authors because we found no email address, 41 authors because they appeared in the data twice with two author IDs but were the same person, 28 authors because they were a current member of one of our affiliated universities or academic research centers, 5 authors because they gave us advice for this study, 2 authors because they had passed away, and 1 author due to an incorrect email address.
-
-[^4]: As the dependent variable of our hypothetical scenario analysis outlined below is the first data we collect, 254 is the sample size for this analysis. For the descriptive analyses, we settle for the number of participants that answered the respective question and, if applicable, also provided the necessary demographics for cross-sectional splits. Depending on this, the sample sizes for the descriptive analyses vary from 222 to 229 responses.
+Table 1 presents our sample selection procedures. Out of 2,660 potential respondents identified, 118 were excluded due to operational reasons.[^3] Additionally, 206 respondents' initial emails bounced, indicating unreachable email addresses. Among the remaining 2,336 successfully contacted accounting researchers, 391 initiated the study (15.4% of the total emails sent), 254 partially completed it (10.9% of the total emails sent), and 222 fully completed it (8.7% of the total emails sent). For our analyses, we employed a floating sample, which dynamically changes based on specific criteria, to maximize the use of the available data. For most descriptive analyses, we relied on the number of respondents who completed the entire study (n = 222). However, for certain descriptive analyses, depending on the specific question, we utilized a broader sample (n = 229) as seven respondents decided to leave out some of the demographic questions. Since our survey experiment component forms the first part of the study, we use the sample of respondents who completed the study up to that point (n = 254) for analysis.
 
 \centerline{--- Insert Table 2 about here ---}
 
+Table 2 displays response demographics and characteristics based on a sample of up to 229 observations. Panel A reveals that the majority of the respondents is male, 35 years or older (87.8%), specializing in Financial Accounting and Reporting or Managerial Accounting (70.3%), has Archival or Field Research as their primary research method (55.9%), and is from North America or Europe (91%). Panel B of Table 2 contrasts our respondent sample with our sampling population. Given the anonymity of our response and the data that we can collect about our population, we can only directly compare the geographic dispersion of our sample. Panel B reveals that, in particular, researchers from North America and Europe are over-represented, and researchers from Asia are under-represented in the sample. Given that response rate assessment is inherently challenging, we generally avoid speculating about potential reasons for this sampling imbalance. However, it seems likely that the study's all-European author team might have positively influenced the European response. While we control for geographical effects in our response (not-tabulated but available using our \href{https://jgassen.shinyapps.io/osacc/}{survey dashboard}) and find only mild variation across regions (researchers from North America tend to state higher sharing activities and preferences), we conclude from this sampling imbalance that our results mostly speak to the attitudes of accounting scholars from North America and Europe and that we can say very little about researchers located in Asia and other geographical regions that happen to have low response rates.
 
-Panel B of Table 2 contrasts our respondent sample with our sampling population. Given the anonymity of our response and the data that we can collect about our population, we can only compare the geographic dispersion of our sample. Panel B reveals that, in particular, researchers from North America and Europe are over-represented, and researchers from Asia are under-represented in the sample. Given that response rate assessment is inherently challenging, we generally avoid speculating about potential reasons for this sampling imbalance. However, it seems likely that the study's all-European author team might have positively influenced the European response. While we control for geographical effects in our response (not-tabulated but available using our \href{https://jgassen.shinyapps.io/osacc/}{survey dashboard}) and find only mild variation across regions (researchers from North America tend to state higher sharing activities and preferences), we conclude from this sampling imbalance that our results mostly speak to the attitudes of accounting scholars from North America and Europe and that we can say very little about researchers located in Asia and other geographical regions that happen to have low response rates.
+We further evaluate the representativeness of our sample by comparing it to a sample of published authors on the BYU accounting rankings platform [@SW_2023]. Specifically, the BYU accounting rankings rank individual authors based on classifications of peer-reviewed articles in 12 accounting journals since 1990. We contacted the team behind the BYU rankings, and they generously provided their data to us. The data includes `r format(nrow(byu), big.mark = ",")` authors and information on their methodologies as well as subfields. As these data are based on the papers contained in the BYU database as well as by self-classification by authors, one author can be associated with several subfields and methodologies in the BYU data. Therefore, we compare 2,114 classified methodologies in the BYU sample to 229 primary methodologies in our sample. Also, we compare 2,877 classified subfields in the BYU sample to 229 primary subfields in our sample.
 
-### Variable Measurement
+\centerline{--- Insert Figures 1 and 2 about here ---}
 
-To ensure that our findings are comparable with related prior work, we adapted key questions from the Survey of Open Science Practices and Attitudes in the Social Sciences [@FLCPSWMBP_2023], which has been recently published in Nature Communications. Similar to our survey, this study solicits the views of published researchers and PhD students on reproducibility, research material sharing, and pre-registration. Given that it differs in depth (approximately 45 minutes while our survey was designed to be completed in less than 10 minutes) and data collection procedure (confidential with compensation element while we use an anonymous survey with mild incentivization), we had to make some adjustments. However, the ordering and phrasing of questions in our survey are similar, and their content and answer scales are identical or differ in a negligible way. Specifically, we decided to alter the framing and expand some of the questions to make it easier for accounting researchers to understand the questions and connect them to their commonly accepted research practices. We also pre-tested our adapted questions among a group of doctoral students specializing in accounting, which indicated no issues with the adapted questions.
-
-The first stage of the survey included questions about respondents' views on publicly sharing research materials, which we described as comprising data, code, and research procedures. Specifically, we asked respondents about their familiarity with the public sharing of research materials and their views of their importance. We also asked them about their perceptions of the prevalence of sharing in the accounting research community, how often they tended to share, and whether they planned to share in the future. Conditional on whether respondents indicated that they do not always share, we also asked them for the reasons behind not sharing. Lastly, we asked respondents to estimate what percentage of accounting researchers favor sharing and their approximation of the percentage of editors of the top six accounting journals that believe sharing increases the value of a manuscript.
-
-The second stage of the survey featured a selection of questions about respondents' views on reproducibility and pre-registration, which we also borrowed and adapted from @FLCPSWMBP_2023 . First, we asked respondents about their confidence in the reproducibility of accounting research. We also asked them about their subfield within the domain of accounting (i.e., Auditing, Financial Accounting and Reporting, Managerial Accounting, Taxation, Accounting information systems, and Other) and whether they believe the findings in their field are reproducible. Next, we asked the same questions for their methodological area (i.e., Analytical, Archival/Field, Experimental, Qualitative, Survey, and Other). Subsequently, we asked respondents about their familiarity and experience with the practice of pre-registration. Lastly, we asked them about their perceptions of the trustworthiness of pre-registered research compared to non-pre-registered research. We completed the survey by asking a few demographic questions that are primarily presented in Table 2. For a complete overview of the survey questions included in our study, please see Appendix A. Besides the findings that follow, all answers to these questions can be explored using our \href{https://jgassen.shinyapps.io/osacc/}{survey dashboard}.
+Figure 1 reveals the frequency distributions of subfields in the BYU and our sample. We can observe some differences between these two distributions. First, our sample has disproportionately more mentions of authors publishing in financial accounting and reporting and managerial accounting than the BYU sample (49% versus 36%). As a result, we see disproportionately fewer authors working in the other subfields in our sample. A chi-square test confirms the frequencies of the two distributions significantly vary (chi-square = 36.415, two-tailed p-value \< 0.001). Figure 2 reveals the frequency distributions of the methodologies in the BYU and our sample. These two frequency distributions are very similar; a little over half of the observations fall into the Archival/Field category for both samples. About one-fifth of the sample falls into the experimental category, and the rest is comprised of analytical and other methodologies. A chi-square test does not reject the null that the two frequency distributions are the same (chi-square = 2.270, two-tailed p-value = 0.518).
 
 ## Findings
 
 ### Reproducibility
 
-The first goal of the survey was to gauge the perceptions of accounting researchers regarding the reproducibility of influential findings in the accounting literature. Table 3 displays a detailed overview of our respondents' answers to the question, "How confident are you that the influential findings in the area of accounting overall are reproducible?" The table also contrasts the answers provided by our respondents with the answers submitted by researchers in other fields in the survey conducted by @FLCPSWMBP_2023 , who asked the question "How confident are you that the influential research findings in \[discipline\] would replicate?" We changed the wording from "replicate" to "reproduce" in our adapted question to make it more recognizable to a diverse group of researchers, such as those in the academic accounting community. Namely, the term "reproducibility" is a focal point in the discussion across the social sciences, including accounting [@B_2016; @CDF_2016; @M_2017; @HLL_2000]. In contrast, the term "replication" may or may not have different interpretations for different researchers. For instance, for experimental researchers it refers to a distinct activity (i.e., repeating an experimental study), while for archival researchers, it refers to a similar activity (i.e., re-analyzing the same data using the same procedures).
-
-<!-- Definition of replicability in the Fergusson et al study (from the survey materials on OSF): "For these questions, please define replication as a test of whether (a) new studies (b) on the same topic (c) in a broadly similar sample support the same results." --!>
-
+The first research question of our study is to explore how accounting researchers perceive the reproducibility of influential findings in their field. Table 3 provides a comprehensive overview of our respondents' answers to the question, "How confident are you that the influential findings in the area of accounting overall are reproducible?" The table also contrasts the answers with those of researchers in other disciplines as recorded by @FLCPSWMBP_2023, based on their question, "How confident are you that the influential research findings in \[discipline\] would replicate?" Notably, we adapted the wording in this question from "replicate" to "reproduce" to ensure clarity for our audience, recognizing the nuanced distinctions between these terms across various research methodologies. The term "reproducibility" is a focal point in the discussion across the social sciences, including accounting [@B_2016; @CDF_2016; @M_2017; @HLL_2000]. It implies the ability to recreate the results of prior studies using the same materials, procedures, and data as were used by the original researchers [@NSF_2015]. In contrast, the term "replication" has different interpretations for different fields. For instance, for experimental researchers, it refers to a distinct activity than reproduction (i.e., repeating an experimental study with new participants), while for archival researchers, it refers to a similar activity (i.e., re-analyzing the same or similar data using the same procedures). In turn, the definition that @FLCPSWMBP_2023 use for replication ("test of whether new studies on the same topic in a broadly similar sample support the same results.") seems relatively close to what we believe the common understanding of reproduction is in the area of accounting is. If anything, our notion of reproduction seems less demanding than the replication definition by @FLCPSWMBP_2023.
 
 \centerline{--- Insert Table 3 about here ---}
 
-The results in Table 3 suggest that we accounting researchers hold a generally more critical view of the reproducibility of our influential findings. Compared to researchers in the fields of economics and sociology, accounting researchers who took part in our survey are about a half a point more skeptical about the reproducibility of their influential work (on a 5-point Likert scale). This difference is less stark when we compare accounting researchers to researchers in the fields of Political Science and Psychology. In a field fixed effect regression, in which we use Accounting as the baseline, we find that all four fixed field effects are statistically different from zero (two-tailed p-value \< 0.01). Hence, the field of Accounting is generally more skeptical about the reproducibility of its research than other social science fields.
-
-
-\centerline{--- Insert Figure 1 about here ---}
-
-Figure 1 visually represents the data from Table 3 by plotting them on a horizontal axis and aligning them around a neutral midpoint. The figure shows that accounting researchers are the most skeptical (i.e., "Not at all confident") about the reproducibility of influential findings in their field (10.5%). This difference is much higher than the percentage of skeptics reported by @FLCPSWMBP_2023: 0.7% for Economics, 2.1% for Political Science, and 1.1% for Psychology, and 1.3% for Sociology. The field of Accounting, therefore, also has the lowest percentage of non-skeptics (i.e., researchers who are either moderately or extremely confident in the reproducibility of influential findings). That is, Accounting has about 39.3% non-skeptics, while Economics has 61.1%, Political Science has 45.8%, Psychology has 41.3%, and Sociology has 61.7%. The differences with Economics and Sociology again are the largest, while the differences between Political Science and Psychology are smaller.
-
-
-Next, we compare assessments of accounting researchers regarding reproducibility across different methodologies. Accounting is not only a diverse discipline in terms of orientation and topic but also in terms of the methodologies its researchers employ. We distinguish among five categories: Analytical, Archival/Field, Experimental, Qualitative, and Survey. We asked respondents which of those categories best described their main methodological area, enabling us to categorize them in the data. Table 4 displays their assessments regarding the reproducibility of influential findings across three panels. Panel A focuses on assessments of reproducibility within accounting as a whole, Panel B on assessments within their main methodological area, and Panel C on differences in assessments between accounting as a whole and their main methodological area.
-
-
-\centerline{--- Insert Table 4 about here ---}
-
-The findings in Table 4 Panel A suggest that analytical and qualitative researchers are more pessimistic and skeptical about the reproducibility of influential findings in accounting as a whole than accounting researchers using other methodologies. In particular, analytical researchers are significantly less confident about the reproducibility of influential findings in accounting in general than researchers in the Archival/Field and Experimental categories (two-tailed p-value \< 0.100). When turning to respondents' assessments of the reproducibility of influential findings in their own methodological area, we find that analytical researchers have the most confidence in the influential findings within their methodological area as their average confidence is statistically higher from those reported by the average reported for the other four methodologies (two-tailed p-value \< 0.100). Qualitative research reports a significantly lower average confidence than Analytical, Archival/Field, and Experimental Research, albeit it is indistinguishable from the average confidence reported by those in the Survey category (two-tailed p-value \> 0.100).
-
-Panel C reports the "assessment gap," which captures the difference in assessments of the reproducibility of influential findings in respondents' own methodological area versus accounting in general. A higher (lower) assessment gap indicates that respondents are more (less) confident in the reproducibility of influential findings in their methodological area compared to accounting in general. The findings of Panel C report that analytical researchers report the largest assessment gap, implying they are relatively skeptical about the reproducibility of influential findings in accounting as a whole compared to their own methodology. The average assessment gap reported for the Analytical category is also statistically different from the averages reported in the other four categories (two-tailed p-value \< 0.100). The other four categories exhibit no clear assessment gap (with averages hovering around zero) and are statistically indistinguishable from each other.
-
-### Sharing Research Materials - Familiarity and Importance
-
-Accounting researchers so far show a disproportionate skepticism toward the reproducibility in their field and with some variation across methodologies. Given the skepticism, we have observed so far, one would expect accounting researchers to take a more proactive stance on open science approaches, like the practice of research materials sharing. The survey assessed respondents' evaluations of the practice of research materials sharing next. Specifically, we asked respondents two questions about the practice of sharing research materials, which we defined as the practice of sharing data, code, and research procedures. These two questions were also close adaptions of the survey done by @FLCPSWMBP_2023.
-
-\centerline{--- Insert Table 5 about here ---}
-
-The first question assesses respondents' familiarity with the practice of research materials sharing: "How familiar are you with the practice of publicly sharing research materials (i.e., data, code, and research procedures) for a completed study?"[^5] Table 5 Panel A shows respondents' answers to the question about familiarity, including benchmark answers of respondents in different fields originating from the survey by @FLCPSWMBP_2023 . Generally speaking, academics in the social sciences report being relatively aware of and familiar with the practice of research material sharing. However, the results do suggest that, compared to each of the other four fields in the social sciences, accounting researchers are significantly less familiar with the practice (two-tailed p-value \< 0.010). The second question captures respondents' assessed importance of research material sharing: "To what extent do you believe that publicly sharing research materials (i.e., data, code, and research procedures) is important for the advancement of accounting research?"[^6] Table 5 Panel B suggests that accounting researchers also find the practice of research material sharing less important than academics in each of the other four fields (two-tailed p-value \< 0.010).
-
-[^5]: The corresponding question in @FLCPSWMBP_2023 is "Have you ever heard of the practice of publicly posting data or code online for a completed study?" We deviated from this original question by using the term "research materials" and defining it as "sharing data, code, and research procedures" in our version of the question because we wanted to cover all aspects of this Open Science practice in one question.
-
-[^6]: The corresponding question in @FLCPSWMBP_2023 is "To what extent do you believe that publicly posting data or code online is important for progress in \[Discipline\]?" We adapted this question for terminological consistency across our survey.
-
-
-\centerline{--- Insert Figure 2 about here ---}
-
-Figure 2 reproduces the data reported in Table 5 Panel B by presenting the frequencies along horizontal axes and centering them to a neutral midpoint. It reveals that, compared to the social science disciplines, relatively fewer respondents in our sample are strong supporters of the practice of research material sharing. That is, of the total sample, 39.6% of the respondents consider it "very important" (Accounting) versus 51.7% in Economics, 48.1% in Political Science, and 43.8% in Psychology. Only Sociologists report a lower percentage of strong supporters (i.e., 29.4%) than the accounting researchers in our sample.
-
-
-\centerline{--- Insert Table 6 about here ---}
-
-Next, we examine familiarity with and perceived importance of research materials sharing across methodologies within accounting. We again distinguish between five methodological areas (i.e., Analytical, Archival/Field, Experimental, Qualitative, and Survey). Table 6 displays assessments of the practice of research material sharing using two panels. Similar to Table 5, Table 6 Panel A reports about the familiarity with the practice (i.e., "How familiar are you with the practice of publicly sharing research materials (i.e., data, code, and research procedures) for a completed study?") and Panel B reports about assessed importance ("To what extent do you believe that publicly sharing research materials (i.e., data, code, and research procedures) is important for the advancement of accounting research?").
-
-Panel A shows that familiarity is larger for respondents using Archival and Field methods compared to respondents using Qualitative, Analytical, and Survey methods (two-tailed p-value \< 0.100). Moreover, we also find that respondents using Qualitative methods are less familiar with research material sharing compared to all four other categories (two-tailed p-value \< 0.100). Panel B shows that there are few significant differences in terms of the assessed importance of research material sharing across the methodologies. Only respondents in the Archival/Field category assess research material sharing as significantly more important than respondents using the Qualitative and Survey categories.
-
-### Sharing Research Materials - Rationale and Scope
-
-So far, we document that, compared with researchers from other social sciences, we accounting researchers are less familiar with research sharing and find it less important. Since we also wanted to understand what drives accounting researchers' willingness to share research materials, our survey contained a hypothetical scenario in which another (hypothetical) fellow researcher asked respondents whether they would like to share the research materials (i.e., data, code, and research procedures) of a paper they published in an academic journal.
-
-#### Hypothetical Scenario - Design
-
-We manipulated two between-subjects factors in the hypothetical scenario. First, we manipulated the rationale used by the fellow researcher requesting access to the researcher's materials. In the *collaboration rationale* treatment, the fellow researcher requested access to researcher materials to understand the work better and build on it. In the *control rationale* treatment, the fellow researcher requested access to verify and potentially correct the research. Second, we manipulated whether the fellow researcher requested the research materials to be shared publicly (i.e., *public scope*) or privately (i.e., *private scope*). Respondents were randomly assigned to receive only one stated rationale (*control* *rationale* versus *collaboration rationale*) and one sharing scope (*public* versus *private scope*). We measured respondents' willingness to comply with the fellow researcher's request on a scale ranging from 0% (definitely not) to 100% (definitely). The hypothetical scenario was, like the survey, designed using oTree [@CSW_2016].
-
-We predicted that the effect of using a collaborative versus controlling rationale increases accounting researchers' willingness to share their research materials because it communicates a potential benefit rather than cost in terms of reputation (our first hypothesis). We also predicted that a private sharing request leads to a higher willingness to share than a public sharing requests because the former involves a lower potential downside risk in terms of reputation than the latter (our second hypothesis). Finally, we predicted that the effect of stating a collaborative versus controlling rationale is larger in the case of a private sharing request as opposed to a public sharing request (our third hypothesis). The conceptual reasoning behind this interaction effect is that, besides the additive effects of private sharing and a collaboration rationale, the perceived benefit of sharing under the collaboration rationale should be amplified when the scope of sharing is private rather than public. Namely, for a private scope, a collaboration rationale implies more direct benefits of sharing than for a public scope. We pre-registered our predictions and design at the \href{https://osf.io/4akyd}{Open Science Foundation}.
-
-
-#### Hypothetical Scenario - Procedures
-
-After accepting the terms and conditions, respondents were told that they would read a short scenario and that they would answer questions about it. The scenario included a description that they just conducted a study and published it in an academic journal. Respondents were also told that a fellow researcher contacted them for access to their research materials, which we specified as 'data, code, and research procedures'. Next, we provided four pieces of information about the request made by the fellow researcher. In this part of the scenario, we manipulated whether the request was to make the research materials publicly accessible (*public scope*) or share them only with the requesting fellow researcher (*private scope*). We also featured our second manipulation, specifically, whether the provided rationale was to collaborate with or control the research of the respondent (*collaboration rationale* versus *control rationale*). Appendix B contains an overview of the manipulations and the materials.
-
-\centerline{--- Insert Table 7 about here ---}
-
-#### Hypothetical Scenario - Findings
-
-Table 7 shows the findings of the hypothetical scenario. On average, we find a relatively high willingness to share research materials in the hypothetical scenario and across different variations of rationale and scope (mean = 72%, s.d. = 28%). However, we do not find statistical support for our three predictions. First, Table 7 Column 1 reports no significant effect of using a *collaboration rationale* over a *control rationale* (two-tailed p-value \> 0.100). Moreover, Column 2 shows no support for a main effect of *private scope* on respondents' willingness to share research materials (two-tailed p-value \> 0.100). Lastly, column 3 shows no support for an interaction effect between *collaboration rationale* and *private scope* (two-tailed p-value \> 0.100). In sum, although we find that respondents express a high willingness to share research materials in our hypothetical scenario, we don't find any evidence it is affected by the way the request for sharing is made. At least in our hypothetical scenario, it does not matter whether the request is made to make the materials private (rather than public) and whether the request is made to promote collaboration as a research community or to verify whether the research has been conducted appropriately.
-
-### Sharing Research Materials - Prescriptive versus Descriptive Views
-
-Our respondents report a high willingness to share research materials in a hypothetical scenario and do not seem moved by the circumstances under which requests for research materials are made. Next, our survey focuses on the perceived prescriptive and descriptive importance of research material sharing. Table 8 Panel A reports data on respondents' answers to the question, "How often do you publicly share research materials (i.e., data, code, and research procedures)?" It also splits the data into main methodological areas (i.e., Analytical, Archival/Field, Experimental, Qualitative, and Survey). The results in Panel A reveal that 50% of the respondents state that they at least sometimes publicly share their research materials. We also find that stated sharing tendencies are significantly lower for respondents in the Qualitative and Survey categories compared to each of the three other methodological areas, i.e., the respondents in the Analytical, Archival, and Experimental categories (two-tailed p-value \< 0.100).
-
-
-\centerline{--- Insert Table 8 about here ---}
-
-Table 8 Panel B reports answers to three questions measuring respondents' perceptions of how important others consider research material sharing to be (i.e., prescriptive and descriptive importance). Namely, these three questions ask (1) what percentage of accounting researchers in general favor research material sharing, (2) what percentage of editors of the top six accounting journals believe it increases the value of a manuscript, and (3) what percentage of accounting researchers publicly share research materials. The data in Panel B reveal that respondents believe about 44% of accounting researchers favor publicly sharing research materials, they believe 60.8% of the top-six accounting editors are in favor of publicly sharing research materials, and they believe 27.6% of accounting researchers actually share research materials.
-
+The results in Table 3 reveal that accounting researchers generally hold a more critical view of the reproducibility of our influential findings. Compared to their peers in economics and sociology, accounting researchers exhibit a greater degree of doubt about the reproducibility of their influential work, with a difference of about half a point on a 5-point Likert scale. This difference is less stark when we compare accounting researchers to researchers in the fields of Political Science and Psychology. In a field fixed effect regression, in which we use Accounting as the baseline, we find that all four fixed field effects are statistically different from zero (two-tailed p-value \< 0.01). This skepticism is consistent with us accountants being more concerned about research quality hinting at the existence of a credence-good problem that open science methods are designed to address.
 
 
 \centerline{--- Insert Figure 3 about here ---}
 
+Figure 3 visually represents this skepticism, showing that 10.5% of accounting researchers are "Not at all confident" about the reproducibility of influential findings in their field. This percentage starkly contrasts the skepticism reported by economists (0.7%), political scientists (2.1%), psychologists (1.1%), and sociologists (1.3%), as found by @FLCPSWMBP_2023. In addition, this figure reveals that Accounting also has the lowest percentage of non-skeptics (i.e., researchers who are either moderately or extremely confident in the reproducibility of influential findings). That is, Accounting has about 39.3% non-skeptics, while Economics has 61.1%, Political Science has 45.8%, Psychology has 41.3%, and Sociology has 61.7%. The differences to Economics and Sociology, again, are the largest, while the differences to Political Science and Psychology are smaller.
 
-To understand the differences between these three questions, Figure 3 displays box plots, one for each question and separately for each methodology. First, examining the three box plots for the sample as a whole, the visual pattern emerges that the perceptions of actual sharing behavior among accounting researchers lag behind perceptions of whether accounting researchers favor sharing, which, in turn, lags behind perceptions of whether editors value sharing. This pattern seems starker for respondents in the Archival/Field category. In this category, the box plot for the perceptions of actual sharing does not overlap with the other two, i.e., the box plots for the perceptions of accounting researchers favoring sharing and the perceptions of whether editors value sharing. These findings suggest a contrast between the perceived (prescriptive) importance of research material sharing and the perceived (descriptive) actual sharing behavior.
 
-### Sharing Research Materials - Observational Data
+To delve deeper, we examine the assessments of reproducibility across different methodologies within Accounting. Accounting is not only a diverse discipline in terms of orientation and topic but also in terms of the methodologies its researchers employ. We distinguish among five categories: Analytical, Archival/Field, Experimental, Qualitative, and Survey. We asked respondents which of those categories best described their main methodological area, enabling us to categorize them in the data. Table 4 presents their assessments regarding the reproducibility of influential findings across three panels. Panel A focuses on assessments of reproducibility within accounting as a whole, Panel B on assessments within their main methodological area, and Panel C on differences in assessments between accounting as a whole and their main methodological area.
 
-To contrast the perception of our our survey participants with actual research material sharing behavior, we collect observational data on research material sharing for a random country-stratified sample of `r nrow(authors)` authors from our target population. To assess whether these authors share research materials, we systematically search their homepages for evidence and also assess whether they have GitHub, Open Science Foundation, Dataverse, or Zenodo accounts linked to their name. If they do, we verify whether they share research materials over these channels. In addition, we use Scopus to identify all studies that these authors published since 2016 and verify whether these publications' DOI URLs reference research material sharing.[^7]
 
-[^7]: The data collection manual for this process is available in this project's GitHub repository.
+\centerline{--- Insert Table 4 about here ---}
 
-\centerline{--- Insert Table 9 about here ---}
+The findings in Table 4 Panel A suggest that analytical and qualitative researchers are more pessimistic and skeptical about the reproducibility of influential findings in accounting as a whole than accounting researchers using other methodologies. In particular, analytical researchers are significantly less confident about the reproducibility of influential findings in accounting in general compared to those using Archival/Field and Experimental categories (two-tailed p-value \< 0.100). Interestingly, when evaluating their own methodological areas, analytical researchers display the highest confidence levels, as their average confidence is statistically higher than those reported by the other four methodologies (two-tailed p-value \< 0.100), suggesting a discrepancy between their views on the field as a whole and their specific research approaches. Qualitative research reports significantly lower average confidence than Analytical, Archival/Field, and Experimental Research, albeit it is indistinguishable from the average confidence reported by those in the Survey category (two-tailed p-value \> 0.100).
 
-Table 9 reports our findings based on this sample of `r nrow(authors)` authors and their `r nrow(papers)` papers. Panel A summarizes the data by author. We find that `r sum(by_author$has_made_resmat_available)` % of our authors share research materials. This number and its according binomial confidence interval is overall consistent with the perceptions voiced in the survey.
+Panel C presents the "assessment gap," which captures the difference in assessments of the reproducibility of influential findings in respondents' own methodological area versus accounting in general. A higher (lower) assessment gap indicates that respondents are more (less) confident in the reproducibility of influential findings in their methodological area compared to accounting in general. The findings of Panel C report that analytical researchers report the largest assessment gap, implying greater skepticism about the field's reproducibility as a whole compared to their own methodology. The average assessment gap reported for the Analytical category is also statistically different from the averages reported in the other four categories (two-tailed p-value \< 0.100). In contrast, the other methodological categories show no significant differences, suggesting a more uniform view across different research approaches within accounting.
+
+### Sharing Research Materials - Familiarity and Importance
+
+Accounting researchers so far show a disproportionate skepticism toward the reproducibility in their field relative to neighboring fields. Given this skepticism and following our discussion in section 2, one might expect accounting researchers to take a proactive stance on open science approaches, particularly regarding the sharing of research materials. Following the old proverb by Supreme Court Justice Luis Brandeis "sunlight is the best disinfectant" one would expect accountants to support increased transparency in research. The survey assesses this argument by asking respondents two questions about the practice of sharing research materials, which we define as the practice of sharing data, code, and research procedures. These two questions are also close adaptions of the survey done by @FLCPSWMBP_2023.
+
+\centerline{--- Insert Table 5 about here ---}
+
+The first question assesses respondents' familiarity with the practice of research materials sharing: "How familiar are you with the practice of publicly sharing research materials (i.e., data, code, and research procedures) for a completed study?"[^4] Table 5 Panel A shows that accounting researchers are generally less familiar with research materials sharing than their counterparts in other social sciences from the survey by @FLCPSWMBP_2023. Generally speaking, academics in the social sciences report being relatively aware of and familiar with the practice of research material sharing. However, the results do suggest that, compared to each of the other four fields in the social sciences, accounting researchers are significantly less familiar with the practice (two-tailed p-value \< 0.010). The second question captures respondents' perceived importance of research material sharing. [^5] Table 5 Panel B suggests a similar trend, whereby accounting researchers consider this practice less important than researchers in other social sciences (two-tailed p-value \< 0.010), a finding that underscores potential barriers to the adoption of open science principles.
+
 
 \centerline{--- Insert Figure 4 about here ---}
 
-However, as becomes also apparent from Panel B, our authors only share research materials occasionally. Only 7.5 % of the paper DOI URLs reference research material sharing. As Figure 4 indicates, this share is mildly increasing over time but even in recent years, the sharing percentage seems relatively modest.
+Figure 4 graphically presents these findings, showing the frequencies along horizontal axes and centering them to a neutral midpoint. Only 39.6% of the accounting researchers deem research material sharing "very important" compared to higher percentages in other fields like Economics (51.7%), Political Science (48.1%), and Psychology (43.8%). Sociologists report a lower percentage of strong supporters (29.4%) than the accounting researchers in our sample, suggesting varied attitudes towards open science across the disciplines.
 
-The journal breakdown in Panel B provides clear evidence that the data and code policies established by the Journal of Accounting Research and Management Science affect the tendency of research material sharing. This also becomes apparent from Panel A. If one omits research material sharing via these journals, the share of sharing accounting researchers drops from 39 % to 23 %.[^8]
 
-[^8]: Untabulated analyses based on small frequencies provide suggestive evidence that, overall, the sharing frequencies are higher for general economics journals than for journals in the areas of accounting and finance.
+\centerline{--- Insert Table 6 about here ---}
 
-Overall, our observational data supports the survey findings. It seems that research material sharing takes place only occasionally in accounting and in many instances only if required by the publishing journal. In the next section, we will return to our survey data to explore stated rationales for or against research material sharing.
+We further examine attitudes, namely familiarity with and the perceived importance of research materials sharing across methodologies within accounting. Again, we distinguish between five methodological areas (i.e., Analytical, Archival/Field, Experimental, Qualitative, and Survey). Table 6 displays assessments of the practice of research material sharing using two panels. Similar to Table 5, Table 6 Panel A reports about the familiarity with the practice (i.e., "How familiar are you with the practice of publicly sharing research materials (i.e., data, code, and research procedures) for a completed study?") and Panel B reports about assessed importance ("To what extent do you believe that publicly sharing research materials (i.e., data, code, and research procedures) is important for the advancement of accounting research?").
 
-### Sharing Research Materials - Rationales
+Panel A shows that familiarity is larger for respondents using Archival and Field methods compared to respondents using Qualitative, Analytical, and Survey methods (two-tailed p-value \< 0.100). Moreover, we also find that respondents using Qualitative methods are less familiar with research material sharing compared to all four other categories (two-tailed p-value \< 0.100). Panel B shows that there are few significant differences in terms of the perceived importance of research material sharing across the methodologies. Only respondents in the Archival/Field category assess research material sharing as significantly more important than respondents using the Qualitative and Survey categories. Overall, these findings indicate that accounting researchers are, at the very least, not strong believers in the signaling value of research material sharing. This might be because they are simply relatively more unaware of the activity and/or they are assessing the benefits to be relatively lower or the costs to be relatively higher.
 
-So, what prevents accounting researchers from sharing? Our survey also included questions about the rationales against sharing. When respondents reported that they did not always publicly share research materials, we asked them which reasons would make them withhold their research materials. Respondents were able to provide more than one reason.
+### Sharing Research Materials - Prescriptive versus Descriptive Views
 
+Next, our survey focuses on the perceived prescriptive and descriptive importance of research material sharing. Table 7 Panel A reports data on the frequency of sharing, revealing that an impressive 57% of the respondents state that they at least sometimes publicly share their research materials. We also find that stated sharing tendencies are significantly lower for respondents in the Qualitative and Survey categories compared to each of the three other methodological areas, i.e., the respondents in the Analytical, Archival, and Experimental categories (two-tailed p-value \< 0.100).
+
+
+\centerline{--- Insert Table 7 about here ---}
+
+Table 7 Panel B reports answers to three questions measuring respondents' perceptions of how important others consider research material sharing to be (i.e., prescriptive and descriptive importance). Namely, these three questions ask (1) what percentage of accounting researchers in general favor research material sharing, (2) what percentage of editors of the top six accounting journals believe it increases the value of a manuscript, and (3) what percentage of accounting researchers publicly share research materials. The data in Panel B reveal that respondents believe about 44% of accounting researchers favor publicly sharing research materials, they believe 61% of the top-six accounting editors are in favor of publicly sharing research materials, and they believe 27% of accounting researchers actually share research materials.
+
+
+\centerline{--- Insert Figure 5 about here ---}
+
+To visualize the differences between these three questions, Figure 5 displays scatter box plots, one for each question and separately for each methodology. First, examining the three plots for the sample as a whole, the clear visual pattern emerges that the assessments of actual sharing behavior among accounting researchers lag behind assessments of whether accounting researchers favor sharing, which, in turn, lags behind assessment of whether editors value sharing. This pattern seems starker for respondents in the Archival/Field category. These findings suggest a contrast between the perceived (prescriptive) importance of research material sharing and the perceived (descriptive) actual sharing behavior. In other words: We believe that we should share and we also state that we do but we do not believe that others do.
+
+### Pre-registration
+
+Our survey has so far revealed that accounting researchers who participated in our survey are more skeptical about reproducibility than other social science areas. We also find that they are less familiar with research materials sharing as an open science practice that helps address reproducibility and that they find that practice less important. Besides research material sharing, our survey also covers a second Open Science practice: Pre-registration.
+
+
+\centerline{--- Insert Table 8 about here ---}
+
+Table 8 summarizes three questions about pre-registration. Panel A considers respondents' familiarity with the practice itself. We asked respondents: "How familiar are you with the practice of pre-registering hypotheses or analyses in advance of a study?"[^6] The results in Panel A suggest accounting researchers are equally familiar with the practice as researchers in Political Science and Psychology. They seem to be slightly more familiar than researchers in Economics and Sociology (two-tailed p-value \< 0.010). While this finding might appear surprising at first glance, one has to factor in that the practice of pre-registration is gaining traction over time, and our survey was fielded two years later than the second wave of our benchmark survey.
+
+\centerline{--- Insert Figure 6 about here ---}
+
+Panel B reports data on the first-time respondents pre-registered. It is based on the question: "Approximately when was the first time you pre-registered hypotheses or analyses in advance of a study?"[^7] The findings show a clear pattern: Accounting researchers started pre-registering their studies significantly later than researchers in other social science fields (two-tailed p-value \< 0.010). They started around 2018, compared to 2015-2016 for the other fields. This finding is also supported by Figure 6, which shows that the take-up of pre-registration in accounting over time lags behind the other social science areas.
+
+Panel C examines trustworthiness, showing data on answers to the question: "How trustworthy do you find the work of scholars who tend to pre-register hypotheses or analyses as compared to the work of those who don't?"[^8] Results indicate no apparent differences in perceived trustworthiness in accounting compared to economics and political science (two-tailed p-value \> 0.100). However, the perceived increase in trustworthiness when pre-registering is less in accounting compared to psychology and sociology (two-tailed p-value \< 0.010). However, it should be noted that for this question, the comparability across fields is limited as we asked explicitly about trustworthiness, whereas @FLCPSWMBP_2023 referred more generally on a general opinion.
+
+
+\centerline{--- Insert Table 9 about here ---}
+
+To conclude our descriptive evidence on pre-registration, we examine differences in familiarity, usage, and trustworthiness of pre-registration across the different methodological areas within accounting. Table 9 displays respondents' frequencies using three panels. Similar to Table 8 Panel A, Panel A of Table 9 reports on familiarity, i.e., the question: "How familiar are you with the practice of pre-registering hypotheses or analyses in advance of a study?" Somewhat unsurprisingly, Panel A shows that qualitative accounting researchers are less familiar with the practice than accounting researchers belonging to the Archival, Experimental, and Survey categories (two-tailed p-value \< 0.100). Yet, there is no statistical difference between qualitative and analytical accounting researchers. Panel B reports on differences in usage, specifically, the question "`r vars$text[100]`", similar to the question featured in Table 8 Panel B. We find that accounting researchers in the experimental field report the highest usage of pre-registration, while none of the qualitative accounting researchers report using it. Lastly, Panel C reports differences in perceived trustworthiness. Specifically, it features answers to the question, "How trustworthy do you find the work of scholars who tend to pre-register hypotheses or analyses as compared to the work of those who don't?" which is identical to the question featured in Table 8 Panel C. We find no clear evidence of differences among the different methodologies in whether they trust pre-registered work more than work that has not been pre-registered.
+
+### Usage of Open Science Methods - Observational Data
+
+To contrast these perceptions with reality, we collect observational data on actual research material sharing behavior and the use of pre-registration behavior for a random country-stratified sample of `r nrow(authors)` authors from our target population. To assess whether these authors share research materials, we systematically search their homepages for evidence and also verify whether they have relevant online accounts linked to their names on platforms such as GitHub, Open Science Foundation, Dataverse, or Zenodo. If they do, we collect whether they share research materials over these channels. In addition, we use Scopus to identify all studies that these authors published since 2016 and verify whether these publications' DOI URLs reference research material sharing.[^9] We also assess various pre-registration platforms to assess whether our authors have used pre-registration. We only were able to identify for `r sum(by_author$has_prereged)` authors clear evidence that they have pre-registered a study. These cases are linked to the registered report initiative of JAR. Therefore, this reminder of this section solely focuses on research material sharing.
 
 \centerline{--- Insert Table 10 about here ---}
 
-Table 10 Panel A displays the frequencies and percentages for each reason featured and provided in our survey. Aside from reporting the total frequencies for the entire sample, it also (again) splits them up into the five methodological fields (i.e., Analytical, Archival/Field, Experimental, Qualitative, and Survey). The most commonly stated reason that respondents gave for not sharing research materials is that the data are proprietary. 56.3% of all respondents give this reason, ranking first for all methodological areas. This is somewhat surprising because not all methodological areas regularly deal with proprietary data. In a shared second place are three more prominent reasons respondents provided, namely, (1) the time that it takes to make materials available (29.9% of all respondents), (2) the fear of being scooped when materials become publicly available (23.2% of all respondents), and (3) no need for sharing as their data are already publicly available (33.9% of all respondents). There are some other notable differences across the methods. For qualitative researchers, deidentification problems are a relatively important reason (45.8%) compared to the others. Also, analytical researchers consider the time that it takes to make materials available far less of a reason than researchers using the other methods (i.e., 9.5%).
+Table 10 reports our findings based on this sample of `r nrow(authors)` authors and their `r nrow(papers)` papers. Panel A summarizes the data by author. We find that `r sum(by_author$has_made_resmat_available)` % of our authors share research materials. This number and its corresponding binomial confidence interval (30 to 49 %) are lower that the percentage of respondents that stated in the survey that they at least sometimes share (57 %) but a little bit higher than the prescriptive sharing frequency that our respondents attributed to other researchers (27 %).
 
-Besides these multiple-choice questions soliciting the reasons for not sharing research materials, we also ask our participants to reflect on their answers in our hypothetical sharing scenario. The answers they provided in this free-form field have been coded by a research assistant who was not informed about the study's experimental design. The resulting categories characterizing the coded answers and their respective frequencies are presented in Panel B, for the total sample as well as for the different treatment cells.
+\centerline{--- Insert Figure 7 about here ---}
 
-Different from the findings in Panel A, we are now also able to identify reasons for and not just against sharing. First and foremost, our participants share this because they believe it enhances the research's quality. Another strong argument is that it helps other researchers. This argument is significantly more likely to be provided by participants that faced the collaboration treatment, in line with our theoretical predictions and providing evidence that the framing of the sharing situation affects the decision-making of our participants.
+As becomes apparent from Panel B, our authors only share research materials occasionally. Only 7.5 % of the paper DOI URLs reference research material sharing. As Figure 7 indicates, this share has mildly increased over time but even in recent years, the paper-level sharing percentage seems relatively modest.
 
-The main rationales against sharing are related to the materials being considered valuable intellectual property that can potentially be reused for other research projects. A typical example of such a statement is:
+The journal breakdown in Panel B provides clear evidence that the data and code sharing policies established by the Journal of Accounting Research and Management Science drastically influence research material sharing behavior. This also becomes apparent from Panel A. If one omits research material sharing via these journals, the percentage of sharing accounting researchers drops from 39 % to 23 %.[^10]
+
+Overall, our observational data supports the survey findings. It seems that research material sharing only takes place sporadically in accounting and is often driven by journal requirements.
+
+### Rationales Related to Research Material Sharing - Experimental Findings
+
+We now turn to our third and final research question: An attempt to understand how our participants decide on whether to share research materials. As a first step, we use a small experimental design. For this, we create a hypothetical scenario. The scenario outlines that the participating researcher has just conducted a study and published it in an academic journal. Next, participants are informed that a fellow researcher has contacted them for access to their research materials. Next, we provide four pieces of information about the request made by a fellow researcher. In these statements, we manipulate two between-subjects factors: the rationale behind the request for research materials and the scope of sharing. First, we manipulate the rationale used by the fellow researcher requesting access to the researcher's materials. In the *collaboration rationale* treatment, the fellow researcher requests access to researcher materials to understand the work better and build on it. In the *control rationale* treatment, the request aims to verify and potentially correct the research. Second, we vary whether the fellow researcher requests the research materials to be shared publicly (i.e., *public scope*) or privately (i.e., *private scope*). Respondents were randomly assigned one stated rationale (*control* versus *collaboration*) and one sharing scope (*public* versus *private*). Their willingness to comply with the fellow researcher's request was then measured on a scale ranging from 0% (definitely not) to 100% (definitely). The hypothetical scenario was, like the survey, designed using oTree [@CSW_2016]. An overview of the manipulations and the materials can be found in Appendix B.
+
+Building on our discussion in section 2, we predict that using a collaborative versus controlling rationale increases accounting researchers' willingness to share their research materials because it communicates a potential benefit rather than cost in terms of reputation (our first hypothesis). We also predict that a private sharing request would be more favorably received due to lower indirect costs triggered by lower reputation risks (our second hypothesis). Finally, we predict that the effect of a collaborative rationale is larger in the case of a private sharing request than a public sharing request (our third hypothesis). The conceptual reasoning behind this interaction effect is that, besides the additive effects of private sharing and a collaboration rationale, the perceived benefit of sharing under the collaboration rationale should be amplified when the scope of sharing is private rather than public. Namely, for a private scope, a collaboration rationale implies more direct benefits of sharing than for a public scope. We pre-registered our predictions and design at the \href{https://osf.io/4akyd}{Open Science Foundation}.
+
+\centerline{--- Insert Table 11 about here ---}
+
+Table 11 shows the findings of the hypothetical scenario. On average, we find a high willingness to share research materials in the hypothetical scenario and across different variations of rationale and scope (mean = 72%, s.d. = 28%). However, we do not find statistical support for our three predictions. First, Table 7 Column 1 reports no significant effect of using a *collaboration rationale* over a *control rationale* (two-tailed p-value \> 0.100). Moreover, Column 2 reveals no support for a main effect of *private scope* on respondents' willingness to share research materials (two-tailed p-value \> 0.100). Lastly, column 3 shows no support for an interaction effect between *collaboration rationale* and *private scope* (two-tailed p-value \> 0.100). In sum, although we find that respondents express a high willingness to share research materials in our hypothetical scenario, we do not find any evidence it is affected by the way the request for sharing is made. At least in our hypothetical scenario, it does not matter whether the request is made to make the materials private (rather than public) and whether the request is made to promote collaboration as a research community or to verify whether the research has been conducted appropriately.
+
+### Rationales Related to Research Material Sharing - Survey Evidence
+
+Also, given our experimental findings, we rely on two sources of survey data to shed light on our third research question. First, our survey contains a question asking respondents who report that they do not always publicly share research materials to explain which reasons make them withhold their research materials. Respondents are able to select multiple reasons.
+
+
+\centerline{--- Insert Table 12 about here ---}
+
+Table 12 Panel A displays the frequencies and percentages for each reason featured and provided in our survey. Aside from reporting the total frequencies for the entire sample, it also (again) splits them up into the five methodological fields (i.e., Analytical, Archival/Field, Experimental, Qualitative, and Survey). The most commonly stated reason that respondents gave for not sharing research materials is that the data are proprietary. 56.3% of all respondents give this reason, ranking first for all methodological areas. This is somewhat surprising because not all methodological areas regularly deal with proprietary data. In a shared second place are three more prominent reasons respondents provided, namely, (1) the time that it takes to make materials available (29.9% of all respondents), (2) the fear of being scooped when materials become publicly available (23.2% of all respondents), and (3) no need for sharing as their data are already publicly available (33.9% of all respondents). For these reasons, there are some notable differences across the different methodologies. For qualitative researchers, deidentification problems are a relatively important reason (45.8%). Analytical researchers, in contrast, consider the time that it takes to make materials available relatively less of a reason than researchers using the other methods (i.e., 9.5%).
+
+Besides this multiple-choice question, we also ask our participants to reflect on their answers in our hypothetical sharing scenario. This second data source is interesting (a) because it provides unfiltered insights on the reasons for and against data sharing, and (b) it might be influenced by our experimental manipulations, despite that it did not affect the sharing likelihood in the hypothetical scenario. To gather these additional insights, we tasked a research assistant, who was not informed about the study's experimental design, to code the answers of the participants. The resulting categories, characterizing the answers and their respective frequencies, are presented in Panel B of Table 12. It also splits the frequencies by the different experimental cells of the experiment.
+
+We first focus on the benefits of research material sharing. Panel B reveals that participants share research materials predominantly because they believe sharing enhances research quality. A typical example of such a statement is the following:
+
+```{=tex}
+\begin{displayquote}
+"The purpose of research is to better understand the world, and replication (and scrutiny) of one's research is an essential element of developing a deep understanding of the world."
+\end{displayquote}
+```
+
+While many participants refer to research in general when making this point, there are also responses that focus on the respondents' own work. These argue that research material sharing, by uncovering honest mistakes, can improve the quality of the sharing researcher's work. See, for example, the following statement:
+
+```{=tex}
+\begin{displayquote}
+"Because if there is a shadow of a doubt, I pay the consequences. Moreover, I care about the results--so if they can be improved upon, I am all for it!."
+\end{displayquote}
+```
+
+Another prominent argument provided by participants is that research material sharing helps other researchers. This argument is significantly more likely to be provided by participants who faced the collaboration treatment, providing evidence that the framing of the sharing situation affects the decision-making of our participants. We take this as evidence that our participants see the public and also private benefits of data and code sharing. The following statement illustrates the importance of research material sharing helping other researchers nicely:
+
+```{=tex}
+\begin{displayquote}
+"I always make supporting information available to other researchers when requested. It may help them learn our process and expand upon our work."
+\end{displayquote}
+```
+
+The main rationales against sharing are related to the materials being considered valuable intellectual property that can potentially be reused for other research projects. A typical example of such a statement reflecting the indirect proprietary costs of data sharing is:
 
 ```{=tex}
 \begin{displayquote}
 "There might have been substantial workload flown into collecting data that also will benefit follow-up projects. Giving away the data might harm future projects without remuneration for the collection effort."
 \end{displayquote}
 ```
-Another interesting aspect that does not become apparent from the pre-conditioned analysis in Panel A is that a sizable amount of participants indicate that they are concerned about unethical use of their research materials. These concerns are related to other researchers using their work for "reverse p-hacking," trying to discredit prior findings to establish a contribution. Again, an example of such a statement:
+Another interesting aspect that does not become apparent from the pre-conditioned analysis in Panel A is that a sizable amount of participants indicate that they are concerned about the unethical use of their research materials. These concerns are related to other researchers using their work for "reverse p-hacking," trying to discredit prior findings to establish a contribution. An example of such a statement:
 
 ```{=tex}
 \begin{displayquote}
@@ -296,75 +355,47 @@ But even without reverse p-hacking, research material sharing requests can creat
 "I would want to share my materials but I would be nervous that I did something 'wrong'  and it would make me look bad if my study didn't replicate. I'm a junior faculty and wouldn't want to do anything to jeopardize my reputation or likelihood of getting tenure."
 \end{displayquote}
 ```
-Another aspect, which also featured prominently in Panel A, is the time that it takes to entertain research material sharing and potential follow-up requests. For example:
+Another aspect, which is also featured prominently in Panel A, is the time investment that is required to entertain research material sharing and potential follow-up requests. For example:
 
 ```{=tex}
 \begin{displayquote}
-"Many academics, including me, are constantly working under high pressure to deliver performance and short of time to fulfill a large range of commitments. It is simply impossible to entertain each and every such request, especially when replying to the first might lead to feeling the obligation to answer more questions from the requester in the future. A requester can be a relatively inexperienced graduate student exploring a doctoral topic, which has implications to how many questions s/he might have in the future. Thus, the propensity to reply to a request often depends on the status of the requester in the field and the anticipated consequences (or the lack of) of entertaining the request (or not)."
+"Many academics, including me, are constantly working under high pressure to deliver performance and short of time to fulfill a large range of commitments. It is simply impossible to entertain each and every such request, especially when replying to the first might lead to feeling the obligation to answer more questions from the requester in the future. A requester can be a relatively inexperienced graduate student exploring a doctoral topic, which has implications for how many questions s/he might have in the future. Thus, the propensity to reply to a request often depends on the status of the requester in the field and the anticipated consequences (or the lack of) of entertaining the request (or not)."
 \end{displayquote}
 ```
-The last aspect of this quote also hints at a rationale commonly featured in the "it depends" category: the requesting person's personality and reputation. A final example:
+The last aspect of this quote also hints at a rationale commonly featured in the "it depends" category: the requesting person's personality and reputation. An example of this is:
 
 ```{=tex}
 \begin{displayquote}
 "It depends on whether I know the person and their reputation in the research community. I think my reputation would be tarnished if I didn't provide but I would also be skeptical of providing someone I didn't know my hand-collected data and code that took years of work to produce."
 \end{displayquote}
 ```
-These statements indicate the potential for selective sharing among well-connected researchers, which would benefit an "in-crowd" of academics while at the same time unraveling the academic playing field and increasing inequality. Taken together, we conclude from the rationale analysis that our participants give more consideration to potential sharing costs than to potential sharing benefits. While the sharing benefits become more prevalent with a collaboration framing, the sharing costs are prominent regardless of the hypothetical scenario.
+These statements indicate the potential for selective sharing among well-connected researchers, which would benefit an "in-crowd" of academics while at the same time unleveling the academic playing field and increasing inequality.
 
-### Pre-registration
-
-Our survey has so far revealed that accounting researchers who participated in our survey are more skeptical about reproducibility than other social science areas. We also find that they are less familiar with research materials sharing as an open science practice that helps address reproducibility and that they find that practice less important. There seem to be various reasons why accounting researchers share and even more why they do not share their research materials. Besides research material sharing, our survey also covered a second Open Science practice: Pre-registration.
-
-
-\centerline{--- Insert Table 11 about here ---}
-
-Table 11 lists the frequencies and percentages for three questions about pre-registration. Panel A considers respondents' familiarity with the practice itself. Namely, we asked respondents: "How familiar are you with the practice of pre-registering hypotheses or analyses in advance of a study?"[^9] The results in Panel A suggest accounting researchers are equally familiar with the practice as researchers in Political Science and Psychology. They seem to be slightly more familiar than researchers in Economics and Sociology (two-tailed p-value \< 0.010). While this finding might appear surprising at first glance, one has to factor in that the practice of pre-registration is gaining traction over time, and our survey was fielded two years later than the second wave of our benchmark survey.
-
-[^9]: The question used in the survey of @FLCPSWMBP_2023 is "Have you ever heard of the practice of pre-registering hypotheses or analyses in advance of a study?".
-
-\centerline{--- Insert Figure 5 about here ---}
-
-Panel B reports data on the first-year respondents pre-registered. Namely, we asked them: "Approximately when was the first time you pre-registered hypotheses or analyses in advance of a study?"[^10] The findings exhibit a clear pattern: Accounting researchers started considering pre-registration for the first time significantly later than researchers in other social science fields (two-tailed p-value \< 0.010). The take-up started around 2018 compared to 2015-2016 for the other fields. This finding is also supported by Figure 5 showing that the take-up of pre-registration in accounting over time lags behind the other social science areas.
-
-
-[^10]: The question used in @FLCPSWMBP_2023 was "Approximately when was the first time you pre-registered hypotheses or analyses in advance of a study?"
-
-Panel C shows data on answers to the question: "How trustworthy do you find the work of scholars who tend to pre-register hypotheses or analyses as compared to the work of those who don't?"[^11] Results indicate no apparent differences in perceived trustworthiness in accounting compared to economics and political science (two-tailed p-value \> 0.100). However, the perceived increase in trustworthiness when pre-registering is less in accounting compared to psychology and sociology (two-tailed p-value \< 0.010).
-
-[^11]: The question used in the survey of @FLCPSWMBP_2023 is "What is your opinion of pre-registering hypotheses or analyses?". We found this question to be quite broad yet it used a trustworthiness scale. So, we chose a more specific framing for our question.
-
-
-\centerline{--- Insert Table 12 about here ---}
-
-In this final part of our analysis, we examine differences in familiarity, usage, and trustworthiness of pre-registration across the different methodological areas within accounting. Table 12 displays respondents' frequencies using three panels. Similar to Table 11 Panel A, Panel A of Table 12 reports on familiarity, i.e., the question: "How familiar are you with the practice of pre-registering hypotheses or analyses in advance of a study?" Somewhat unsurprisingly, Panel A shows that qualitative accounting researchers are less familiar with the practice than accounting researchers belonging to the Archival, Experimental, and Survey categories (two-tailed p-value \< 0.100). Yet, there is no statistical difference between qualitative and analytical accounting researchers. Panel B reports on differences in usage, specifically, the question "`r vars$text[100]`", similar to the question featured in Table 11 Panel B. We find that accounting researchers in the experimental field report the highest usage of pre-registration, while none of the qualitative accounting researchers report using it. Lastly, Panel C reports differences in perceived trustworthiness. Specifically, it features answers to the question, "How trustworthy do you find the work of scholars who tend to pre-register hypotheses or analyses as compared to the work of those who don't?" which is identical to the question featured in Table 11 Panel C. We find no clear evidence of differences among the different methodologies in whether they trust pre-registered work more than work that has not been pre-registered.[^12]
-
-[^12]: Similar to the observational data on research material sharing, we also collected observational data on pre-registration. However, for our random sample of `r nrow(authors)` authors, we find only for `r sum(by_author$has_prereged)` authors clear evidence that they have pre-registered a study. These cases are linked to the registered report initiative of JAR.
+Taken together, we conclude from the rationale analysis that our participants give more consideration to potential sharing costs than to potential sharing benefits. While the sharing benefits become more prevalent with a collaboration framing, the sharing costs are prominent regardless of the hypothetical scenario. Also, while the multiple-choice data highlight direct cost arguments, the unstructured verbal response also features various indirect costs.
 
 ## Discussion and Conclusion
 
-Our results support the conclusion that we accountants face an "open science dilemma." On the one hand, we are more skeptical about the reproducibility of our influential findings than other social science researchers are about their respective findings. On the other hand, we seem to be a little bit behind the curve in terms of research material sharing and research design pre-registration. If these conclusions are descriptive, what should be our reaction?
+Informed by a voluntary diclosure themed discussion of the costs and benefits of open science activities in accounting, we conducted a survey among accounting researchers to explore the perceptions and attitudes towards open science in our field. Our results suggest that accounting researchers face an "open science dilemma." On the one hand, they are more skeptical about the reproducibility of their influential findings than other social science researchers are about their respective findings. On the other hand, they seem to be a little bit behind the curve in terms of research material sharing and research design pre-registration. If these conclusions are descriptive, what should our reaction be?
 
-While we are not in a position to advise our profession on how to proceed, we feel that a two-pronged approach might be desirable. First, why are we so skeptical about our work? Is this an example of the anecdotal "professional skepticism" that leads us accountants to over-weight wrong signals in general? Or do we indeed have good reasons to be concerned? The only way to find out is to take stock. @LSA_2024 suggest reproduction studies in accounting might not be rare, and a majority of those confirm prior results. However, we need more systematic evidence on whether our findings reproduce, with or without new data, and hold in new settings. An impressive exercise in that regard is the recent large-scale reproduction attempt of studies published in Management Science [@FGHKO_2023]. This endeavor systematically reproduced almost 500 articles published in Management Science before and after the establishment of a Data and Code Policy in 2019. One interesting finding from that study is that accounting studies in Management Science are -if anything- more reproducible than studies in neighboring fields like finance. Based on this, it seems that professional skepticism might indeed be partly responsible for our open science dilemma.
+While we are not in a position to advise our profession on how to proceed, we feel that a two-pronged approach might be desirable. First, why are we so skeptical about our work? Is this an example of the anecdotal "professional skepticism" that leads us accountants to over-weight negative signals in general? Or do we indeed have good reasons to be concerned? The only way to find out is to take stock. @LSA_2024 suggest reproduction studies in accounting might not be rare, and a majority of those confirm prior results. However, we need more systematic evidence on whether our findings reproduce and whether they can be replicated using new data and settings. An impressive exercise in that regard is the recent large-scale reproduction attempt of studies published in Management Science [@FGHKO_2023]. This endeavor systematically reproduced almost 500 articles published in Management Science before and after the establishment of a Data and Code Policy in 2019. One interesting finding from that study is that accounting studies in Management Science are -if anything- more reproducible than studies in neighboring fields like finance. Based on this, it seems that professional skepticism and the resulting overly skeptical view on the reproducibility of our influential studies might indeed be partly responsible for our open science dilemma.
 
-It would be insightful to compare the findings for Management Science, which also documents an impressive effect of their data and code policy, with data on studies published in the Journal of Accounting Research, again pre and post their data policy. These findings could, in turn, be compared with those for studies published in other leading journals that do not have a dedicated data and code policy (yet). But not only systematic large-scale reproduction studies can update our priors about the reproducibility of our work. Replication games, potentially embodied in doctoral education, are an alternative means to assess the reproducibility of our work while at the same time helping researchers to grow their network and empirical skill sets alike. Taken together, we believe that the academic accounting profession should be well-positioned to take a leading role in verifying its output. In the end, assessing the reproducibility of scientific work is an assurance and auditing process, an area we know quite a bit about!
+It would be insightful to compare the findings for Management Science, which also documents an impressive effect of their data and code policy, with data on studies published in the Journal of Accounting Research, again pre and post their data policy. These findings could, in turn, be compared with those for studies published in other leading journals that do not have a dedicated data and code sharing policy (yet). But not only systematic large-scale reproduction studies can update our priors about the reproducibility of our work. Replication games, potentially embodied in doctoral education, are an alternative means to assess the reproducibility of our work while at the same time helping researchers to grow their network and empirical skill sets alike. Taken together, we believe that the academic accounting profession should be well-positioned to take a leading role in verifying its output. In the end, assessing the reproducibility of scientific work is an assurance and auditing process, an area we know quite a bit about!
 
-The second element of the two-pronged approach would be to promote research material sharing and pre-registration, potentially in combination with other open science measures that aim to increase the accessibility and re-usability of scientific work. The economists among us might be quick to point out the incentive problems in this regard. Why should we do it? Does sharing code and data help to build academic careers? While some associative evidence from other fields indicates that papers that share their data are cited more often [@PDF_2007], currently, as hard as it seems, the answer to this is not clearly affirmative. Research material sharing requires skills and time, and, to the extreme, devoting this time might even be regarded as a negative signal by tenure and promotion committees, assuming that it crowds out time spent on producing "more tenurable output."
+The second element of the two-pronged approach would be to promote research material sharing and pre-registration, potentially in combination with other open science measures that aim to increase the accessibility and reusability of scientific work. The economists among us might be quick to point out the incentive problems in this regard. Why should we do it? Does sharing code and data help to build academic careers? While some associative evidence from other fields indicates that papers that share their data are cited more often [@PDF_2007], currently, the answer to this is not clearly affirmative. Research material sharing requires skills and time, and, to the extreme, devoting this time might even be regarded as a negative signal by tenure and promotion committees, assuming that it crowds out time spent on producing "more tenurable output."
 
-To us, this mindset seems to be the core of the problem. We believe that it is misguided as research material sharing constitutes a public good that is crucial for scientific progress. Think about a scientific computing world without open-source contributions. Without the BSD/Linux operating system and its tools, without Python, R, git, Latex, and the accompanying library ecosystem. The scientific advancements in areas like Econometrics, Machine Learning, and Natural Language Processing would be -if at all feasible- severely delayed. As our field builds on the insights of these areas, we benefit from the open science paradigm in our everyday work.
+To us, this mindset seems to be the core of the problem. We believe that it is misguided as research material sharing constitutes a public good that is crucial for scientific progress. Think about a scientific computing world without open-source contributions. This would be a world without the GNU/Linux operating system and its tools, without Python, R, git, Latex, and the accompanying package ecosystems. In such a world, scientific advancements in areas like econometrics, machine learning, and natural language processing would be severely delayed if at all feasible. As our field builds on the insights of these areas, we all benefit from the open source/science paradigm in our everyday work.
 
+Given that, one might ask whether research material sharing by accounting researchers can create similar positive externalities. As our competitive advantage stems more from institutional than methodological expertise, we, for example, are well-positioned to curate micro-level data based on firm disclosures. Prominent examples include word lists for sentiment analyses in financial settings [e.g., @LM_2011], topic model-based measures of specific firm risks [e.g., @H_2019], and industry classifications based on financial disclosures [e.g., @HP_2016].
 
-Given that, one might ask whether data and code sharing by accounting researchers can create similar positive externalities. As our competitive advantage stems more from institutional expertise than methodological aspects, we are well-suited to become vital for carefully curating and pre-processing data based on extensive firm disclosures. Prominent examples include curated word lists for sentiment analyses in financial settings [e.g., @LM_2011], topic model-based measures of specific firm risks [e.g., @H_2019], and industry classifications based on financial disclosures [e.g., @HP_2016].
+A closely related area where we see the potential of accounting data to develop a substantial impact is the collection and pre-processing of firm-time level web and electronic filing data. For the former, web scraping of corporate webpages can provide informative data [e.g., @BBB_2021], and for the latter, in particular, the upcoming electronic filing requirements for sustainability reports hold promise. While researchers compete with established commercial data providers in this area, the need for research to study unstructured textual data makes it necessary and valuable to build research-focused data pipelines and products instead of simply trusting (and paying) commercial data vendors. Another aspect is that freely licensable research data can remove one of the most significant entry hurdles for empirical archival accounting researchers.
 
-A closely related area where we see the potential of accounting data to develop an impact is the collection and pre-processing of web and electronic filing data. For the former, web scraping of corporate webpages can provide informative data [e.g., @BBB_2021], and for the latter, in particular, the upcoming electronic filing requirements for sustainability reports hold promise. While researchers compete with established commercial data providers in this area, the need for research to study unstructured textual data makes it necessary and valuable to build research-focused data pipelines and products instead of simply trusting (and paying) commercial data vendors. Another aspect is that freely licensable research data can remove one of the most significant entry hurdles for empirical archival accounting researchers.
+While these flagship projects are useful showcases that research material sharing in the accounting domain can also be impactful for other domains, they will likely not change the sharing landscape at large. To promote reproducible workflows overall, we need to make the case that adopting such a workflow not only contributes to the public good by making research materials accessible but also enhances research efficiency at an individual level. To be able to share research materials, such as code and data, researchers must adopt a workflow that integrates reusability aspects into project development. The data and code requirements of leading journals in economics, finance, and accounting are not only pushing the availability of research materials but also imposing substantial costs on researchers who have to provide more or less complete replication packages upon acceptance. As many researchers affected by these regulations will admit, transforming an empirical project from an internal "well it works" scripting exercise to a well-documented replication package that ideally works across multiple platforms is far from trivial. This process becomes significantly more manageable and enjoyable if an open science-oriented workflow is adopted throughout all stages of project development. Besides this, it also makes it easier for co-author teams to cooperate, and even the researcher's future self might be thankful.
 
-While these flagship projects are useful showcases that data and code sharing in the accounting domain can also be impactful for other domains, to promote reproducible workflows overall, we need to make the case that adopting such a workflow not only contributes to the public good by making research materials accessible but also enhances research efficiency at an individual level. To be able to share research materials, such as code and data, researchers must adopt a workflow that integrates reusability aspects into project development. The data and code requirements of leading journals in economics, finance, and accounting are not only pushing the availability of research materials but also imposing substantial costs on researchers who have to provide more or less complete replication packages upon acceptance. As many researchers affected by these regulations will admit, transforming an empirical project from an internal "well it works" scripting exercise to a well-documented replication package that ideally works across multiple platforms is far from trivial. This process becomes significantly more manageable and enjoyable if an open science-oriented workflow is adopted throughout all stages of project development. Besides this, it also makes it easier for co-author teams to cooperate.
+As the lack of time is one of the biggest roadblocks to research material sharing in our survey, educational activities targeted at the PhD level teaching scientific computing and project management, in general, seem important. While well-funded research institutions might have the opportunity to outsource these skills to research professionals, the vast majority of researchers worldwide need to acquire them themselves. This is not necessarily undesirable, as having these skills enables one to develop more creative research projects than researchers unaware of what is feasible with state-of-the-art scientific computing. In the early days, many accounting PhD programs were implicit- or explicitly relying on scientific computing skills to be handed down from one PhD generation to another. It seems that these days are over and that dedicated scientific computing courses should become as central a component of scientific education in the quantitative social sciences as lab training is in the natural sciences.
 
-As the lack of time is one of the biggest roadblocks to research material sharing in our survey, educational activities targeted at the PhD level in scientific computing and project management, in general, seem important. While well-funded research institutions might have the opportunity to outsource these skills to research professionals, the vast majority of researchers worldwide need to acquire them themselves. This is not necessarily undesirable, as having these skills enables one to develop more creative research projects than researchers unaware of what is feasible with state-of-the-art scientific computing. In the early days, many accounting PhD programs were implicit- or explicitly relying on scientific computing skills to be handed down from one PhD generation to another. It seems that these days are over and that dedicated scientific computing courses should become a central component of scientific education in the quantitative social sciences as lab training is in the natural sciences.
+Much of the above applies primarily to our discipline's empirical and quantitative areas. What about analytical and qualitative researchers and their studies? As it becomes apparent from our findings, their views on open science differ prominently from those of the "accounting mainstream." Analytical researchers seem to be much more confident in their work than others, potentially in line with theoretical work being easier to verify during the review process. Then again, to develop the impact that it deserves, analytical work not only needs to be reproducible but also accessible and reusable, ideally also by non-expert researchers from neighboring methods. Qualitative work, on the other hand, faces conditions that set it apart from typical quantitative work. First, its data is often collected under confidentiality, legally restricting future sharing. Second, its unique richness makes it inherently challenging to share across subjects, especially if re-identification issues are present. Third, related and maybe more epistemological in nature, the assumption of objectivity, which allows research materials to be detached from the individual researcher and reused by others, is questioned within the qualitative realm. This implies that qualitative scholars have to develop -and are developing [e.g., @M_2014; @FRV_2022]- their own understanding of what reproducibility means within their methodological paradigm.
 
-Much of the above applies primarily to our discipline's empirical and quantitative areas. What about analytical and qualitative researchers and their studies? As it becomes apparent from our findings, their views on open science differ pretty prominently from those of the "accounting mainstream." Analytical researchers seem to be much more confident in their work than others, potentially in line with theoretical work being more accessible to verify during the review process. Then again, to develop the impact that it deserves, analytical work not only needs to be reproducible but also accessible and reusable, ideally also by non-expert researchers from neighboring methods. Qualitative work, on the other hand, faces challenges that set it apart from typical quantitative work. First, its data is often collected under confidentiality, legally restricting future sharing. Second, its unique richness makes it inherently challenging to share across subjects, especially if re-identification issues are present. Third, related and maybe more epistemological in nature, the assumption of objectivity, which allows research materials to be detached from the individual researcher and re-used by others, is questioned within the qualitative realm. This implies that qualitative scholars have to develop -and are developing [e.g., @M_2014; @FRV_2022]- their own understanding of what reproducibility means within their methodological paradigm.
-
-Finally, fears and a general lack of trust in fellow researchers are also essential deterrents to adopting open science methods. This is human but unfortunate, also because it leads to subtle "home biases" when it comes to sharing, potentially increasing academic inequality and hindering scientific progress. While the fear of being "scooped" can be addressed by publishing materials later in the publication process or publicly claiming intellectual ownership of ideas via registration and use of well-established repositories, fears with regards to future researchers pointing to deficiencies in one's work and/or a general lack of trust are more challenging to overcome. For both aspects, we need to work towards changing the error climate in the academic discipline. Additionally, it might be helpful to move away from the "policing" aspect of reproducibility and instead stress the collaborative public good character of open science activities. With them, we can help each other, promote our field, and make the research process even more fun!
+Finally, fears and a general lack of trust in fellow researchers are also essential deterrents to adopting open science methods. This is human but unfortunate, also because it leads to subtle "home biases" when it comes to sharing, potentially increasing academic inequality and hindering scientific progress. While the fear of being "scooped" can be addressed by sharing materials later in the publication process or publicly claiming intellectual ownership of ideas via pre-registration and use of well-established repositories, fears with regards to future researchers pointing to deficiencies in one's work and/or a general lack of trust are more challenging to overcome. For both aspects, we need to work towards changing the error climate in the academic discipline. Additionally, it might be helpful to move away from the "policing" aspect of reproducibility and instead stress the collaborative public good character of open science activities. With them, we can help each other, promote our field, and make the research process even more fun!
 
 \newpage
 
@@ -383,27 +414,60 @@ Finally, fears and a general lack of trust in fellow researchers are also essent
 
 ## Figures {.unnumbered}
 
-### Figure 1: Reproducibility of Influential Findings Across the Social Sciences {.unnumbered}
+### Figure 1: Sample Comparison between BYU and Our Sample - Subfields {.unnumbered}
 
-```{r Figure1, fig.width=8, fig.height=5}
-likert_plot(mr, "reprod", "demog_discipline", title_str = "How confident are you that the influential reserach findings in your area will replicate/reproduce?", llevels = vars$resp_label[80:84])
+```{r Figure1, fig.width=12, fig.height=9}
+byu_fields_comp(byu, sd)
 ```
 
 ```{=tex}
 \begin{singlespace}
 \setlength{\parindent}{0em}
 ```
-This figure is based on our survey data merged with the data collected by @FLCPSWMBP_2023. The question asked in our survey is "`r vars$text[80]`" while the original question used in the survey of @FLCPSWMBP_2023 is "How confident are you that the influential research findings in \[Discipline\] would replicate?". The data of @FLCPSWMBP_2023 has been collected in two waves (2018 and 2020) from a population of researchers located in the U.S. Our survey was conducted in 2022 among accounting researchers world-wide. Our survey and the merging process of the data are discussed in more detail in section 2 of the paper.
+This figure compares the distribution of authors' subfields in the BYU sample to the distribution of respondents' self-reported primary subfield in our sample. In contrast to our survey, authors are classified in multiple subfields in the BYU sample. Therefore, this figure compares the 2,877 subfield classifications of the BYU sample to the 229 primary subfield classifications of our sample.
 
 ```{=tex}
 \setlength{\parindent}{4em}
 \end{singlespace}
-```
 \newpage
+```
+### Figure 2: Sample Comparison between BYU and Our Sample - Methods {.unnumbered}
 
-### Figure 2: Importance of Research Material Sharing Across the Social Sciences {.unnumbered}
+```{r Figure2, fig.width=12, fig.height=9}
+byu_methods_comp(byu, sd)
+```
 
-```{r Figure2, fig.width=9, fig.height=5}
+```{=tex}
+\begin{singlespace}
+\setlength{\parindent}{0em}
+```
+This figure compares the distribution of authors' methodologies in the BYU sample to the distribution of respondents' self-reported primary methodology in our sample. In contrast to our survey, authors are classified in multiple methodologies in the BYU sample. Therefore, this figure compares the 2,114 methodology classifications of the BYU sample to 229 primary methodology classifications of our sample.
+
+```{=tex}
+\setlength{\parindent}{4em}
+\end{singlespace}
+\newpage
+```
+### Figure 3: Reproducibility of Influential Findings Across the Social Sciences {.unnumbered}
+
+```{r Figure3, fig.width=8, fig.height=5}
+likert_plot(mr, "reprod", "demog_discipline", title_str = "How confident are you that the influential research findings in your area will replicate/reproduce?", llevels = vars$resp_label[80:84])
+```
+
+```{=tex}
+\begin{singlespace}
+\setlength{\parindent}{0em}
+```
+This figure is based on our survey data merged with the data collected by @FLCPSWMBP_2023. The question asked in our survey is "`r vars$text[80]`" while the original question used in the survey of @FLCPSWMBP_2023 is "How confident are you that the influential research findings in \[Discipline\] would replicate?". The data of @FLCPSWMBP_2023 has been collected in two waves (2018 and 2020) from a population of researchers located in the U.S. Our survey was conducted in 2022 among accounting researchers worldwide. Our survey and the merging process of the data are discussed in more detail in section 2 of the paper.
+
+```{=tex}
+\setlength{\parindent}{4em}
+\end{singlespace}
+\newpage
+```
+### Figure 4: Importance of Research Material Sharing Across the Social Sciences {.unnumbered}
+
+```{r Figure4, fig.width=9, fig.height=5}
 mr$sharing_important_rescaled = floor(mr$sharing_important)
 likert_plot(mr, "sharing_important_rescaled", "demog_discipline", title_str = "To what extent do you believe that publicly sharing research materials is important?", llevels = vars$resp_label[49:53])
 ```
@@ -412,17 +476,16 @@ likert_plot(mr, "sharing_important_rescaled", "demog_discipline", title_str = "T
 \begin{singlespace}
 \setlength{\parindent}{0em}
 ```
-This figure is based on our survey data merged with the data collected by @FLCPSWMBP_2023. The question asked in our survey is "`r vars$text[49]`" while the original question used in the survey of @FLCPSWMBP_2023 is "To what extent do you believe that publicly posting data or code online is important for progress in \[Discipline\]?". The data of @FLCPSWMBP_2023 has been collected in two waves (2018 and 2020) from a population of researchers located in the U.S. Our survey was conducted in 2022 among accounting researchers world-wide. Our survey and the merging process of the data are discussed in more detail in section 2 of the paper.
+This figure is based on our survey data merged with the data collected by @FLCPSWMBP_2023. The question asked in our survey is "`r vars$text[49]`" while the original question used in the survey of @FLCPSWMBP_2023 is "To what extent do you believe that publicly posting (data or code \| research instruments) online is important for progress in \[Discipline\]?". The data of @FLCPSWMBP_2023 has been collected in two waves (2018 and 2020) from a population of researchers located in the U.S. Our survey was conducted in 2022 among accounting researchers worldwide. Our survey and the merging process of the data are discussed in more detail in section 2 of the paper.
 
 ```{=tex}
 \end{singlespace}
 \setlength{\parindent}{4em}
-```
 \newpage
+```
+### Figure 5: Sharing of Research Materials: Prescriptive versus Descriptive Views {.unnumbered}
 
-### Figure 3: Sharing of Research Materials: Prescriptive versus Descriptive Views {.unnumbered}
-
-```{r Figure3, fig.width=8, fig.height=6}
+```{r Figure5, fig.width=8, fig.height=6}
 pres_desc_plot(sd)
 ```
 
@@ -438,9 +501,32 @@ This figure is based on our survey data and summarizes the findings from three s
 ```
 \newpage
 
-### Figure 4: Share of Papers with Shared Research Materials over Time {.unnumbered}
+### Figure 6: Pre-Registration: Take-up over Time Across the Social Sciences {.unnumbered}
 
-```{r Figure4, fig.width=8, fig.height=6}
+```{r Figure7, fig.width=8, fig.height=6}
+pre_reg_over_time_plot(mr)
+```
+
+```{=tex}
+\begin{singlespace}
+\setlength{\parindent}{0em}
+```
+This figure is based on our survey data merged with the data collected by @FLCPSWMBP_2023. The question of our survey is "`r vars$text[102]`". The question used in the survey of @FLCPSWMBP_2023 is "Approximately when was the first time you pre-registered hypotheses or analyses in advance of a study?". The data of @FLCPSWMBP_2023 has been collected in two waves (2018 and 2020) from a population of researchers located in the U.S. Our survey was conducted in 2022 among accounting researchers worldwide. Our survey and the merging process of the data are discussed in more detail in section 2 of the paper.
+
+```{=tex}
+\setlength{\parindent}{4em}
+\end{singlespace}
+\newpage
+```
+```{=tex}
+\renewcommand{\thetable}{\arabic{table}}
+\setcounter{table}{0}
+```
+\newpage
+
+### Figure 7: Share of Papers with Shared Research Materials over Time {.unnumbered}
+
+```{r Figure6, fig.width=8, fig.height=6}
 plot_resmat_sharing_over_cyear
 ```
 
@@ -454,27 +540,6 @@ This figure is based on `r nrow(papers)` papers, published since 2016 by a count
 \setlength{\parindent}{4em}
 \end{singlespace}
 \newpage
-```
-### Figure 5: Pre-Registration: Take-up over Time Across the Social Sciences {.unnumbered}
-
-```{r Figure5, fig.width=8, fig.height=6}
-pre_reg_over_time_plot(mr)
-```
-
-```{=tex}
-\begin{singlespace}
-\setlength{\parindent}{0em}
-```
-This figure is based on our survey data merged with the data collected by @FLCPSWMBP_2023. The question of our survey is "`r vars$text[102]`". The question used in the survey of @FLCPSWMBP_2023 is "Approximately when was the first time you pre-registered hypotheses or analyses in advance of a study?". The data of @FLCPSWMBP_2023 has been collected in two waves (2018 and 2020) from a population of researchers located in the U.S. Our survey was conducted in 2022 among accounting researchers world-wide. Our survey and the merging process of the data are discussed in more detail in section 2 of the paper.
-
-```{=tex}
-\setlength{\parindent}{4em}
-\end{singlespace}
-\newpage
-```
-```{=tex}
-\renewcommand{\thetable}{\arabic{table}}
-\setcounter{table}{0}
 ```
 ## Tables {.unnumbered}
 
@@ -500,17 +565,16 @@ This table reports on our sample composition. Starting with a list of authors th
 ```{=tex}
 \setlength{\parindent}{4em}
 \end{singlespace}
-```
 \newpage
-
+```
 ### Table 2: Sample Demographics {.unnumbered}
-
-#### Panel A: Sample Descriptives {.unnumbered}
 
 ```{=tex}
 \begin{singlespace}
 \setlength{\parindent}{0em}
 ```
+#### Panel A: Sample Descriptives {.unnumbered}
+
 ```{r Tab2aDemographics, asis = TRUE}
 extract_df <- function(dvar, title) {
 	df <- create_demog_table(sd, dvar, df_only = TRUE)
@@ -538,6 +602,16 @@ gt(tab) %>% as_latex()
 
 \newpage
 
+```{=tex}
+\setlength{\parindent}{4em}
+\end{singlespace}
+\newpage
+```
+```{=tex}
+\begin{landscape}
+\begin{singlespace}
+\setlength{\parindent}{0em}
+```
 #### Panel B Regional Representativeness {.unnumbered}
 
 ```{r Tab2bGeoRep, asis = TRUE}
@@ -580,7 +654,7 @@ tab <- create_pct_cross_tab_table(
 gt(tab) %>% as_latex()
 ```
 
-This table is based on our survey data merged with the data collected by @FLCPSWMBP_2023. The question asked in our survey is "`r vars$text[80]`" while the original question used in the survey of @FLCPSWMBP_2023 is "How confident are you that the influential research findings in \[Discipline\] would replicate?". The data of @FLCPSWMBP_2023 has been collected in two waves (2018 and 2020) from a population of researchers located in the U.S. Our survey was conducted in 2022 among accounting researchers world-wide. Our survey and the merging process of the data are discussed in more detail in section 2 of the paper. The asterisks report the results of an OLS regression regressing the response on a series of field fixed effects with Accounting acting as the base field. (\*/\*\*/\*\*\*) indicate two-sided significance at the (10%/5%/1%) significant level, respectively.
+This table is based on our survey data merged with the data collected by @FLCPSWMBP_2023. The question asked in our survey is "`r vars$text[80]`" while the original question used in the survey of @FLCPSWMBP_2023 is "How confident are you that the influential research findings in \[Discipline\] would replicate?". The data of @FLCPSWMBP_2023 has been collected in two waves (2018 and 2020) from a population of researchers located in the U.S. Our survey was conducted in 2022 among accounting researchers worldwide. Our survey and the merging process of the data are discussed in more detail in section 2 of the paper. The asterisks report the results of an OLS regression regressing the response on a series of field fixed effects with Accounting acting as the base field. (\*/\*\*/\*\*\*) indicate two-sided significance at the (10%/5%/1%) significant level, respectively.
 
 ```{=tex}
 \setlength{\parindent}{4em}
@@ -617,6 +691,8 @@ gt(tab) %>%
 	as_latex()
 ```
 
+\newpage
+
 #### Panel C: Assessment Gap (Method - General) {.unnumbered}
 
 ```{r Tab4cReprMethod, asis = TRUE}
@@ -639,13 +715,12 @@ This table is based on our survey data and two separate questions. The response 
 \end{singlespace}
 \newpage
 ```
+### Table 5: Sharing of Research Materials Across the Social Sciences {.unnumbered}
+
 ```{=tex}
-\begin{landscape}
 \begin{singlespace}
 \setlength{\parindent}{0em}
 ```
-### Table 5: Sharing of Research Materials Across the Social Sciences {.unnumbered}
-
 #### Panel A: Familiarity {.unnumbered}
 
 ```{r Tab5aSharingHeardSocSciResp, asis = TRUE}
@@ -671,7 +746,6 @@ gt(tab ) %>%
 	as_latex()
 ```
 
-This table is based on our survey data merged with the data collected by @FLCPSWMBP_2023. For Panel A, the question of our survey is "`r vars$text[44]`" where we code the response "Not at all familiar" as "No". The question used in the survey of @FLCPSWMBP_2023 is "Have you ever heard of the practice of publicly posting data or code online for a completed study?". For Panel B, the question of our survey is "`r vars$text[49]`". The question used in the survey of @FLCPSWMBP_2023 is "To what extent do you believe that publicly posting data or code online is important for progress in \[Discipline\]?" The data of @FLCPSWMBP_2023 has been collected in two waves (2018 and 2020) from a population of researchers located in the U.S. Our survey was conducted in 2022 among accounting researchers world-wide. Our survey and the merging process of the data are discussed in more detail in section 2 of the paper. The asterisks report the results of an OLS regression regressing the response on a series of field fixed effects with Accounting acting as the base field. (\*/\*\*/\*\*\*) indicate two-sided significance at the (10%/5%/1%) significant level, respectively.
 
 ```{=tex}
 \setlength{\parindent}{4em}
@@ -717,84 +791,7 @@ This table is based on our survey data and two separate questions. The response 
 \end{landscape}
 \newpage
 ```
-### Table 7: Scenario Analysis: Hypothetical Sharing Likelihood {.unnumbered}
-
-```{=tex}
-\begin{singlespace}
-\setlength{\parindent}{0em}
-```
-#### Panel A: Descriptive Statistics {.unnumbered}
-
-```{r Tab7aExpDescriptives, asis = TRUE}
-stats <- sd %>%
-	group_by(exp_tment_control, exp_tment_private) %>%
-	select(exp_tment_control, exp_tment_private,exp_pct_share) %>%
-	summarise(
-		N = sprintf("%d", n()),
-		Mean = sprintf("%.1f%%", mean(exp_pct_share)),
-		`Std. Dev.` = sprintf("%.1f%%", sd(exp_pct_share)),
-		Minimum = sprintf("%.1f%%", min(exp_pct_share)),
-		`25%` = sprintf("%.1f%%", quantile(exp_pct_share, 0.25)),
-		Median = sprintf("%.1f%%", median(exp_pct_share)),
-		`75%` = sprintf("%.1f%%", quantile(exp_pct_share, 0.75)),
-		Maximum = sprintf("%.1f%%", max(exp_pct_share))
-	) %>%
-	ungroup() %>%
-	mutate(
-		Rationale = c(rep("Collaboration", 2), rep("Control", 2)),
-		Scope = c(rep(c("Public", "Private"), 2))
-	) %>%
-	select(-exp_tment_control, -exp_tment_private) %>%
-	select(Rationale, Scope, everything())
-tab <- create_pct_cross_tab_table(
-	sd, "reprod_acc", "demog_method", 
-	ctests = TRUE, df_only = TRUE
-) 
-gt(stats) %>% 
-	cols_align("right", -1:-2) %>% 
-	as_latex()
-```
-
-#### Panel B: Regression Results {.unnumbered}
-
-```{r Tab7bExpRegResults, asis = TRUE}
-sd$exp_tment_collab <- 1 - sd$exp_tment_control
-modh1 <- lm(exp_pct_share ~ exp_tment_collab, data = sd)
-modh2 <- lm(exp_pct_share ~ exp_tment_private, data = sd)
-modh3 <- lm(exp_pct_share ~ exp_tment_collab*exp_tment_private, data = sd)
-tab_latex  <- modelsummary(
-	list(H1 = modh1, H2 = modh2, H3 = modh3), output = "gt",
-	coef_rename = function(x) {
-		x <- str_replace(x, fixed("exp_tment_collab"), "Collaboration rationale")
-		x <- str_replace(x, fixed("exp_tment_private"), "Private scope")
-		str_replace(x, fixed(":"), "×")
-	},
-	gof_map = list(
-		list(raw = "adj.r.squared", clean = "Adjusted R2", fmt = 3),
-		list(
-			raw = "nobs", clean = "Number of observations", 
-			fmt = function(x) format(x, big.mark=",")
-		)
-	),
-	stars = c('*' = .1, '**' = 0.05, '***' = .01),
-	estimate  = "{estimate}{stars}",
-) %>% as_latex()
-
-# The below is needed since some tex environment chock on the longtable environment
-# See https://github.com/vincentarelbundock/modelsummary/issues/50
-tab_latex[1] <- sub("\\(Intercept\\)", "Intercept", tab_latex) 
-
-sub("Adjusted R2", "\\\\midrule\\\\addlinespace[2.5pt]\nAdjusted R²", tab_latex)
-```
-
-This table reports the results from the pre-registered experimental design contained in our survey. Is is based on a hypothetical code and data sharing scenario were we manipulated the sharing rationale (collaboration versus control) and the sharing scope (private versus public). All experimental materials are detailed in the Online Appendix of this study. The outcome variable is the stated likelihood that the respondent would share their code and data under the hypothetical scenario. Panel A reports the descriptive statistics for this outcome, conditional for the different treatment cells. Panel B reports the results from OLS regressions of the outcome on the binary treatments (H1 and H2) and their interaction (H3).
-
-```{=tex}
-\setlength{\parindent}{4em}
-\end{singlespace}
-\newpage
-```
-### Table 8: Sharing of Research Materials: Prescriptive versus Descriptive Views {.unnumbered}
+### Table 7: Sharing of Research Materials: Prescriptive versus Descriptive Views {.unnumbered}
 
 ```{=tex}
 \begin{singlespace}
@@ -879,7 +876,7 @@ sub("Believes About Actual Sharing Behavior &  &  &  &  &  &", "\\\\multicolumn{
 
 ```
 
-This table is based on our survey data and several separate questions. The response presented in Panel A is based on the question "`r vars$text[55]`" while the response presented in Panel B is based on the questions "`r vars$text[78]`" (general preference for sharing), "`r vars$text[79]`" (editor preference for sharing) and "`r vars$text[54]`" (actual sharing behavior). In all method break-ups, but not for the totals, answers from three respondents who classified their method as "Other", and one observation from a person who chose not self-classify into a main method are excluded. Methods where the answers differ at the two-sided 10%-level are indicated by their first two letters.
+This table is based on our survey data and several separate questions. The response presented in Panel A is based on the question "`r vars$text[55]`" while the response presented in Panel B is based on the questions "`r vars$text[78]`" (general preference for sharing), "`r vars$text[79]`" (editor preference for sharing) and "`r vars$text[54]`" (actual sharing behavior). In all method break-ups, but not for the totals, answers from three respondents who classified their method as "Other", and one observation from a person who chose not to self-classify into a main method are excluded. Methods where the answers differ at the two-sided 10%-level are indicated by their first two letters. Please see Appendix C for an overview of how we adapted these three questions and their answer scales from @FLCPSWMBP_2023.
 
 ```{=tex}
 \setlength{\parindent}{4em}
@@ -890,7 +887,132 @@ This table is based on our survey data and several separate questions. The respo
 \begin{singlespace}
 \setlength{\parindent}{0em}
 ```
-### Table 9: Observational Data on Research Material Sharing {.unnumbered}
+### Table 8: Pre-Registration Across the Social Sciences {.unnumbered}
+
+#### Panel A: Awareness {.unnumbered}
+
+```{r Tab11aPreRegAwareSocSciResp, asis = TRUE}
+tab <- create_pct_cross_tab_table(
+	mr, "prereg_heard", "demog_discipline", 
+	resp_label = c("No (0)", "Yes (1)"), 
+	add_num_labels = FALSE, df_only = TRUE
+) 
+gt(tab) %>% 
+	cols_align("right", -1) %>% 
+	as_latex()
+```
+
+#### Panel B: Take-up over Time {.unnumbered}
+
+```{r Tab11bPreRegTimeSocSciResp, asis = TRUE}
+tab <- create_pct_cross_tab_table(
+	mr, "prereg_use_first_time", "demog_discipline", 
+	resp_label = na.omit(sort(unique(mr$prereg_use_first_time))), 
+	add_num_labels = FALSE, df_only = TRUE
+) 
+
+# NOTE: This hack Needs to be checked manually whenever something 
+# the underlying data changes - which it should not
+
+up_to_2010 <- c(
+	"<= 2010", 
+	sum(as.numeric(substr(tab$Accounting[1:13], 1, 1))),
+	sum(as.numeric(substr(tab$Economics[1:13], 1, 1))),
+	sum(as.numeric(substr(tab$`Political Science`[1:13], 1, 1))),
+	sum(as.numeric(substr(tab$Psychology[1:13], 1, 1))),
+	sum(as.numeric(substr(tab$Sociology[1:13], 1, 1)))
+)
+up_to_2010[2:6] <- sprintf(
+	"%s (%.1f %%)", 
+	up_to_2010[2:6],
+	100*as.numeric(up_to_2010[2:6])/as.numeric(tab[26,2:6])
+)
+tab <- rbind(up_to_2010, tab[14:28,])
+
+gt(tab) %>% 
+	cols_align("right", -1) %>% 
+	as_latex()
+```
+
+```{=tex}
+\newpage
+\begin{landscape}
+```
+#### Panel C: Trustworthiness {.unnumbered}
+
+```{r Tab11cPreRegTimeSocSciResp, asis = TRUE}
+tab <- create_pct_cross_tab_table(
+	mr, "prereg_opinion", "demog_discipline", 
+	resp_label = get_resp_label("prereg_trust"), df_only = TRUE
+) 
+gt(tab ) %>% 
+	cols_align("right", -1) %>% 
+	as_latex()
+```
+
+This table is based on our survey data merged with the data collected by @FLCPSWMBP_2023. For Panel A, the question of our survey is "`r vars$text[95]`" where we code the response "Not at all familiar" as "No" and all other responses as "Yes." The question used in the survey of @FLCPSWMBP_2023 is "Have you ever heard of the practice of pre-registering hypotheses or analyses in advance of a study?". For Panel B, the question of our survey is "`r vars$text[102]`". The question used in the survey of @FLCPSWMBP_2023 is "Approximately when was the first time you pre-registered hypotheses or analyses in advance of a study?". For Panel C, the question of our survey is "`r vars$text[103]`". The question used in the survey of @FLCPSWMBP_2023 is "What is your opinion of pre-registering hypotheses or analyses?". The data of @FLCPSWMBP_2023 has been collected in two waves (2018 and 2020) from a population of researchers located in the U.S. Our survey was conducted in 2022 among accounting researchers worldwide. Our survey and the merging process of the data are discussed in more detail in section 2 of the paper. The asterisks report the results of an OLS regression regressing the response on a series of field fixed effects with Accounting acting as the base field. (\*/\*\*/\*\*\*) indicate two-sided significance at the (10%/5%/1%) significant level, respecively.
+
+```{=tex}
+\newpage
+\setlength{\parindent}{0em}
+```
+### Table 9: Pre-Registration Across Methods {.unnumbered}
+
+#### Panel A: Familiarity {.unnumbered}
+
+```{r Tab12aPreRegFamiliarity, asis = TRUE}
+tab <- create_pct_cross_tab_table(
+	sd, "prereg_familiar", "demog_method", include_total = TRUE,
+	drop_levels = "Other", ctests = TRUE, df_only = TRUE
+) 
+gt(tab) %>% 
+	cols_align("right", -1) %>% 
+	as_latex()
+```
+
+#### Panel B: Usage {.unnumbered}
+
+```{r Tab12bPreRegUse, asis = TRUE}
+
+tab <- create_pct_cross_tab_table(
+	sd, "prereg_use", "demog_method", include_total = TRUE,
+	drop_levels = "Other", 
+	resp_label = c("No (0)", "Yes (1)"), 
+	add_num_labels = FALSE, ctests = TRUE, df_only = TRUE
+) 
+# Adjust levels to be zero based.
+tab[4,2:7] <- t(sprintf("%.2f", as.numeric(tab[4,2:7]) - 1))
+tab[5,2:7] <- t(sprintf("%.2f", as.numeric(tab[5,2:7]) - 1))
+gt(tab) %>% 
+	cols_align("right", -1) %>% 
+	as_latex()
+```
+
+\newpage
+
+#### Panel C: Trustworthiness {.unnumbered}
+
+```{r Tab12cPreRegTrust, asis = TRUE}
+
+tab <- create_pct_cross_tab_table(
+	sd, "prereg_trust", "demog_method", include_total = TRUE,
+	drop_levels = "Other", ctests = TRUE, df_only = TRUE
+) 
+gt(tab) %>% 
+	cols_align("right", -1) %>% 
+	as_latex()
+```
+
+This table is based on our survey data and three separate questions. The response presented in Panel A is based on the question "`r vars$text[95]`", the response presented in Panel B is based on the question "`r vars$text[100]`", and the response presented in Panel C is based on the question "`r vars$text[103]`". In all method break-ups, but not for the totals, answers from three respondents who classified their method as "Other" are excluded. Methods where the answers differ at the two-sided 10%-level are indicated by their first two letters.
+
+```{=tex}
+\setlength{\parindent}{4em}
+\end{landscape}
+\end{singlespace}
+\newpage
+\begin{singlespace}
+```
+### Table 10: Observational Data on Research Material Sharing {.unnumbered}
 
 #### Panel A: By Author {.unnumbered}
 
@@ -916,7 +1038,84 @@ This table is based on on a country-stratified random sample of `r nrow(authors)
 \end{singlespace}
 \newpage
 ```
-### Table 10: Sharing of Research Materials: Rationales {.unnumbered}
+### Table 11: Scenario Analysis: Hypothetical Sharing Likelihood {.unnumbered}
+
+```{=tex}
+\begin{singlespace}
+\setlength{\parindent}{0em}
+```
+#### Panel A: Descriptive Statistics {.unnumbered}
+
+```{r Tab7aExpDescriptives, asis = TRUE}
+stats <- sd %>%
+	group_by(exp_tment_control, exp_tment_private) %>%
+	select(exp_tment_control, exp_tment_private,exp_pct_share) %>%
+	summarise(
+		N = sprintf("%d", n()),
+		Mean = sprintf("%.1f%%", mean(exp_pct_share)),
+		`S.D.` = sprintf("%.1f%%", sd(exp_pct_share)),
+		Min = sprintf("%.1f%%", min(exp_pct_share)),
+		`25%` = sprintf("%.1f%%", quantile(exp_pct_share, 0.25)),
+		Median = sprintf("%.1f%%", median(exp_pct_share)),
+		`75%` = sprintf("%.1f%%", quantile(exp_pct_share, 0.75)),
+		Max = sprintf("%.1f%%", max(exp_pct_share))
+	) %>%
+	ungroup() %>%
+	mutate(
+		Rationale = c(rep("Collaboration", 2), rep("Control", 2)),
+		Scope = c(rep(c("Public", "Private"), 2))
+	) %>%
+	select(-exp_tment_control, -exp_tment_private) %>%
+	select(Rationale, Scope, everything())
+tab <- create_pct_cross_tab_table(
+	sd, "reprod_acc", "demog_method", 
+	ctests = TRUE, df_only = TRUE
+) 
+gt(stats) %>% 
+	cols_align("right", -1:-2) %>% 
+	as_latex()
+```
+
+#### Panel B: Regression Results {.unnumbered}
+
+```{r Tab7bExpRegResults, asis = TRUE}
+sd$exp_tment_collab <- 1 - sd$exp_tment_control
+modh1 <- lm(exp_pct_share ~ exp_tment_collab, data = sd)
+modh2 <- lm(exp_pct_share ~ exp_tment_private, data = sd)
+modh3 <- lm(exp_pct_share ~ exp_tment_collab*exp_tment_private, data = sd)
+tab_latex  <- modelsummary(
+	list(H1 = modh1, H2 = modh2, H3 = modh3), output = "gt",
+	coef_rename = function(x) {
+		x <- str_replace(x, fixed("exp_tment_collab"), "Collaboration rationale")
+		x <- str_replace(x, fixed("exp_tment_private"), "Private scope")
+		str_replace(x, fixed(":"), "×")
+	},
+	gof_map = list(
+		list(raw = "adj.r.squared", clean = "Adjusted R2", fmt = 3),
+		list(
+			raw = "nobs", clean = "Number of observations", 
+			fmt = function(x) format(x, big.mark=",")
+		)
+	),
+	stars = c('*' = .1, '**' = 0.05, '***' = .01),
+	estimate  = "{estimate}{stars}",
+) %>% as_latex()
+
+# The below is needed since some tex environment chock on the longtable environment
+# See https://github.com/vincentarelbundock/modelsummary/issues/50
+tab_latex[1] <- sub("\\(Intercept\\)", "Intercept", tab_latex) 
+
+sub("Adjusted R2", "\\\\midrule\\\\addlinespace[2.5pt]\nAdjusted R²", tab_latex)
+```
+
+This table reports the results from the pre-registered experimental design contained in our survey. Is is based on a hypothetical code and data sharing scenario were we manipulated the sharing rationale (collaboration versus control) and the sharing scope (private versus public). All experimental materials are detailed in the Online Appendix of this study. The outcome variable is the stated likelihood that the respondent would share their code and data under the hypothetical scenario. Panel A reports the descriptive statistics for this outcome, conditional for the different treatment cells. Panel B reports the results from OLS regressions of the outcome on the binary treatments (H1 and H2) and their interaction (H3).
+
+```{=tex}
+\setlength{\parindent}{4em}
+\end{singlespace}
+\newpage
+```
+### Table 12: Sharing of Research Materials: Rationales {.unnumbered}
 
 ```{=tex}
 \begin{singlespace}
@@ -1053,7 +1252,7 @@ sub(
 )
 ```
 
-This table is based on our survey data and two separate questions. The response presented in Panel A is based on the multiple choice answer to the close-ended question "`r vars$text[60]`". Panel B is based on the answer to the open-ended question that we pose as a follow-up in our experimental scenario: "`r vars$text[7]`". The free form answers to this question have been coded by an research assistant that had no information about the experimental design or the respective treatments. In Panel A, answers from two respondents who classified their method as "Other" are included in the Total column, but excluded from the methods break-up.
+This table is based on our survey data and two separate questions. The response presented in Panel A is based on the multiple choice answer to the close-ended question "`r vars$text[60]`". Participants answered this question if they expressed not always sharing their research materials. Panel B is based on the answer to the open-ended question that we pose as a follow-up in our experimental scenario: "`r vars$text[7]`". The free form answers to this question have been coded by an research assistant that had no information about the experimental design or the respective treatments. In Panel A, answers from two respondents who classified their method as "Other" are included in the Total column, but excluded from the methods break-up.
 
 ```{=tex}
 \setlength{\parindent}{4em}
@@ -1061,141 +1260,13 @@ This table is based on our survey data and two separate questions. The response 
 \end{singlespace}
 \newpage
 ```
-```{=tex}
-\begin{singlespace}
-\setlength{\parindent}{0em}
-```
-### Table 11: Pre-Registration Across the Social Sciences {.unnumbered}
-
-#### Panel A: Awareness {.unnumbered}
-
-```{r Tab11aPreRegAwareSocSciResp, asis = TRUE}
-tab <- create_pct_cross_tab_table(
-	mr, "prereg_heard", "demog_discipline", 
-	resp_label = c("No (0)", "Yes (1)"), 
-	add_num_labels = FALSE, df_only = TRUE
-) 
-gt(tab) %>% 
-	cols_align("right", -1) %>% 
-	as_latex()
-```
-
-#### Panel B: Take-up over Time {.unnumbered}
-
-```{r Tab11bPreRegTimeSocSciResp, asis = TRUE}
-tab <- create_pct_cross_tab_table(
-	mr, "prereg_use_first_time", "demog_discipline", 
-	resp_label = na.omit(sort(unique(mr$prereg_use_first_time))), 
-	add_num_labels = FALSE, df_only = TRUE
-) 
-
-# NOTE: This hack Needs to be checked manually whenever something 
-# the underlying data changes - which it should not
-
-up_to_2010 <- c(
-	"<= 2010", 
-	sum(as.numeric(substr(tab$Accounting[1:13], 1, 1))),
-	sum(as.numeric(substr(tab$Economics[1:13], 1, 1))),
-	sum(as.numeric(substr(tab$`Political Science`[1:13], 1, 1))),
-	sum(as.numeric(substr(tab$Psychology[1:13], 1, 1))),
-	sum(as.numeric(substr(tab$Sociology[1:13], 1, 1)))
-)
-up_to_2010[2:6] <- sprintf(
-	"%s (%.1f %%)", 
-	up_to_2010[2:6],
-	100*as.numeric(up_to_2010[2:6])/as.numeric(tab[26,2:6])
-)
-tab <- rbind(up_to_2010, tab[14:28,])
-
-gt(tab) %>% 
-	cols_align("right", -1) %>% 
-	as_latex()
-```
-
-```{=tex}
-\newpage
-\begin{landscape}
-```
-#### Panel C: Trustworthiness {.unnumbered}
-
-```{r Tab11cPreRegTimeSocSciResp, asis = TRUE}
-tab <- create_pct_cross_tab_table(
-	mr, "prereg_opinion", "demog_discipline", 
-	resp_label = get_resp_label("prereg_trust"), df_only = TRUE
-) 
-gt(tab ) %>% 
-	cols_align("right", -1) %>% 
-	as_latex()
-```
-
-This table is based on our survey data merged with the data collected by @FLCPSWMBP_2023. For Panel A, the question of our survey is "`r vars$text[95]`" where we code the response "Not at all familiar" as "No". The question used in the survey of @FLCPSWMBP_2023 is "Have you ever heard of the practice of pre-registering hypotheses or analyses in advance of a study?". For Panel B, the question of our survey is "`r vars$text[102]`". The question used in the survey of @FLCPSWMBP_2023 is "Approximately when was the first time you pre-registered hypotheses or analyses in advance of a study?". For Panel C, the question of our survey is "`r vars$text[103]`". The question used in the survey of @FLCPSWMBP_2023 is "What is your opinion of pre-registering hypotheses or analyses?". The data of @FLCPSWMBP_2023 has been collected in two waves (2018 and 2020) from a population of researchers located in the U.S. Our survey was conducted in 2022 among accounting researchers world-wide. Our survey and the merging process of the data are discussed in more detail in section 2 of the paper. The asterisks report the results of an OLS regression regressing the response on a series of field fixed effects with Accounting acting as the base field. (\*/\*\*/\*\*\*) indicate two-sided significance at the (10%/5%/1%) significant level, respecively.
-
-```{=tex}
-\setlength{\parindent}{4em}
-\newpage
-```
-### Table 12: Pre-Registration Across Methods {.unnumbered}
-
 \setlength{\parindent}{0em}
 
-#### Panel A: Familiarity {.unnumbered}
-
-```{r Tab12aPreRegFamiliarity, asis = TRUE}
-tab <- create_pct_cross_tab_table(
-	sd, "prereg_familiar", "demog_method", include_total = TRUE,
-	drop_levels = "Other", ctests = TRUE, df_only = TRUE
-) 
-gt(tab) %>% 
-	cols_align("right", -1) %>% 
-	as_latex()
-```
-
-#### Panel B: Usage {.unnumbered}
-
-```{r Tab12bPreRegUse, asis = TRUE}
-
-tab <- create_pct_cross_tab_table(
-	sd, "prereg_use", "demog_method", include_total = TRUE,
-	drop_levels = "Other", 
-	resp_label = c("No (0)", "Yes (1)"), 
-	add_num_labels = FALSE, ctests = TRUE, df_only = TRUE
-) 
-# Adjust levels to be zero based.
-tab[4,2:7] <- t(sprintf("%.2f", as.numeric(tab[4,2:7]) - 1))
-tab[5,2:7] <- t(sprintf("%.2f", as.numeric(tab[5,2:7]) - 1))
-gt(tab) %>% 
-	cols_align("right", -1) %>% 
-	as_latex()
-```
-
-\newpage
-
-#### Panel C: Trustworthiness {.unnumbered}
-
-```{r Tab12cPreRegTrust, asis = TRUE}
-
-tab <- create_pct_cross_tab_table(
-	sd, "prereg_trust", "demog_method", include_total = TRUE,
-	drop_levels = "Other", ctests = TRUE, df_only = TRUE
-) 
-gt(tab) %>% 
-	cols_align("right", -1) %>% 
-	as_latex()
-```
-
-This table is based on our survey data and three separate questions. The response presented in Panel A is based on the question "`r vars$text[95]`", the response presented in Panel B is based on the question "`r vars$text[100]`", and the response presented in Panel C is based on the question "`r vars$text[103]`". In all method break-ups, but not for the totals, answers from three respondents who classified their method as "Other" are excluded. Methods where the answers differ at the two-sided 10%-level are indicated by their first two letters.
-
-```{=tex}
-\setlength{\parindent}{4em}
-\end{landscape}
-\end{singlespace}
-\newpage
-```
 ## Online Supplement {.unnumbered}
 
 The public GitHub repository at \href{https://github.com/joachim-gassen/osacc}{https://github.com/joachim-gassen/osacc} contains the data and the code of this project.
 
-To explore our survey data in more depth, we encourage the use of our [online survey dashboard](https://jgassen.shinyapps.io/osacc/). Using this dashboard, you can explore the response to all survey questions, partitioning it by respondents' demographics. 
+To explore our survey data in more depth, we encourage the use of our [online survey dashboard](https://jgassen.shinyapps.io/osacc/). Using this dashboard, you can explore the response to all survey questions, partitioning it by respondents' demographics.
 
 \newpage
 
@@ -1408,3 +1479,53 @@ The data will only be analyzed and stored in anonymous form. This anonymous data
 \includepdf[scale=0.7, pages=1,pagecommand={\hypertarget{scenario-instrument}{\subsection*{Instrument}\label{scenario-instrument}}\addcontentsline{toc}{subsubsection}{Scenario Instrument}}]{materials/scenario.pdf}
 \includepdf[scale=0.7, pages=2-, pagecommand={}]{materials/scenario.pdf}
 ```
+```{=tex}
+\begin{landscape}
+\begin{singlespace}
+\begin{center}
+```
+## Appendix C: Comparison of our Survey with Social Science Survey (S3) {.unnumbered}
+
+```{r AppCTab1, asis = TRUE}
+df <- read_csv(
+	"../data/external/s3_osacc_item_comparison.csv", 
+	show_col_types = FALSE
+)
+gt(df[,1:7]) %>% 
+	sub_missing() %>% 
+	cols_width(
+		`S3 Question` ~ pct(15),
+		`Scale S3` ~ pct(15),
+		`Our Question` ~ pct(15),
+		`Our Scale` ~ pct(15),
+		`Recoding` ~ pct(15)
+	) %>%
+	as_latex() %>%
+	gt_add_header_mpage_table()
+```
+
+```{=tex}
+\end{center}
+\end{singlespace}
+\end{landscape}
+```
+
+[^1]: The terms "reproduction" and "replication" are at times used as synonyms but have different meanings. Reproduction refers to achieving the same results of a prior study using the same materials (code, procedures, and data), while replication refers to duplicating the results of a of a prior study using the same code and procedures but with new data [@NSF_2015]. For a more in-depth discussion of the differences and related terminological debate, see @GFI_2016.
+
+[^2]: We pre-registered this experimental part of our study. The pre-registration materials can be accessed [here](https://osf.io/frmzt/).
+
+[^3]: We removed 41 authors because we found no email address, 41 authors because they appeared in the data twice with two author IDs but were the same person, 28 authors because they were a current member of one of our affiliated universities or academic research centers, 5 authors because they gave us advice for this study, 2 authors because they had passed away, and 1 author due to an incorrect email address.
+
+[^4]: The corresponding question in @FLCPSWMBP_2023 is "Have you ever heard of the practice of publicly posting (data and code/study instruments) online for a completed study?" We deviated from this original question by using the term "research materials" and defining it as "sharing data, code, and research procedures" in our version of the question because we wanted to cover all aspects of this Open Science practice in one question.
+
+[^5]: "To what extent do you believe that publicly sharing research materials (i.e., data, code, and research procedures) is important for the advancement of accounting research?" The corresponding question in @FLCPSWMBP_2023 is "To what extent do you believe that publicly posting (data or code \| research instruments) online is important for progress in \[Discipline\]?" We adapted this question for terminological consistency across our survey.
+
+[^6]: The question used in the survey of @FLCPSWMBP_2023 is "Have you ever heard of the practice of pre-registering hypotheses or analyses in advance of a study?".
+
+[^7]: The question used in @FLCPSWMBP_2023 was "Approximately when was the first time you pre-registered hypotheses or analyses in advance of a study?"
+
+[^8]: The question used in the survey of @FLCPSWMBP_2023 is "What is your opinion of pre-registering hypotheses or analyses?". This question is quite broad while relying on a five-point Likert scale evaluating self-reported favorability (i.e., Not at all in favor, Moderately not in favor, Neither in favor nor against, Moderately in favor, Very much in favor). We chose to use a more specific question asking about whether pre-registration improves trustworthiness while relying on a five-point Likert scale (i.e., Much less trustworthy, Somewhat less trustworthy, Equally trustworthy, Somewhat more trustworthy, Much more trustworthy).
+
+[^9]: The data collection manual for this process is available in this project's GitHub repository.
+
+[^10]: Untabulated analyses based on small frequencies provide suggestive evidence that, overall, the sharing frequencies are higher for general economics journals than for journals in the areas of accounting and finance.

@@ -1,5 +1,7 @@
 ---
-title: "Accountants' Attitudes Towards Open Science"
+title: |
+  | How does the Accounting Research Community 
+  | Think About Open Science?
 subtitle: "" # we use this for the venue
 author: Joachim Gassen, Jacqueline Klug, and Victor van Pelt
 institute: "HU Berlin and WHU – Otto Beisheim School of Management"

@@ -1,5 +1,7 @@
 library(tidyverse)
 library(ggbeeswarm)
+library(readr)
+library(readxl)
 
 # Inspiration for plot below is from 
 # http://rnotr.com/likert/ggplot/barometer/likert-plots/
@@ -167,4 +169,139 @@ pre_reg_over_time_plot <- function(df) {
 			text=element_text(family="Times")
 		) 
 	
+}
+
+
+
+byu_fields_comp <- function(byu_author_data, sd_data) {
+  
+  # Method and Research Area Mappings
+  methodarea_map <- c('1' = 'method_archival', '2' = 'method_experimental', '3' = 'method_analytical', '4' = 'method_other')
+  researcharea_map <- c('1' = 'area_financial', '2' = 'area_managerial', '3' = 'area_tax', '4' = 'area_audit', '5' = 'area_ais', '7' = 'area_other')
+  
+  byu_author_data <- byu_author_data %>%
+    mutate(
+      methodarea_cleaned = str_extract_all(methodarea, "\\d+"),
+      researcharea_cleaned = str_extract_all(researcharea, "\\d+")
+    )
+  
+  for (key in names(methodarea_map)) {
+    byu_author_data[[methodarea_map[[key]]]] <- sapply(byu_author_data$methodarea_cleaned, function(x) key %in% x)
+  }
+  
+  for (key in names(researcharea_map)) {
+    byu_author_data[[researcharea_map[[key]]]] <- sapply(byu_author_data$researcharea_cleaned, function(x) key %in% x)
+  }
+  
+  byu_author_data <- byu_author_data %>%
+    select(-methodarea_cleaned, -researcharea_cleaned)
+  
+  # Prepare data for comparison
+  field_order <- c('Financial accounting and reporting', 'Managerial accounting', 'Auditing', 'Taxation', 'Accounting information systems', 'Other')
+  
+  byu_to_sample_field_map <- c('area_financial' = 'Financial accounting and reporting', 'area_managerial' = 'Managerial accounting', 'area_audit' = 'Auditing', 'area_tax' = 'Taxation', 'area_ais' = 'Accounting information systems', 'area_other' = 'Other')
+  
+  byu_field_counts <- colSums(byu_author_data[, names(byu_to_sample_field_map)])
+  names(byu_field_counts) <- byu_to_sample_field_map[names(byu_field_counts)]
+  byu_field_counts <- byu_field_counts[field_order]
+  
+  our_field_counts <- table(factor(sd_data$demog_field, levels = field_order))
+  
+  # Calculate percentages
+  byu_fields_percentage <- (byu_field_counts / sum(byu_field_counts)) * 100
+  our_fields_percentage <- (our_field_counts / sum(our_field_counts)) * 100
+  
+  # Create the matrix for plotting
+  fields_matrix <- rbind(byu_fields_percentage, our_fields_percentage)
+  
+  # Modify the label for plotting
+  field_labels <- c('Financial accounting\nand reporting', 'Managerial\naccounting', 'Auditing', 'Taxation', 'AIS', 'Other')
+  
+  # Plotting the Fields/Areas comparison directly
+  par(mgp = c(3, 1.5, 0))
+  
+  # Set axes = FALSE to prevent barplot from drawing axes
+  bar_positions <- barplot(fields_matrix, beside = TRUE, col = c("skyblue", "lightgreen"), ylim = c(0, 100), 
+                           names.arg = field_labels, las = 1, border = "black", 
+                           cex.names = 1.25, axes = FALSE)
+  
+  # Redraw the X-axis line
+  abline(h = 0, col = "black")
+  
+  # Add legend
+  legend("topright", legend = c("BYU Sample", "Our Sample"), fill = c("skyblue", "lightgreen"), cex = 1.25)
+  
+  # Add percentages above the bars, rounded to whole digits and with "%" symbol
+  text(bar_positions, fields_matrix + 2, labels = paste0(round(fields_matrix, 0), "%"), cex = 1.25, pos = 3)
+  
+  # Manually add y-axis labels only horizontally
+  axis(2, cex.axis = 1.25, las = 1)  # las = 1 makes the labels horizontal
+}
+
+
+byu_methods_comp <- function(byu_author_data, sd_data) {
+  
+  # Method Area Mapping
+  methodarea_map <- c('1' = 'method_archival', '2' = 'method_experimental', '3' = 'method_analytical', '4' = 'method_other')
+
+  # Clean and split methodarea
+  byu_author_data <- byu_author_data %>%
+    mutate(methodarea_cleaned = str_extract_all(methodarea, "\\d+"))
+
+  # Create binary columns for methodarea
+  for (key in names(methodarea_map)) {
+    byu_author_data[[methodarea_map[[key]]]] <- sapply(byu_author_data$methodarea_cleaned, function(x) key %in% x)
+  }
+
+  # Prepare data for comparison
+  method_order <- c('Archival/Field', 'Experimental', 'Analytical', 'Other')
+  
+  byu_to_sample_method_map <- c('method_archival' = 'Archival/Field', 'method_experimental' = 'Experimental', 'method_analytical' = 'Analytical', 'method_other' = 'Other')
+  
+  # Ensure that the summation of counts considers all valid cases
+  byu_method_counts <- sapply(names(byu_to_sample_method_map), function(col) {
+    sum(byu_author_data[[col]], na.rm = TRUE)
+  })
+  
+  names(byu_method_counts) <- byu_to_sample_method_map
+  
+  # Reorder according to method_order to ensure consistency
+  byu_method_counts <- byu_method_counts[method_order]
+  
+  # Combine "Qualitative" and "Survey" into "Other" for demog_method in "Our sample"
+  sd_data$demog_method <- factor(sd_data$demog_method)
+  levels(sd_data$demog_method)[levels(sd_data$demog_method) %in% c('Qualitative', 'Survey')] <- 'Other'
+  sd_data$demog_method <- droplevels(sd_data$demog_method)
+
+  our_method_counts <- table(factor(sd_data$demog_method, levels = method_order))
+  
+  # Calculate percentages
+  byu_methods_percentage <- (byu_method_counts / sum(byu_method_counts)) * 100
+  our_methods_percentage <- (our_method_counts / sum(our_method_counts)) * 100
+  
+  # Create the matrix for plotting
+  methods_matrix <- rbind(byu_methods_percentage, our_methods_percentage)
+  
+  # Modify the label for plotting
+  method_labels <- c('Archival/Field', 'Experimental', 'Analytical', 'Other')
+  
+  # Plotting the Methods comparison directly
+  par(mgp = c(3, 1.5, 0))
+  
+  # Set axes = FALSE to prevent barplot from drawing axes
+  bar_positions <- barplot(methods_matrix, beside = TRUE, col = c("skyblue", "lightgreen"), ylim = c(0, 100), 
+                           names.arg = method_labels, las = 1, border = "black", main = "Comparison of Methods between BYU and our Sample", 
+                           cex.names = 1.25, axes = FALSE)
+  
+  # Redraw the X-axis line
+  abline(h = 0, col = "black")
+  
+  # Add legend
+  legend("topright", legend = c("BYU Sample", "Our Sample"), fill = c("skyblue", "lightgreen"), cex = 1.25)
+  
+  # Add percentages above the bars, rounded to whole digits and with "%" symbol
+  text(bar_positions, methods_matrix + 2, labels = paste0(round(methods_matrix, 0), "%"), cex = 1.25, pos = 3)
+  
+  # Manually add y-axis labels only horizontally
+  axis(2, cex.axis = 1.25, las = 1)  # las = 1 makes the labels horizontal
 }
