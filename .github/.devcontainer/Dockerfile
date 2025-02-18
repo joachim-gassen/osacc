@@ -1,4 +1,4 @@
-FROM rocker/r-ver:4.2
+FROM rocker/r-ver:4.4
 
 RUN apt clean && apt update 
 RUN apt-get -y install cmake git pandoc libxml2-dev libcurl4-openssl-dev && apt-get clean
