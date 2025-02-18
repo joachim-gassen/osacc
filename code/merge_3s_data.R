@@ -59,7 +59,7 @@ comp_sss <- sss_resp %>%
 			"Qualitative or Theoretical", "Other"
 		)),
 		sharing_heard = sharing_dc_ever | sharing_inst_ever,
-		sharing_important = (sharing_dc_opinion + sharing_inst_opinion)/2,
+		sharing_important = floor((sharing_dc_opinion + sharing_inst_opinion)/2),
 		sharing_use = sharing_dc_how_many != "0" | sharing_inst_how_many != "0", 
 		sharing_perc_other_share = sharing_dc_share,
 		sharing_perc_other_prefer = sharing_dc_pref_other,

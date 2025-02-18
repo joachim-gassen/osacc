@@ -1,0 +1,9 @@
+project:
+  output-dir: ../output
+paper-titlepage: true
+paper-body: true
+paper-figures: true
+paper-tables: true
+appendix: true
+anonymize: false
+online-appendix: true

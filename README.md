@@ -1,16 +1,16 @@
-osacc: Accountants' Attitudes towards Open Science
+osacc: How Does the Accounting Research Community Think About Open Science?
 ================
 
-This is the repo for the in-development study
+This is the repo for the study
 
-> Gassen, Joachim, Jacqueline Klug, and Victor van Pelt (2024): How does the Accounting Research Community Think About Open Science?
+> Gassen, Joachim, Jacqueline Klug, and Victor van Pelt (2025): How Does the Accounting Research Community Think About Open Science?
 
 This repository contains all the data and code to reproduce our work. In addition, we include the [oTree](https://www.otree.org) research materials that we used to conduct the survey and the experiment embedded in it.
 
-If you are interested in reading the study, you need to build it ;-) Hang on.
+If you are interested in reading the study, [read it](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=5004669). It you interested to see how the sausage is being made and what we mean when we talk about an "open science workflow", you can build it. Read on.
 
 
-### How do I create the output?
+### How do I build the output?
 
 This video tutorial shows how to implement option 1 from below and reproduce our analysis in less than ten minutes. 
 
@@ -79,7 +79,7 @@ tinytex::install_tinytex()
 
 ### Thoughts about the study?
 
-If you have reproduced and even read our study, we would be super interested in hearing your views. Besides reaching out to us via email, you could also start a public discussion by opening up a GitHub Issue here in this repository. Be nice though, as this is a really fresh, rough, and early stage draft that you are reading ;-)
+If you have reproduced and even read our study, we would be super interested in hearing your views. Besides reaching out to us via email, you could also start a public discussion by opening up a GitHub Issue here in this repository. 
 
 
 ### Disclaimer

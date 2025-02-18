@@ -1,6 +1,6 @@
 ---
 title: |
-  | How does the Accounting Research Community 
+  | How Does the Accounting Research Community 
   | Think About Open Science?
 subtitle: "" # we use this for the venue
 author: Joachim Gassen, Jacqueline Klug, and Victor van Pelt
@@ -249,8 +249,7 @@ gt(tab) %>%
 ## Importance of Research Material Sharing Across the Social Sciences 
 
 ```{r Figure2, fig.width=8, fig.height=3.5, fig.align="center", fig.showtext = TRUE}
-mr$sharing_important_rescaled = floor(mr$sharing_important)
-p <- likert_plot(mr, "sharing_important_rescaled", "demog_discipline", title_str = "To what extent do you believe that publicly sharing research materials is important?", llevels = vars$resp_label[49:53]) +
+p <- likert_plot(mr, "sharing_important", "demog_discipline", title_str = "To what extent do you believe that publicly sharing research materials is important?", llevels = vars$resp_label[49:53]) +
 	theme(legend.text = element_text(size = 6))
 if (trr266_fonts_available) {
 	p + theme(

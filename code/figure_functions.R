@@ -2,6 +2,7 @@ library(tidyverse)
 library(ggbeeswarm)
 library(readr)
 library(readxl)
+library(gghighlight)
 
 # Inspiration for plot below is from 
 # http://rnotr.com/likert/ggplot/barometer/likert-plots/
@@ -223,7 +224,7 @@ byu_fields_comp <- function(byu_author_data, sd_data) {
   # Set axes = FALSE to prevent barplot from drawing axes
   bar_positions <- barplot(fields_matrix, beside = TRUE, col = c("skyblue", "lightgreen"), ylim = c(0, 100), 
                            names.arg = field_labels, las = 1, border = "black", 
-                           cex.names = 1.25, axes = FALSE)
+                           cex.names = 1.1, axes = FALSE)
   
   # Redraw the X-axis line
   abline(h = 0, col = "black")
@@ -290,7 +291,7 @@ byu_methods_comp <- function(byu_author_data, sd_data) {
   
   # Set axes = FALSE to prevent barplot from drawing axes
   bar_positions <- barplot(methods_matrix, beside = TRUE, col = c("skyblue", "lightgreen"), ylim = c(0, 100), 
-                           names.arg = method_labels, las = 1, border = "black", main = "Comparison of Methods between BYU and our Sample", 
+                           names.arg = method_labels, las = 1, border = "black", 
                            cex.names = 1.25, axes = FALSE)
   
   # Redraw the X-axis line
@@ -305,3 +306,21 @@ byu_methods_comp <- function(byu_author_data, sd_data) {
   # Manually add y-axis labels only horizontally
   axis(2, cex.axis = 1.25, las = 1)  # las = 1 makes the labels horizontal
 }
+
+post_hoc_power_figure <- function(power_res) {
+	ggplot(
+		power_res %>% filter(term == "collabTRUE"), 
+		aes(x = teffect, y = power, group = n_bin)
+	) +
+		geom_line() + geom_point() +
+		gghighlight(n_bin == 60, use_direct_label = F, use_group_by = F) + 
+		geom_hline(yintercept = 0.8, lty = 2, color = "red") + 
+		labs(x = "Main Effect (H1/H2)", y = "Power", color = "Bin size") +
+		scale_y_continuous(labels = scales::percent) +
+		scale_x_continuous(labels = function(x) paste(round(100*x), "PP")) +
+		theme_classic(base_size = 18) +
+		theme(
+			text=element_text(family="Times")
+		) 
+}
+

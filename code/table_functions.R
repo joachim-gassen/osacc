@@ -15,7 +15,11 @@ GROUPS <- c(
 	"qualitative", "risk", "trust", "tment_ctrl", "tment_prvt"
 )
 
-myfmt <- function(x, ndigits = 3) format(round(x, ndigits), nsmall = ndigits)
+myfmt <- function(x, ndigits = 3, p = FALSE) {
+	rv <- format(round(x, ndigits), nsmall = ndigits)
+	if (!p) return(rv)
+	ifelse(x < 0.001, "< 0.001", paste("=", rv))
+}
 
 get_resp_label <- function(v) {
 	# relies on vars being present in environment
@@ -236,8 +240,8 @@ create_continuous_table <- function(df, var, groups = GROUPS) {
 }
 
 ttest_group_by_group <- function(df, var, groupvar, xg, yg) {
-	x <- as.numeric(df[df[, groupvar] == xg, var]) %>% na.omit()
-	y <- as.numeric(df[df[, groupvar] == yg, var]) %>% na.omit()
+	x <- as.numeric(df[[var]][df[, groupvar] == xg]) %>% na.omit()
+	y <- as.numeric(df[[var]][df[, groupvar] == yg]) %>% na.omit()
 	if (length(x) <= 1) return(1)
 	if (length(y) <= 1) return(1)
 	rv <- t.test(x, y)
@@ -245,7 +249,8 @@ ttest_group_by_group <- function(df, var, groupvar, xg, yg) {
 }
 
 ttest_group_by_other_groups <- function(df, var, groupvar, xg) {
-	other_groups <- levels(df[, groupvar])[which(levels(df[, groupvar]) != xg)]
+	groups = levels(as.factor(df[[groupvar]]))
+	other_groups <- groups[groups != xg]
 	sapply(other_groups, function(y) ttest_group_by_group(df, var, groupvar, xg, y))
 }
 
@@ -305,7 +310,7 @@ create_pct_cross_tab_table <- function(
 		add_num_labels = TRUE, df_only = FALSE
 ) {
 	df$var <- as.numeric(df[[var]])
-	df$cross_var <- df[[cross_var]]
+	df$cross_var <- as.factor(df[[cross_var]])
 	if (include_total) full_df <- df
 	if (drop_levels != "") {
 		df <- df %>% filter(! as.character(cross_var) %in% drop_levels) 
@@ -361,7 +366,10 @@ create_pct_cross_tab_table <- function(
 		ctests <- NULL
 		for (g in levels(df$cross_var)) {
 			pv <- ttest_group_by_other_groups(df, "var", "cross_var", g)
-			ctests <- c(ctests, paste(substr(names(pv[pv < ctests_level]), 1, 2), collapse = ", "))
+			ctests <- c(
+				ctests, 
+				paste(substr(names(pv[pv < ctests_level]), 1, 2), collapse = ", ")
+			)
 		}
 		if (include_total) ctests <- c("", ctests)
 		stats <- stats %>% mutate(
@@ -369,7 +377,9 @@ create_pct_cross_tab_table <- function(
 		) %>% t() %>% data.frame() 
 	} else {
 		stars <- starme(
-			unname(summary(lm(var ~ cross_var, df))$coefficients[-1,4])
+			unname(ttest_group_by_other_groups(
+				df, "var", "cross_var", levels(df$cross_var)[1]
+			))
 		)
 		if (include_total) stars <- c("", stars)
 		stats <- stats %>%
@@ -465,6 +475,20 @@ create_cont_cross_tab_table <- function(
 		kable_classic(full_width = FALSE) 
 }
 
+ct_pvalue <- function(
+		df, var, cross_var, group, 
+		format = TRUE, exclude_other = TRUE
+	) {
+	pv <- ttest_group_by_other_groups(df, var, cross_var, group)
+	if (exclude_other) pv <- pv[setdiff(names(pv), "Other")]
+	if (!format) return(pv)
+	rv <- myfmt(pv)
+	ifelse(
+		rv == "0.000", "two-sided p-value < 0.001", 
+		paste("two-sided p-value =", rv)
+	)
+}
+
 give_reasons_by_group <- function(df, group = "all") {
 	if (group == "all") df$split_var <- TRUE
 	else df <- create_split(df, group) 
@@ -533,7 +557,7 @@ give_reasons_by_cross_var <- function(df, cross_var) {
 		kable_classic(full_width = FALSE) 
 }
 
-create_regions_rep_table <- function(pop, smp) {
+create_regions_rep_table <- function(pop, smp, shorten = FALSE) {
 	pop_ctries <- pop %>% select(affil_country) %>%
 		group_by(affil_country) %>%
 		na.omit() %>%
@@ -580,6 +604,9 @@ create_regions_rep_table <- function(pop, smp) {
 		) %>%
 		select(-n_pop, -n_smp) %>%
 		rename(Region = demog_region) %>%
+		mutate(
+			Region = if (shorten) stringr::str_remove(Region, "\\(.*\\)") else Region
+		) %>%
 		rbind(
 			list(
 				"Total", 
@@ -589,7 +616,7 @@ create_regions_rep_table <- function(pop, smp) {
 				"100.0%",
 				sprintf("%.1f%%", 100*sum(part$n_smp)/sum(part$n_pop))
 			)
-		)
+		) 
 }
 
 if (FALSE) {
@@ -597,18 +624,23 @@ if (FALSE) {
 	sr <- readRDS("data/generated/survey_response.rds")
 	mr <- readRDS("data/generated/merged_response.rds")
 	vars <- readxl::read_xlsx("data/external/variables.xlsx")
-	mr$sharing_important_rescaled = floor(mr$sharing_important)
-	m <- table(mr$sharing_important_rescaled, mr$demog_discipline)
-	
+
 	create_demog_table(sr, "demog_field")
 	create_discrete_table(sr, "reprod_acc")
 	create_discrete_table(
 		df, "reprod_acc", groups = c("region", "age", "tenured")
 	)
+	create_pct_cross_tab_table(
+		mr, "reprod", "demog_discipline",
+		resp_label =  get_resp_label("reprod_acc")
+	)
 	create_cross_tab_table(sr, "reprod_acc", "demog_method")
 	create_pct_cross_tab_table(sr, "reprod_acc", "demog_method")
-	create_continuous_table(df, "sharing_perc_other_share")
-	create_cont_cross_tab_table(df, "sharing_perc_other_share", "demog_method")
+	ct_pvalue(sr, "reprod_acc", "demog_method", "Analytical")
+	ct_pvalue(sr, "reprod_acc", "demog_method", "Analytical")["Archival/Field"]
+	ct_pvalue(mr, "sharing_heard", "demog_discipline", "Accounting")
+	create_continuous_table(sr, "sharing_perc_other_share")
+	create_cont_cross_tab_table(sr, "sharing_perc_other_share", "demog_method")
 	give_reasons(df)
 	give_reasons_by_cross_var(df, "demog_method")
 }

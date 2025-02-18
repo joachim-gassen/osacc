@@ -1,2 +1,4 @@
 project:
   output-dir: ../output
+profile:
+  default: full
