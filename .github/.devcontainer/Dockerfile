@@ -27,11 +27,12 @@ RUN install2.r --error --skipinstalled gt
 RUN install2.r --error --skipinstalled showtext
 RUN install2.r --error --skipinstalled quarto
 RUN install2.r --error --skipinstalled languageserver
+RUN install2.r --error --skipinstalled gghighlight
 
 RUN rm -rf /tmp/downloaded_packages
 
 ARG TARGETARCH
-RUN QUARTO_VERSION=1.4.550 \
+RUN QUARTO_VERSION=1.6.40 \
     && if [ $TARGETARCH = "arm64" ]; then \
         QUARTO_ARCH=linux-arm64; \
         else QUARTO_ARCH=linux-amd64; \
