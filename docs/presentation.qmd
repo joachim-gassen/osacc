@@ -87,6 +87,16 @@ center_table <- function(x) {
 	x[1] <- paste0("\\begin{center}", x[1], "\\end{center}")
 	x
 }
+
+script_size <- function(x) {
+	x[1] <- paste0("\\scriptsize", x[1], "\\normalsize")
+	x
+}
+
+tiny_size <- function(x) {
+	x[1] <- paste0("\\tiny", x[1], "\\normalsize")
+	x
+}
 ```
 
 ```{r InstallTRRFonts}
@@ -473,12 +483,10 @@ sub(
 
 ## Rationales for/against Sharing: Some Quotes
 
-```{r}
+```{r, asis = TRUE}
 
-# Later quotes need checking still - lots of potentially interesting stuff
 quotes <-c(11, 16, 18, 66, 67, 72, 80, 82, 84)
-# 83, 87, 88, 91, 105, 110
- sd %>%
+df <- sd %>%
  	filter(row_number() %in% quotes) %>%
  	transmute(
  		Condition = sprintf(
@@ -486,10 +494,16 @@ quotes <-c(11, 16, 18, 66, 67, 72, 80, 82, 84)
  			ifelse(exp_tment_private, "Private", "Public")
  		),
  		Quote = exp_reflect
- 	) %>% kable(booktabs = TRUE, linesep = "") %>% 
- 	kable_styling(full_width = TRUE, font_size = 7)  %>% 
- 	column_spec(1, width = "1.5cm")
-
+ 	)
+	
+gt(df) %>% 
+	cols_width(
+		`Condition` ~ pct(15),
+		`Quote` ~ pct(85)
+	) %>%
+	tab_options(table.font.size = 7) %>%
+	as_latex() %>%
+	tiny_size()
 ```
 
 

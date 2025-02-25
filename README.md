@@ -48,7 +48,7 @@ Regardless which route you take, after running `make all`, eventually, you shoul
 
 ### Libraries required to run the code
 
-The code has been developed based on R 4.2 and packages as of around Feb 2024. Out of courtesy towards your local computing environment, the code does not install any packages automatically. If you want to make sure that you have all packages installed before running the code, you can run the snippet below.
+The code has been developed based on R 4.3 and packages as of around Feb 2024. Out of courtesy towards your local computing environment, the code does not install any packages automatically. If you want to make sure that you have all packages installed before running the code, you can run the snippet below.
 
 ```
 install_package_if_missing <- function(pkg) {
@@ -67,6 +67,10 @@ install_package_if_missing("xml2")
 install_package_if_missing("countrycode")
 install_package_if_missing("gt")
 install_package_if_missing("showtext")
+install_package_if_missing("quarto")
+install_package_if_missing("languageserver")
+install_package_if_missing("gghighlight")
+
 
 # In addition, if you have no working LaTeX environment, consider
 # installing the neat tinytex LateX distribution. It is lightweight and
