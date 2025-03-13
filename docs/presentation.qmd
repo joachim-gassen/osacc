@@ -42,7 +42,7 @@ suppressMessages({
   library(kableExtra)
   library(modelsummary)
   library(showtext)
-
+	library(tufte)
   devtools::source_url(
     "https://raw.githubusercontent.com/trr266/treat/main/code/R/theme_trr.R"
   )
@@ -55,6 +55,7 @@ source("../code/figure_functions.R")
 
 sd <- readRDS("../data/generated/survey_response.rds")
 mr <- readRDS("../data/generated/merged_response.rds")
+byu <- read_csv("../data/external/byu_author_data_anon.csv", show_col_types = FALSE)
 vars <- read_csv("../data/external/variables.csv", show_col_types = FALSE)
 pop <- read_csv(
 	"../data/external/invited_authors_anon.csv", show_col_types = FALSE
@@ -65,6 +66,14 @@ papers <- read_csv("../data/external/obs_data_papers_anon.csv", show_col_types =
 	
 source("../code/obs_data_analyses.R")
 
+create_quote <- function(idval) {
+	obs <- sd %>% filter(id == idval)
+	tment_str <- paste0(
+		ifelse(obs$exp_tment_control == 1, "Control", "Collab"), "/",
+		ifelse(obs$exp_tment_private == 1, "Private", "Public")
+	) 
+	paste(obs$exp_reflect, "\\\\", quote_footer(paste("---", tment_str)))
+}
 
 # Needs \usepackage{adjustbox} in preamble
 fit_gt_table_to_slide <- function(x, scale = 1) {
@@ -127,7 +136,23 @@ if (!trr266_fonts_available) {
 ```
 
 
-## Motivation
+## Motivation: Estimating The Reproducibility of Psychological Science
+
+\begin{center}
+\includegraphics[height =0.7\textheight]{"materials/osc_2015.jpeg"} \\
+Open Science Collaboration (2015, Science)
+\end{center}
+
+
+## Motivation: 1,500 Scientists Lift the Lid on Reproducibility
+
+\begin{center}
+\includegraphics[height =0.7\textheight]{"materials/baker_2016.jpeg"} \\
+Baker (2016, Nature)
+\end{center}
+
+
+## Motivation: Survey of OS Practices and Attitudes in the Social Sciences
 
 \begin{center}
 \includegraphics[height =0.7\textheight]{"materials/ferguson_et_al_2023_uptake_over_time.png"} \\
@@ -135,46 +160,29 @@ Ferguson et al. (2023, Nature Communications)
 \end{center}
 
 
-
 ## Our Study
 
-Survey of authors that published in top six accounting journals over the period 2016-2021
+Survey of authors that published in top six accounting journals over the period 2016-2021 to address three research questions:
 
-Descriptive Research Questions (relative to general social science results)
+1.  How does the accounting research community assess the reproducibility of their influential work?
 
-- How do accountants assess the reproducibility of influential accounting work?
-- How do they perceive and use two prominent open science approaches to promote reproducibility:
-	- Public sharing of research materials (i.e., data, code, and procedures)
-	- Pre-registration of study designs
-	
-Experimental Question: Is the stated willingness to share research materials ...
+2.  What are the views of the accounting research community about research material sharing and pre-registration, two prominent open science methods to increase the reproducibility of research?
 
-- ... affected by the rationale (collaboration versus control) and/or
-- ... affected by the scope (public or private sharing) of the sharing request?
+3.  What are the (perceived) costs and benefits of research material sharing?
 
 
-## Invitation Email
+## Theoretical Framework
 
-\begin{small}
+The acts of research material sharing and pre-registration can be understood as voluntary disclosure decisions. 
 
-
-Subject: Share your views on Accounting Research
-
-Dear colleague,
-
-We are conducting a study about sharing research materials, reproducibility, and pre-registration in accounting research. You have been chosen to provide your opinion on this subject because you are a published author in one of the leading accounting journals. We obtained your email address from publicly available sources.
-
-Participating in our study takes around 7 minutes of your time. We will publicly share the anonymized data and results with the academic community in due course.
-
-As a token of gratitude for your time, we will donate 1,000 € multiplied by the response rate to the United Nations International Children's Emergency Fund (UNICEF).
-
-[...]
+- **Lack of unravelling**: Non-trivial direct costs and researchers might be unaware of their research' quality
+- **Substantial indirect costs**: Competetive effects and reputational concerns
+- **Limited private benefits**: Researchers are incentivized by publication success and less by research quality per se
+- **Positive externalities**: Activities are likely to benefit other researchers without direct compensation for acting researcher (but: 'warm glow')
 
 
-\end{small}
 
-
-## Sample Composition
+## Sample Composition {#sample}
 
 |                                 |                    N (%) |
 |:--------------------------------|-------------------------:|
@@ -187,8 +195,9 @@ As a token of gratitude for your time, we will donate 1,000 € multiplied by th
 | Surveys Partially Completed     |      254 (10.9% of sent) |
 | Surveys Fully Completed         |       222 (8.7% of sent) |
 
+\placebutton{skip}{email}{invitation email}
 
-## Geographical Response Representation
+## Representativeness by Geographical Region
 
 ```{r Tab4GeoRep, asis = TRUE}
 tab <- create_regions_rep_table(pop, sd)
@@ -210,7 +219,21 @@ sub("& Regional RR", "& ", tab_latex)
 ```
 
 
-## Reproducibility Assessed Across the Social Sciences
+## Representativeness by Field
+
+```{r FigureRespField, fig.width=12, fig.height=6, fig.align="center", fig.showtext = TRUE}
+byu_fields_comp(byu, sd)
+```
+
+
+## Representativeness by Method
+
+```{r FigureRespMethod, fig.width=9, fig.height=4.5, fig.align="center", fig.showtext = TRUE}
+byu_methods_comp(byu, sd)
+```
+
+
+## Reproducibility Assessed Across the Social Sciences {#reproducibility}
 
 ```{r Figure1, fig.width=8, fig.height=3.5, fig.align="center", fig.showtext = TRUE}
 p <- likert_plot(mr, "reprod", "demog_discipline", title_str = "How confident are you that the influential reserach findings in your area will replicate/reproduce?", llevels = vars$resp_label[80:84])
@@ -221,6 +244,8 @@ if (trr266_fonts_available) {
 	legend.text = element_text(size = 6)
 )
 ```
+
+\placebutton{skip}{terminology}{Terminology}
 
 
 ## Accounting Assessment by Method
@@ -294,6 +319,108 @@ if (trr266_fonts_available) {
 } else p
 ```
 
+
+## Pre-Registration: Take-up over Time Across the Social Sciences
+
+```{r Figure5, fig.width=8, fig.height=3.5, fig.align="center", fig.showtext = TRUE}
+p <- pre_reg_over_time_plot(mr) + theme(legend.position = "right") 
+if (trr266_fonts_available) {
+	p + theme(text = element_text(family = "Calibri Light", size = 12))
+} else p
+
+```
+
+
+## Pre-Registration: Opinion Across the Social Sciences
+
+```{r Tab10cPreRegTimeSocSciResp, asis = TRUE}
+tab <- create_pct_cross_tab_table(
+	mr, "prereg_opinion", "demog_discipline", 
+	resp_label = get_resp_label("prereg_trust"), df_only = TRUE
+) 
+gt(tab ) %>% 
+	cols_align("right", -1) %>% 
+	as_latex() %>%
+	fit_gt_table_to_slide()
+```
+
+<!---
+## Pre-Registration: Familiarity by Method
+
+```{r Tab11aPreRegFamiliarity, asis = TRUE}
+tab <- create_pct_cross_tab_table(
+	sd, "prereg_familiar", "demog_method", include_total = TRUE,
+	drop_levels = "Other", 
+	ctests = TRUE, df_only = TRUE
+) 
+gt(tab) %>% 
+	cols_align("right", -1) %>% 
+	as_latex() %>%
+	fit_gt_table_to_slide()
+```
+
+--->
+
+## Pre-Registration: Usage by Method {#preregmethod}
+
+```{r Tab11bPreRegUse, asis = TRUE}
+
+tab <- create_pct_cross_tab_table(
+	sd, "prereg_use", "demog_method", include_total = TRUE,
+	drop_levels = "Other", resp_label = c("No (0)", "Yes (1)"), 
+	add_num_labels = FALSE, ctests = TRUE, df_only = TRUE
+) 
+# Adjust levels to be zero based.
+tab[4,2:7] <- t(sprintf("%.2f", as.numeric(tab[4,2:7]) - 1))
+tab[5,2:7] <- t(sprintf("%.2f", as.numeric(tab[5,2:7]) - 1))
+gt(tab) %>% 
+	cols_align("right", -1) %>% 
+	as_latex() %>%
+	fit_gt_table_to_slide()
+```
+
+\placebutton{skip}{preregtrust}{trust in pre-registration by method}
+
+
+## Observational Data: Author Level 
+
+```{r, asis = TRUE}
+gt(tab_by_author) %>% 
+	cols_align("right", -1) %>% 
+	as_latex() %>%
+	fit_gt_table_to_slide()
+```
+
+
+## Observational Data: Journal Level
+
+```{r, asis = TRUE}
+gt(tab_by_journal) %>% 
+	cols_align("right", -1) %>% 
+	as_latex() %>%
+	fit_gt_table_to_slide()
+```
+
+
+## To Compare: Policy Effect for Management Science
+
+\begin{center}
+\includegraphics[width =0.7\textwidth]{"materials/fisar_et_al_2023_policy.jpeg"} \\
+Fišar et al. (2023, Management Science)
+\end{center}
+
+
+## Observational Data: Paper-level Sharing over Time
+
+```{r Figure4, fig.width=8, fig.height=3.5, fig.align="center", fig.showtext = TRUE}
+p <- plot_resmat_sharing_over_cyear
+if (trr266_fonts_available) {
+	p + theme(text = element_text(family = "Calibri Light", size = 12))
+} else p
+```
+
+
+
 ## Sharing Determinants: Experimental Manipulation
 
 You conducted a study and published it in an academic journal. Another researcher contacts you and asks you *(to publicly share | for access to)* your research materials (i.e., the data, code, and research procedures). The researcher wants *(others)* to:
@@ -316,8 +443,9 @@ You conducted a study and published it in an academic journal. Another researche
 \end{itemize}
 \end{column}
 \end{columns}
+
  
-## Experimental Findings on Sharing Determinants
+## Costs and Benefits of Research Material Sharing: Experimental Findings
 
 ```{r, asis = TRUE}
 sd$exp_tment_collab <- 1 - sd$exp_tment_control
@@ -348,6 +476,7 @@ tab_latex[1] <- sub("\\(Intercept\\)", "Intercept", tab_latex)
 
 sub("Adjusted R2", "\\\\midrule\\\\addlinespace[2.5pt]\nAdjusted R²", tab_latex)
 ```
+
 
 ## Reasons against Sharing (Close-Ended Question)
 
@@ -480,157 +609,52 @@ sub(
 ```
 
 
-
-## Rationales for/against Sharing: Some Quotes
-
-```{r, asis = TRUE}
-
-quotes <-c(11, 16, 18, 66, 67, 72, 80, 82, 84)
-df <- sd %>%
- 	filter(row_number() %in% quotes) %>%
- 	transmute(
- 		Condition = sprintf(
- 			"%s/%s", ifelse(exp_tment_collab, "Collab", "Control"),
- 			ifelse(exp_tment_private, "Private", "Public")
- 		),
- 		Quote = exp_reflect
- 	)
-	
-gt(df) %>% 
-	cols_width(
-		`Condition` ~ pct(15),
-		`Quote` ~ pct(85)
-	) %>%
-	tab_options(table.font.size = 7) %>%
-	as_latex() %>%
-	tiny_size()
-```
+## Quotes about Sharing Benefits: Helping Others
+\begin{quote}
+`r create_quote(295)`
+\end{quote}
+\vspace{1cm}
+\begin{quote}
+`r create_quote(403)`
+\end{quote}
 
 
-## Observational Data on Sharing Behavior: Author Level
+## Quotes about Sharing Benefits: Helping Yourself
 
-```{r, asis = TRUE}
-gt(tab_by_author) %>% 
-	cols_align("right", -1) %>% 
-	as_latex() %>%
-	fit_gt_table_to_slide()
-```
-
-
-## Observational Data on Sharing Behavior: Journal Level
-
-```{r, asis = TRUE}
-gt(tab_by_journal) %>% 
-	cols_align("right", -1) %>% 
-	as_latex() %>%
-	fit_gt_table_to_slide()
-```
+\begin{quote}
+`r create_quote(249)`
+\end{quote}
+\vspace{1cm}
+\begin{quote}
+`r create_quote(186)`
+\end{quote}
 
 
-## To Compare: Policy Effect for Management Science
+## Quotes about Sharing Costs: Direct Costs
 
-\begin{center}
-\includegraphics[width =0.7\textwidth]{"materials/fisar_et_al_2023_policy.jpeg"} \\
-Fišar et al. (2023, Management Science)
-\end{center}
+\begin{quote}
+`r create_quote(154)`
+\end{quote}
 
+## Quotes about Sharing Costs: Valuable Intellectual Property
 
-## Observational Data: Paper-level Sharing over Time
-
-```{r Figure4, fig.width=8, fig.height=3.5, fig.align="center", fig.showtext = TRUE}
-p <- plot_resmat_sharing_over_cyear
-if (trr266_fonts_available) {
-	p + theme(text = element_text(family = "Calibri Light", size = 12))
-} else p
-```
+\begin{quote}
+`r create_quote(47)`
+\end{quote}
 
 
-<!---
-## Pre-Registration: Awareness Across the Social Sciences
+## Quotes about Sharing Costs: Unethical Usage Concerns
 
-```{r Tab10aPreRegAwareSocSciResp, asis = TRUE}
-tab <- create_pct_cross_tab_table(
-	mr, "prereg_heard", "demog_discipline", 
-	resp_label = c("No (0)", "Yes (1)"), 
-	add_num_labels = FALSE, df_only = TRUE
-) 
-gt(tab) %>% 
-	cols_align("right", -1) %>% 
-	as_latex() %>%
-	fit_gt_table_to_slide()
-```
---->
-
-## Pre-Registration: Take-up over Time Across the Social Sciences
-
-```{r Figure5, fig.width=8, fig.height=3.5, fig.align="center", fig.showtext = TRUE}
-p <- pre_reg_over_time_plot(mr) + theme(legend.position = "right") 
-if (trr266_fonts_available) {
-	p + theme(text = element_text(family = "Calibri Light", size = 12))
-} else p
-
-```
+\begin{quote}
+`r create_quote(169)`
+\end{quote}
 
 
-## Pre-Registration: Opinion Across the Social Sciences
+## Quotes about Sharing Benefits/Costs: Depends on Researcher
 
-```{r Tab10cPreRegTimeSocSciResp, asis = TRUE}
-tab <- create_pct_cross_tab_table(
-	mr, "prereg_opinion", "demog_discipline", 
-	resp_label = get_resp_label("prereg_trust"), df_only = TRUE
-) 
-gt(tab ) %>% 
-	cols_align("right", -1) %>% 
-	as_latex() %>%
-	fit_gt_table_to_slide()
-```
-
-
-## Pre-Registration: Familiarity by Method
-
-```{r Tab11aPreRegFamiliarity, asis = TRUE}
-tab <- create_pct_cross_tab_table(
-	sd, "prereg_familiar", "demog_method", include_total = TRUE,
-	drop_levels = "Other", 
-	ctests = TRUE, df_only = TRUE
-) 
-gt(tab) %>% 
-	cols_align("right", -1) %>% 
-	as_latex() %>%
-	fit_gt_table_to_slide()
-```
-
-## Pre-Registration: Usage by Method
-
-```{r Tab11bPreRegUse, asis = TRUE}
-
-tab <- create_pct_cross_tab_table(
-	sd, "prereg_use", "demog_method", include_total = TRUE,
-	drop_levels = "Other", resp_label = c("No (0)", "Yes (1)"), 
-	add_num_labels = FALSE, ctests = TRUE, df_only = TRUE
-) 
-# Adjust levels to be zero based.
-tab[4,2:7] <- t(sprintf("%.2f", as.numeric(tab[4,2:7]) - 1))
-tab[5,2:7] <- t(sprintf("%.2f", as.numeric(tab[5,2:7]) - 1))
-gt(tab) %>% 
-	cols_align("right", -1) %>% 
-	as_latex() %>%
-	fit_gt_table_to_slide()
-```
-
-## Pre-Registration: Trust Effect by Method
-
-```{r Tab11cPreRegTrust, asis = TRUE}
-
-tab <- create_pct_cross_tab_table(
-	sd, "prereg_trust", "demog_method", include_total = TRUE,
-	drop_levels = "Other", ctests = TRUE, df_only = TRUE
-) 
-gt(tab) %>% 
-	cols_align("right", -1) %>% 
-	as_latex() %>%
-	fit_gt_table_to_slide()
-```
+\begin{quote}
+`r create_quote(317)`
+\end{quote}
 
 
 ## Summary 
@@ -638,7 +662,10 @@ gt(tab) %>%
 We seem to face an **"accounting open science dilemma"**
 
 - We are skeptical about the reproducibility of our work and at the same time
-- somewhat behind the curve with regards to research material sharing and pre-registration
+- somewhat behind the curve with regards to research material sharing and pre-registration.
+
+Our findings suggest that weighting direct and indirect costs higher than private and public benefits might be a rationale for this behavior.
+
 
 ## Discussion
 
@@ -647,7 +674,16 @@ What now? We suggest a two-pronged approach
 - Take stock of the reproducibility of our work
 - Promote incentive-compatible open science approaches
 
-## Taking stock... It might not be as bad as we think!
+
+## Taking stock: Distributions of Test Statistics in Archival Accounting Studies
+
+\begin{center}
+\includegraphics[height =0.7\textheight]{"materials/chang_gao_li_2025.jpeg"} \\
+Chang, Gao, and Li (2025, JAR)
+\end{center}
+
+
+## Taking stock: Relatively speaking...
 
 \begin{center}
 \includegraphics[width =0.7\textwidth]{"materials/fisar_et_al_2023_fields.jpeg"} \\
@@ -655,7 +691,7 @@ Fišar et al. (2023, Management Science)
 \end{center}
 
 
-## Reproducibility Across Methods
+## Taking stock: Reproducibility Across Methods
 
 \begin{center}
 \includegraphics[width =0.8\textwidth]{"materials/fisar_et_al_2023_methods.jpeg"} \\
@@ -679,6 +715,7 @@ Interesting aspect for further study: Role of open science in theoretical/analyt
 Gomes et al. (2022, Proceedings of the Royal Society Series B)
 \end{center}
 
+
 ## Thank You!
 
 \begin{center}
@@ -686,3 +723,59 @@ For additional descriptive analyses of our survey data, check out our \href{http
 
 All code and data of this project are available on \href{https://github.com/joachim-gassen/osacc}{GitHub}.
 \end{center}
+
+# Backup
+
+## Invitation Email {#email}
+
+\begin{small}
+
+
+Subject: Share your views on Accounting Research
+
+Dear colleague,
+
+We are conducting a study about sharing research materials, reproducibility, and pre-registration in accounting research. You have been chosen to provide your opinion on this subject because you are a published author in one of the leading accounting journals. We obtained your email address from publicly available sources.
+
+Participating in our study takes around 7 minutes of your time. We will publicly share the anonymized data and results with the academic community in due course.
+
+As a token of gratitude for your time, we will donate 1,000 € multiplied by the response rate to the United Nations International Children's Emergency Fund (UNICEF).
+
+[...]
+
+\end{small}
+
+\placebutton{return}{sample}{Return}
+
+
+## Some Terminology (Dreber and Johannesson, 2024) {#terminology}
+
+Types of reproducibility:
+
+- **Computational reproducibility**: Results of original study can be reproduced based on data and code posted or provided by the original authors.	
+- **Recreate reproducibility**:	Results of original study can be reproduced based on the information in the paper and access to the same raw data source.	
+- **Robustness reproducibility**:	Results og original study are robust to alternative reasonable analytical decisions on the same data.	
+
+Types of replicability:
+
+- **Direct replicability**:	Results of original studies can be repeated on new data using the same research design and analysis as the original study.	
+- **Conceptual replicability**:Results of original study can be repeated on new data using an alternative research design and/or analysis to test the same hypothesis.
+
+\placebutton{return}{reproducibility}{Return}
+
+
+## Pre-Registration: Trust Effect by Method {#preregtrust}
+
+```{r Tab11cPreRegTrust, asis = TRUE}
+
+tab <- create_pct_cross_tab_table(
+	sd, "prereg_trust", "demog_method", include_total = TRUE,
+	drop_levels = "Other", ctests = TRUE, df_only = TRUE
+) 
+gt(tab) %>% 
+	cols_align("right", -1) %>% 
+	as_latex() %>%
+	fit_gt_table_to_slide()
+```
+
+\placebutton{return}{preregmethod}{Return}

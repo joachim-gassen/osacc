@@ -28,6 +28,7 @@ RUN install2.r --error --skipinstalled showtext
 RUN install2.r --error --skipinstalled quarto
 RUN install2.r --error --skipinstalled languageserver
 RUN install2.r --error --skipinstalled gghighlight
+RUN install2.r --error --skipinstalled tufte
 
 RUN rm -rf /tmp/downloaded_packages
 
